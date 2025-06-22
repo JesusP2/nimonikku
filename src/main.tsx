@@ -1,10 +1,10 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
+import { LiveStoreProvider } from "./components/livestore-provider";
 import Loader from "./components/loader";
 import { routeTree } from "./routeTree.gen";
 import { queryClient, trpc } from "./utils/trpc";
-import { LiveStoreProvider } from "./components/livestore-provider";
 
 const router = createRouter({
   routeTree,

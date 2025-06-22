@@ -1,12 +1,12 @@
 import path from "node:path";
-import { cloudflare } from '@cloudflare/vite-plugin';
+import { cloudflare } from "@cloudflare/vite-plugin";
+import { livestoreDevtoolsPlugin } from "@livestore/devtools-vite";
 import tailwindcss from "@tailwindcss/vite";
-import tanStackRouterVite from '@tanstack/router-plugin/vite';
+import tanStackRouterVite from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
-import { livestoreDevtoolsPlugin } from '@livestore/devtools-vite'
-import tsconfigPaths from 'vite-tsconfig-paths';
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [
@@ -15,7 +15,7 @@ export default defineConfig({
     tanStackRouterVite({
       autoCodeSplitting: true,
     }),
-    livestoreDevtoolsPlugin({ schemaPath: './src/server/livestore/schema.ts' }),
+    livestoreDevtoolsPlugin({ schemaPath: "./src/server/livestore/schema.ts" }),
     react(),
     VitePWA({
       registerType: "autoUpdate",
@@ -34,7 +34,7 @@ export default defineConfig({
       },
     }),
     tsconfigPaths({
-      root: './',
+      root: "./",
     }),
   ],
   resolve: {

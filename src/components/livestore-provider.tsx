@@ -3,9 +3,8 @@ import LiveStoreSharedWorker from "@livestore/adapter-web/shared-worker?sharedwo
 import { LiveStoreProvider as LiveStoreProviderReact } from "@livestore/react";
 import type React from "react";
 import { unstable_batchedUpdates as batchUpdates } from "react-dom";
-
-import LiveStoreWorker from "../livestore.worker?worker";
 import { schema } from "@/server/livestore/schema";
+import LiveStoreWorker from "../livestore.worker?worker";
 
 const adapter = makePersistedAdapter({
   storage: { type: "opfs" },

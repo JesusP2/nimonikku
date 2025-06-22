@@ -1,15 +1,15 @@
-import { env } from "cloudflare:workers";
+import type { env } from "cloudflare:workers";
 import { trpcServer } from "@hono/trpc-server";
-import { Hono } from "hono";
-import { cors } from "hono/cors";
-import { logger } from "hono/logger";
-import { auth } from "./auth";
-import { createContext } from "./trpc/context";
-import { appRouter } from "./routers";
 import {
   handleWebSocket,
   makeDurableObject,
 } from "@livestore/sync-cf/cf-worker";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { auth } from "./auth";
+import { appRouter } from "./routers";
+import { createContext } from "./trpc/context";
 
 export class Pikaboard extends makeDurableObject({
   onPush: async (message) => {
