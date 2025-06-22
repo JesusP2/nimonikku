@@ -1,0 +1,33 @@
+{
+  "name": "pikaboard-server",
+  "main": "src/server/index.ts",
+  "compatibility_date": "2025-06-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "pikaboard",
+      "database_id": "7afa72bc-216c-464a-9c47-6416d64df597",
+      "migrations_dir": "src/server/db/migrations"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "Pikaboard",
+        "class_name": "Pikaboard"
+      }
+    ]
+  },
+  "migrations": [{ "tag": "v1", "new_classes": ["Pikaboard"] }],
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true
+    }
+  },
+  "assets": {
+    "directory": "./dist/",
+    "not_found_handling": "single-page-application"
+  }
+}
