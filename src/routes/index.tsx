@@ -1,34 +1,55 @@
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { trpc } from "@/utils/trpc";
+import { Excalidraw } from '@excalidraw/excalidraw';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import { createFileRoute, useParams } from '@tanstack/react-router';
+import { useEffect, useRef, useState } from 'react';
 
-export const Route = createFileRoute("/")({
-  component: HomeComponent,
+export const Route = createFileRoute('/')({
+  component: RouteComponent,
 });
 
-function HomeComponent() {
-  const healthCheck = useQuery(trpc.healthCheck.queryOptions());
+const interval = 100;
+
+function createStateDiff(state: State, currentState: State) {
+  if ('elements' in state) {
+    return {
+      elements: state.elements,
+      appState: state.appState,
+      files: state.files,
+    };
+  }
+  return {
+    elements: currentState.elements,
+    appState: currentState.appState,
+    files: currentState.files,
+  };
+}
+
+async function getState(boardId: string) {
+  const board = await dexieDb.board.get(boardId)
+  if (!board) {
+    throw new Error('Board not found')
+  }
+  const elements = board.elements;
+  const appState = board.appState;
+  return {
+    elements,
+    appState,
+  }
+}
+
+
+function RouteComponent() {
+  // const { boardId } = useParams({ from: '/' });
+  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-2">
-      <pre className="overflow-x-auto font-mono text-sm">app</pre>
-      <div className="grid gap-6">
-        <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">API Status</h2>
-          <div className="flex items-center gap-2">
-            <div
-              className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`}
-            />
-            <span className="text-muted-foreground text-sm">
-              {healthCheck.isLoading
-                ? "Checking..."
-                : healthCheck.data
-                  ? "Connected"
-                  : "Disconnected"}
-            </span>
-          </div>
-        </section>
-      </div>
+    <div className='h-screen'>
+      <Excalidraw
+        onChange={async (state) => {
+          console.log('excalidraw changed', state);
+        }}
+        excalidrawAPI={setExcalidrawApi}
+      />
     </div>
   );
 }
