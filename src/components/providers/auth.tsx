@@ -9,7 +9,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       Link={NavLink}
       magicLink
       passkey
-      oneTap
       providers={["google"]}
     >
       {children}

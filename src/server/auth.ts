@@ -35,7 +35,7 @@ export const auth = betterAuth({
         });
       },
     }),
-    oneTap(),
+    // oneTap(),
     admin(),
     passkey(),
   ],
