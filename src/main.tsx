@@ -1,3 +1,6 @@
+import { scan } from 'react-scan';
+// @ts-expect-error
+import '@fontsource-variable/geist';
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
@@ -9,6 +12,13 @@ import { Toaster } from "./components/ui/sonner";
 import { routeTree } from "./routeTree.gen";
 import { queryClient, trpc } from "./utils/trpc";
 import { ThemeButton } from "./components/theme-button";
+import { AuthProvider } from "./components/providers/auth";
+
+if (import.meta.env.DEV) {
+  scan({
+    enabled: import.meta.env.DEV,
+  });
+}
 
 const router = createRouter({
   routeTree,
@@ -19,15 +29,17 @@ const router = createRouter({
     return (
       <ThemeProvider>
         <LiveStoreProvider>
-          <QueryClientProvider client={queryClient}>
-            {children}
-            <Toaster richColors />
-            <ThemeButton />
-            <ReactQueryDevtools
-              position="bottom"
-              buttonPosition="bottom-right"
-            />
-          </QueryClientProvider>
+          <AuthProvider>
+            <QueryClientProvider client={queryClient}>
+              {children}
+              <Toaster richColors />
+              <ThemeButton />
+              <ReactQueryDevtools
+                position="bottom"
+                buttonPosition="bottom-right"
+              />
+            </QueryClientProvider>
+          </AuthProvider>
         </LiveStoreProvider>
       </ThemeProvider>
     );

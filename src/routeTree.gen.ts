@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthIdRouteImport } from './routes/auth.$id'
+import { Route as ApiAuthCallbackGoogleRouteImport } from './routes/api.auth.callback.google'
 
 const TodosRoute = TodosRouteImport.update({
   id: '/todos',
@@ -22,31 +24,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthIdRoute = AuthIdRouteImport.update({
+  id: '/auth/$id',
+  path: '/auth/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthCallbackGoogleRoute = ApiAuthCallbackGoogleRouteImport.update({
+  id: '/api/auth/callback/google',
+  path: '/api/auth/callback/google',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/todos': typeof TodosRoute
+  '/auth/$id': typeof AuthIdRoute
+  '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/todos': typeof TodosRoute
+  '/auth/$id': typeof AuthIdRoute
+  '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/todos': typeof TodosRoute
+  '/auth/$id': typeof AuthIdRoute
+  '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/todos'
+  fullPaths: '/' | '/todos' | '/auth/$id' | '/api/auth/callback/google'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/todos'
-  id: '__root__' | '/' | '/todos'
+  to: '/' | '/todos' | '/auth/$id' | '/api/auth/callback/google'
+  id: '__root__' | '/' | '/todos' | '/auth/$id' | '/api/auth/callback/google'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TodosRoute: typeof TodosRoute
+  AuthIdRoute: typeof AuthIdRoute
+  ApiAuthCallbackGoogleRoute: typeof ApiAuthCallbackGoogleRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/$id': {
+      id: '/auth/$id'
+      path: '/auth/$id'
+      fullPath: '/auth/$id'
+      preLoaderRoute: typeof AuthIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/callback/google': {
+      id: '/api/auth/callback/google'
+      path: '/api/auth/callback/google'
+      fullPath: '/api/auth/callback/google'
+      preLoaderRoute: typeof ApiAuthCallbackGoogleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TodosRoute: TodosRoute,
+  AuthIdRoute: AuthIdRoute,
+  ApiAuthCallbackGoogleRoute: ApiAuthCallbackGoogleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
