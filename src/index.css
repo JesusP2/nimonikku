@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 @source '../node_modules/@daveyplate/better-auth-ui';
 
 @custom-variant dark (&:is(.dark *));
@@ -12,14 +12,14 @@ body,
 
 body {
   @apply m-0;
-  font-family: 'Geist Variable', sans-serif;
+  font-family: "Geist Variable", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family:
-    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
 @theme inline {
@@ -83,7 +83,6 @@ code {
     @apply bg-background text-foreground;
   }
 }
-
 
 .scrollbar::-webkit-scrollbar {
   width: 5px;

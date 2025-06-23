@@ -1,11 +1,11 @@
-import { EmailTemplate } from '@daveyplate/better-auth-ui/server';
+import { EmailTemplate } from "@daveyplate/better-auth-ui/server";
 
 export const magicLinkTemplate = (url: string, BASE_URL: string) =>
   EmailTemplate({
-    action: 'Sign in',
-    heading: 'Sign in to your account',
-    siteName: 'Omokage',
-    imageUrl: BASE_URL + '/favicon.ico',
+    action: "Sign in",
+    heading: "Sign in to your account",
+    siteName: "Omokage",
+    imageUrl: BASE_URL + "/favicon.ico",
     baseUrl: BASE_URL,
     url: url,
     content: (
@@ -17,7 +17,7 @@ export const magicLinkTemplate = (url: string, BASE_URL: string) =>
           account:
         </p>
         <p>
-          <a href=''>Login Securely</a>
+          <a href="">Login Securely</a>
         </p>
         <p>(This magic link will expire 5 minutes after it was sent.)</p>
         <p>
@@ -26,4 +26,3 @@ export const magicLinkTemplate = (url: string, BASE_URL: string) =>
       </>
     ),
   });
-

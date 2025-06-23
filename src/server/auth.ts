@@ -9,9 +9,9 @@ import {
   oneTimeToken,
 } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
+import { Resend } from "resend";
 import { db } from "@/server/db";
 import * as schema from "./db/schema/auth";
-import { Resend } from "resend";
 import { magicLinkTemplate } from "./emails/magic-link";
 import { forgotPasswordTemplate } from "./emails/otp";
 
@@ -39,24 +39,24 @@ export const auth = betterAuth({
     admin(),
     passkey(),
   ],
-    emailAndPassword: {
+  emailAndPassword: {
+    enabled: true,
+    sendResetPassword: async ({ user, url }) => {
+      await resend.emails.send({
+        from: "no-reply@omokage.app",
+        to: user.email,
+        subject: "Reset password",
+        react: forgotPasswordTemplate(url, env.VITE_SERVER_URL),
+      });
+    },
+  },
+  socialProviders: {
+    google: {
       enabled: true,
-      sendResetPassword: async ({ user, url }) => {
-        await resend.emails.send({
-          from: 'no-reply@omokage.app',
-          to: user.email,
-          subject: 'Reset password',
-          react: forgotPasswordTemplate(url, env.VITE_SERVER_URL),
-        });
-      },
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
-    socialProviders: {
-      google: {
-        enabled: true,
-        clientId: env.GOOGLE_CLIENT_ID,
-        clientSecret: env.GOOGLE_CLIENT_SECRET,
-      },
-    },
+  },
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.VITE_SERVER_URL,
 });

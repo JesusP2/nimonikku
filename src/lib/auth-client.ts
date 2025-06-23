@@ -1,10 +1,10 @@
 import {
-  passkeyClient,
-  // oneTapClient,
-  organizationClient,
+  adminClient,
   anonymousClient,
   magicLinkClient,
-  adminClient,
+  // oneTapClient,
+  organizationClient,
+  passkeyClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 

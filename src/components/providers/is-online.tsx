@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
 
 type IsOnlineProviderProps = {
   children: React.ReactNode;
@@ -14,9 +14,13 @@ const initialState: IsOnlineProviderState = {
   isChecking: false,
 };
 
-const IsOnlineProviderContext = createContext<IsOnlineProviderState>(initialState);
+const IsOnlineProviderContext =
+  createContext<IsOnlineProviderState>(initialState);
 
-export function IsOnlineProvider({ children, ...props }: IsOnlineProviderProps) {
+export function IsOnlineProvider({
+  children,
+  ...props
+}: IsOnlineProviderProps) {
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
   const [isChecking, setIsChecking] = useState<boolean>(false);
 
@@ -41,9 +45,9 @@ export function IsOnlineProvider({ children, ...props }: IsOnlineProviderProps) 
       setIsChecking(true);
       try {
         // Use a cache-busting parameter to ensure we're actually testing network connectivity
-        const response = await fetch('/api/ping', {
-          method: 'GET',
-          cache: 'no-store',
+        const response = await fetch("/api/ping", {
+          method: "GET",
+          cache: "no-store",
           signal: AbortSignal.timeout(5000),
         });
         setIsOnline(response.ok);
@@ -53,14 +57,14 @@ export function IsOnlineProvider({ children, ...props }: IsOnlineProviderProps) 
         setIsChecking(false);
       }
     };
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         checkConnectivity();
       }
     };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     checkConnectivity();
     const interval = setInterval(() => {
       if (navigator.onLine) {
@@ -69,9 +73,9 @@ export function IsOnlineProvider({ children, ...props }: IsOnlineProviderProps) 
     }, 30000);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearInterval(interval);
     };
   }, []);
@@ -92,7 +96,7 @@ export const useIsOnline = () => {
   const context = useContext(IsOnlineProviderContext);
 
   if (context === undefined)
-    throw new Error('useIsOnline must be used within an IsOnlineProvider');
+    throw new Error("useIsOnline must be used within an IsOnlineProvider");
 
   return context;
 };

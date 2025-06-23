@@ -1,6 +1,6 @@
 import { AuthUIProvider } from "@daveyplate/better-auth-ui";
-import { authClient } from "@/lib/auth-client";
 import { Link } from "@tanstack/react-router";
+import { authClient } from "@/lib/auth-client";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (

@@ -1,10 +1,10 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { buttonVariants } from '@/components/ui/button';
-import { AlertCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { AlertCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { buttonVariants } from "@/components/ui/button";
 
-export const Route = createFileRoute('/api/auth/callback/google')({
+export const Route = createFileRoute("/api/auth/callback/google")({
   component: RouteComponent,
 });
 
@@ -12,10 +12,10 @@ function RouteComponent() {
   const [isLoading, setIsLoading] = useState(true);
   async function sendState() {
     const response = await fetch(
-      '/api/auth/callback/google' + window.location.search,
+      "/api/auth/callback/google" + window.location.search,
     );
     if (response.ok) {
-      window.location.href = '/';
+      window.location.href = "/";
     }
     setIsLoading(false);
   }
@@ -24,32 +24,32 @@ function RouteComponent() {
   }, []);
   if (isLoading) {
     return (
-      <div className='flex min-h-screen items-center justify-center p-4'>
-        <div className='w-full max-w-md'>
-          <Alert variant='default'>
-            <AlertCircle className='h-4 w-4' />
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <Alert variant="default">
+            <AlertCircle className="h-4 w-4" />
             <AlertTitle>Authenticating...</AlertTitle>
-            <AlertDescription></AlertDescription>
+            <AlertDescription />
           </Alert>
         </div>
       </div>
     );
   }
   return (
-    <div className='flex min-h-screen items-center justify-center p-4'>
-      <div className='w-full max-w-md'>
-        <Alert variant='default'>
-          <AlertCircle className='h-4 w-4' />
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <Alert variant="default">
+          <AlertCircle className="h-4 w-4" />
           <AlertTitle>Authentication Failed</AlertTitle>
           <AlertDescription>
             Failed to authenticate with Google, this account may already be
             linked to another user.
             <Link
-              to='/auth/$id'
-              params={{ id: 'sign-in' }}
+              to="/auth/$id"
+              params={{ id: "sign-in" }}
               className={buttonVariants({
-                variant: 'link',
-                className: 'pl-0',
+                variant: "link",
+                className: "pl-0",
               })}
             >
               Go to sign in

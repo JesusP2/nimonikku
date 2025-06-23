@@ -1,3 +1,4 @@
+import { createContext, type ReactNode, useContext, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -5,9 +6,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { createContext, type ReactNode, useContext, useState } from 'react';
-import { Button } from '../ui/button';
+} from "@/components/ui/dialog";
+import { Button } from "../ui/button";
 
 type ConfirmFnProps = {
   title: ReactNode;
@@ -33,8 +33,8 @@ export function ConfirmDialogProvider({
 }) {
   const [config, setConfig] = useState<ConfirmFnProps & { isOpen: boolean }>({
     isOpen: false,
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     handleConfirm: () => null,
     handleCancel: () => null,
   });
@@ -60,7 +60,7 @@ export function ConfirmDialogProvider({
         {children}
         <Dialog
           open={config.isOpen}
-          onOpenChange={open =>
+          onOpenChange={(open) =>
             !open && setConfig({ ...config, isOpen: false })
           }
         >
@@ -71,7 +71,7 @@ export function ConfirmDialogProvider({
             </DialogHeader>
             <DialogFooter>
               <Button
-                variant='outline'
+                variant="outline"
                 onClick={() => {
                   config.handleCancel?.();
                   setConfig({ ...config, isOpen: false });
@@ -80,7 +80,7 @@ export function ConfirmDialogProvider({
                 Cancel
               </Button>
               <Button
-                variant='destructive'
+                variant="destructive"
                 onClick={() => {
                   config.handleConfirm();
                   setConfig({ ...config, isOpen: false });

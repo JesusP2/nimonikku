@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export interface UseSidebarResizeProps {
   /**
@@ -6,7 +6,7 @@ export interface UseSidebarResizeProps {
    * - 'left': Handle is on left side (for right-positioned panels)
    * - 'right': Handle is on right side (for left-positioned panels)
    */
-  direction?: 'left' | 'right';
+  direction?: "left" | "right";
 
   /**
    * Current width of the panel
@@ -91,14 +91,14 @@ export interface UseSidebarResizeProps {
 
 interface WidthUnit {
   value: number;
-  unit: 'rem' | 'px';
+  unit: "rem" | "px";
 }
 
 /**
  * Parse width string into value and unit
  */
 function parseWidth(width: string): WidthUnit {
-  const unit = width.endsWith('rem') ? 'rem' : 'px';
+  const unit = width.endsWith("rem") ? "rem" : "px";
   const value = Number.parseFloat(width);
   return { value, unit };
 }
@@ -108,14 +108,14 @@ function parseWidth(width: string): WidthUnit {
  */
 function toPx(width: string): number {
   const { value, unit } = parseWidth(width);
-  return unit === 'rem' ? value * 16 : value;
+  return unit === "rem" ? value * 16 : value;
 }
 
 /**
  * Format width value with unit
  */
-function formatWidth(value: number, unit: 'rem' | 'px'): string {
-  return `${unit === 'rem' ? value.toFixed(1) : Math.round(value)}${unit}`;
+function formatWidth(value: number, unit: "rem" | "px"): string {
+  return `${unit === "rem" ? value.toFixed(1) : Math.round(value)}${unit}`;
 }
 
 /**
@@ -124,13 +124,13 @@ function formatWidth(value: number, unit: 'rem' | 'px'): string {
  * Supports VS Code-like continuous drag to collapse/expand
  */
 export function useSidebarResize({
-  direction = 'right',
+  direction = "right",
   currentWidth,
   onResize,
   onToggle,
   isCollapsed = false,
-  minResizeWidth = '14rem',
-  maxResizeWidth = '24rem',
+  minResizeWidth = "14rem",
+  maxResizeWidth = "24rem",
   enableToggle = true,
   enableAutoCollapse = true,
   autoCollapseThreshold = 1.5, // Default to collapsing at minWidth + 50%
@@ -150,7 +150,7 @@ export function useSidebarResize({
   const lastWidth = React.useRef(0);
   const lastLoggedWidth = React.useRef(0);
   const dragStartPoint = React.useRef(0);
-  const lastDragDirection = React.useRef<'expand' | 'collapse' | null>(null);
+  const lastDragDirection = React.useRef<"expand" | "collapse" | null>(null);
   const lastTogglePoint = React.useRef(0);
   const lastToggleWidth = React.useRef(0);
   const toggleCooldown = React.useRef(false);
@@ -175,7 +175,7 @@ export function useSidebarResize({
   // Helper function to determine if width is increasing based on direction and mouse movement
   const isIncreasingWidth = React.useCallback(
     (currentX: number, referenceX: number): boolean => {
-      return direction === 'left'
+      return direction === "left"
         ? currentX < referenceX // For left-positioned handle, moving left increases width
         : currentX > referenceX; // For right-positioned handle, moving right increases width
     },
@@ -194,7 +194,7 @@ export function useSidebarResize({
         // For nested sidebars, use the delta from start position for precise tracking
         const deltaX = e.clientX - initialX;
 
-        if (direction === 'left') {
+        if (direction === "left") {
           // For left-positioned handle (right panel)
           // Width increases as mouse moves left (negative deltaX)
           return initialWidth - deltaX;
@@ -204,7 +204,7 @@ export function useSidebarResize({
         return initialWidth + deltaX;
       }
       // For standard sidebars at window edges
-      if (direction === 'left') {
+      if (direction === "left") {
         // For left-positioned handle (right panel)
         return window.innerWidth - e.clientX;
       }
@@ -295,8 +295,8 @@ export function useSidebarResize({
           e.clientX,
           lastTogglePoint.current,
         )
-          ? 'expand'
-          : 'collapse';
+          ? "expand"
+          : "collapse";
 
         // Update direction tracking
         if (lastDragDirection.current !== currentDragDirection) {
@@ -347,7 +347,7 @@ export function useSidebarResize({
               }
             }
 
-            if (currentDragDirection === 'collapse' && shouldCollapse) {
+            if (currentDragDirection === "collapse" && shouldCollapse) {
               onToggle(); // Collapse
               lastTogglePoint.current = e.clientX;
               lastToggleWidth.current = 0; // Width is 0 when collapsed
@@ -361,7 +361,7 @@ export function useSidebarResize({
           if (
             onToggle &&
             isCollapsed &&
-            currentDragDirection === 'expand' &&
+            currentDragDirection === "expand" &&
             dragDistanceFromToggle.current > minWidthPx * expandThreshold
           ) {
             onToggle(); // Expand
@@ -382,7 +382,7 @@ export function useSidebarResize({
 
             // Set initial width when expanding
             const formattedWidth = formatWidth(
-              unit === 'rem' ? clampedWidth / 16 : clampedWidth,
+              unit === "rem" ? clampedWidth / 16 : clampedWidth,
               unit,
             );
             onResize(formattedWidth);
@@ -416,7 +416,7 @@ export function useSidebarResize({
         );
 
         // Convert to the target unit
-        const newWidth = unit === 'rem' ? clampedWidthPx / 16 : clampedWidthPx;
+        const newWidth = unit === "rem" ? clampedWidthPx / 16 : clampedWidthPx;
 
         // Format and update width
         const formattedWidth = formatWidth(newWidth, unit);
@@ -452,12 +452,12 @@ export function useSidebarResize({
       setIsDraggingRail(false);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [
     onResize,
