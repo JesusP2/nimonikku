@@ -1,16 +1,16 @@
 import { env } from "cloudflare:workers";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/server/db";
-import * as schema from "./db/schema/auth";
 import {
-  oneTimeToken,
+  admin,
   anonymous,
   magicLink,
   oneTap,
-  admin,
+  oneTimeToken,
 } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
+import { db } from "@/server/db";
+import * as schema from "./db/schema/auth";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {

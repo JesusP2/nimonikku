@@ -1,10 +1,14 @@
 import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
-import { LiveStoreProvider } from "./components/livestore-provider";
 import Loader from "./components/loader";
+import { LiveStoreProvider } from "./components/providers/livestore";
+import { ThemeProvider } from "./components/providers/theme";
+import { Toaster } from "./components/ui/sonner";
 import { routeTree } from "./routeTree.gen";
 import { queryClient, trpc } from "./utils/trpc";
+import { ThemeButton } from "./components/theme-button";
 
 const router = createRouter({
   routeTree,
@@ -13,11 +17,19 @@ const router = createRouter({
   context: { trpc, queryClient },
   Wrap: function WrapComponent({ children }: { children: React.ReactNode }) {
     return (
-      <LiveStoreProvider>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      </LiveStoreProvider>
+      <ThemeProvider>
+        <LiveStoreProvider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+            <Toaster richColors />
+            <ThemeButton />
+            <ReactQueryDevtools
+              position="bottom"
+              buttonPosition="bottom-right"
+            />
+          </QueryClientProvider>
+        </LiveStoreProvider>
+      </ThemeProvider>
     );
   },
 });
