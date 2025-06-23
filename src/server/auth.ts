@@ -40,5 +40,5 @@ export const auth = betterAuth({
     passkey(),
   ],
   secret: env.BETTER_AUTH_SECRET,
-  baseURL: env.BETTER_AUTH_URL,
+  baseURL: env.VITE_SERVER_URL,
 });

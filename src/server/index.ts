@@ -36,7 +36,7 @@ app.use(
 app.get("/websocket", (c) => {
   return handleWebSocket(c.req.raw, c.env, c.executionCtx, {
     validatePayload: (payload: any) => {
-      if (payload?.authToken !== "insecure-token-change-meeee") {
+      if (payload?.authToken !== "insecure-token-change-me") {
         throw new Error("Invalid auth token");
       }
     },

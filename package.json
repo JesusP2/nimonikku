@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "check-types": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "check": "biome check --write .",
     "dev": "vite",
     "start": "wrangler dev",

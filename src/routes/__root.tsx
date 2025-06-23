@@ -7,7 +7,6 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import Header from "@/components/header";
 import Loader from "@/components/loader";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -50,7 +49,6 @@ function RootComponent() {
       <HeadContent />
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Header />
           {isFetching ? <Loader /> : <Outlet />}
         </div>
         <Toaster richColors />

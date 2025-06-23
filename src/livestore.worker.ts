@@ -5,7 +5,7 @@ import { schema } from "@/server/livestore/schema";
 makeWorker({
   schema,
   sync: {
-    backend: makeCfSync({ url: "http://localhost:5173" }),
+    backend: makeCfSync({ url: import.meta.env.VITE_SERVER_URL }),
     initialSyncOptions: { _tag: "Blocking", timeout: 5000 },
   },
 });
