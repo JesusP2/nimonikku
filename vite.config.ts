@@ -9,8 +9,15 @@ import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  server: {
+    port: 5173,
+  },
   plugins: [
-    cloudflare(),
+    cloudflare({
+      persistState: {
+        path: ".wrangler/state",
+      },
+    }),
     tailwindcss(),
     tanStackRouterVite({
       autoCodeSplitting: true,

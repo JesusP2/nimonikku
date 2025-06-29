@@ -15,6 +15,7 @@ export function LiveStoreProvider({ children }: { children: React.ReactNode }) {
   return (
     <LiveStoreProviderReact
       schema={schema}
+      storeId="pikaboard2"
       adapter={adapter}
       renderLoading={(_) => <div>Loading LiveStore ({_.stage})...</div>}
       batchUpdates={batchUpdates}
