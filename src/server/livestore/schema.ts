@@ -90,6 +90,21 @@ export const events = {
       value: Schema.JsonValue,
     }),
   }),
+  boardPropertiesUpdated: Events.synced({
+    name: "v1.BoardPropertiesUpdated",
+    schema: Schema.Struct({
+      id: Schema.String,
+      name: Schema.String,
+      description: Schema.String,
+      updatedAt: Schema.Date,
+    }),
+  }),
+  boardDeleted: Events.synced({
+    name: "v1.BoardDeleted",
+    schema: Schema.Struct({
+      id: Schema.String,
+    }),
+  }),
   boardClear: Events.synced({
     name: "v1.BoardClear",
     schema: Schema.Struct({}),
@@ -112,6 +127,9 @@ const materializers = State.SQLite.materializers(events, {
     tables.board.insert({ id, name, description, createdAt, updatedAt, value }),
   "v1.BoardUpdated": ({ id, value, updatedAt }) =>
     tables.board.update({ value, updatedAt }).where({ id }),
+  "v1.BoardPropertiesUpdated": ({ id, name, description, updatedAt }) =>
+    tables.board.update({ name, description, updatedAt }).where({ id }),
+  "v1.BoardDeleted": ({ id }) => tables.board.delete().where({ id }),
   "v1.BoardClear": ({}) => tables.board.delete(),
 });
 

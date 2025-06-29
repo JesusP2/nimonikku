@@ -8,6 +8,7 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 import Loader from "./components/loader";
 import { AuthProvider } from "./components/providers/auth";
+import { IsOnlineProvider } from "./components/providers/is-online";
 import { LiveStoreProvider } from "./components/providers/livestore";
 import { ThemeProvider } from "./components/providers/theme";
 import { ThemeButton } from "./components/theme-button";
@@ -30,17 +31,18 @@ const router = createRouter({
     return (
       <ThemeProvider>
         <LiveStoreProvider>
-          <AuthProvider>
-            <QueryClientProvider client={queryClient}>
-              {children}
-              <Toaster richColors />
-              <ThemeButton />
-              <ReactQueryDevtools
-                position="bottom"
-                buttonPosition="bottom-right"
-              />
-            </QueryClientProvider>
-          </AuthProvider>
+          <IsOnlineProvider>
+            <AuthProvider>
+              <QueryClientProvider client={queryClient}>
+                {children}
+                <Toaster richColors />
+                <ReactQueryDevtools
+                  position="bottom"
+                  buttonPosition="bottom-right"
+                />
+              </QueryClientProvider>
+            </AuthProvider>
+          </IsOnlineProvider>
         </LiveStoreProvider>
       </ThemeProvider>
     );
