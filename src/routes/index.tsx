@@ -1,10 +1,21 @@
 import { queryDb } from "@livestore/livestore";
 import { useStore } from "@livestore/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Activity, Database, Edit, Plus, Shield, Trash2 } from "lucide-react";
+import {
+  Activity,
+  Database,
+  Edit,
+  Plus,
+  Trash2,
+  LogIn,
+  User,
+  LogOut,
+} from "lucide-react";
 import { useState } from "react";
 import { useIsOnline } from "@/components/providers/is-online";
-import { Button } from "@/components/ui/button";
+import { useConfirmDialog } from "@/components/providers/confirm-dialog";
+import { authClient } from "@/lib/auth-client";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +25,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -32,6 +51,12 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   const { store } = useStore();
   const { isOnline } = useIsOnline();
+  const { confirmDelete } = useConfirmDialog();
+
+  // Better Auth session management
+  const { data: session, isPending: isSessionLoading } =
+    authClient.useSession();
+
   const boards = store.useQuery(
     queryDb(
       tables.board.select(
@@ -69,8 +94,41 @@ function RouteComponent() {
     setIsCreateDialogOpen(false);
   };
 
-  const deleteBoard = (id: string) => {
-    store.commit(events.boardDeleted({ id }));
+  const handleDeleteBoard = (board: any) => {
+    confirmDelete({
+      title: "DELETE BOARD",
+      description: (
+        <div className="space-y-2">
+          <p className="text-muted-foreground">
+            Are you sure you want to delete this board? This action cannot be
+            undone.
+          </p>
+          <div className="rounded border border-destructive/20 bg-destructive/10 p-3">
+            <p className="font-mono text-sm">
+              <span className="text-muted-foreground">ID:</span>{" "}
+              {board.id.slice(0, 8)}...
+            </p>
+            <p className="font-mono text-sm">
+              <span className="text-muted-foreground">NAME:</span> {board.name}
+            </p>
+          </div>
+        </div>
+      ),
+      handleConfirm: () => {
+        store.commit(events.boardDeleted({ id: board.id }));
+      },
+    });
+  };
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          // Refresh the page or redirect as needed
+          window.location.reload();
+        },
+      },
+    });
   };
 
   const startEditing = (board: any) => {
@@ -130,6 +188,54 @@ function RouteComponent() {
               <Activity className="h-4 w-4" />
               <span className="text-sm">{isOnline ? "ONLINE" : "OFFLINE"}</span>
             </div>
+
+            {/* User Authentication Section */}
+            <div className="flex items-center gap-2">
+              {isSessionLoading ? (
+                <div className="h-8 w-20 animate-pulse rounded bg-muted" />
+              ) : session?.user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="border-primary font-mono text-primary hover:bg-primary/20"
+                      size="sm"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      {session.user.name || session.user.email}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56 border-border bg-background font-mono">
+                    <DropdownMenuLabel className="text-foreground">
+                      USER PROFILE
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-border" />
+                    <div className="px-2 py-1.5 text-muted-foreground text-sm">
+                      <p>NAME: {session.user.name || "N/A"}</p>
+                      <p>EMAIL: {session.user.email}</p>
+                      <p>ID: {session.user.id.slice(0, 8)}...</p>
+                    </div>
+                    <DropdownMenuSeparator className="bg-border" />
+                    <DropdownMenuItem
+                      onClick={handleSignOut}
+                      className="text-destructive hover:bg-destructive/20 hover:text-destructive"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      SIGN OUT
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  className={buttonVariants()}
+                  to="/auth/$id"
+                  params={{ id: "sign-in" }}
+                >
+                  <LogIn className="mr-2 h-4 w-4" />
+                  SIGN IN
+                </Link>
+              )}
+            </div>
           </div>
         </div>
 
@@ -155,9 +261,9 @@ function RouteComponent() {
           </div>
           <div className="rounded border border-border bg-secondary/10 p-4">
             <div className="font-bold text-2xl text-secondary-foreground">
-              ACTIVE
+              {session?.user ? "AUTHENTICATED" : "GUEST"}
             </div>
-            <div className="text-muted-foreground text-sm">SYSTEM STATUS</div>
+            <div className="text-muted-foreground text-sm">USER STATUS</div>
           </div>
         </div>
       </div>
@@ -358,7 +464,7 @@ function RouteComponent() {
                         <Edit className="h-3 w-3" />
                       </Button>
                       <Button
-                        onClick={() => deleteBoard(board.id)}
+                        onClick={() => handleDeleteBoard(board)}
                         size="sm"
                         variant="outline"
                         className="h-8 border-destructive px-2 text-destructive hover:bg-destructive/20"

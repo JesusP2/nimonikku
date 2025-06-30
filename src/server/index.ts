@@ -13,10 +13,10 @@ import { createContext } from "./trpc/context";
 
 export class Pikaboard extends makeDurableObject({
   onPush: async (message) => {
-    console.log("onPush", message.batch);
+    console.dir(message, { depth: null });
   },
   onPull: async (message) => {
-    console.log("onPull", message);
+    // console.log("onPull", message);
   },
 }) {}
 
@@ -36,6 +36,7 @@ app.use(
 app.get("/websocket", (c) => {
   return handleWebSocket(c.req.raw, c.env, c.executionCtx, {
     validatePayload: (payload: any) => {
+      console.log("validatePayload", payload);
       if (payload?.authToken !== "insecure-token-change-me") {
         throw new Error("Invalid auth token");
       }

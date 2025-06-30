@@ -5,6 +5,7 @@ import type React from "react";
 import { unstable_batchedUpdates as batchUpdates } from "react-dom";
 import { schema } from "@/server/livestore/schema";
 import LiveStoreWorker from "../../livestore.worker?worker";
+import { authClient } from "@/lib/auth-client";
 
 const adapter = makePersistedAdapter({
   storage: { type: "opfs" },
@@ -12,10 +13,12 @@ const adapter = makePersistedAdapter({
   sharedWorker: LiveStoreSharedWorker,
 });
 export function LiveStoreProvider({ children }: { children: React.ReactNode }) {
+  const session = authClient.useSession();
+  if (session.isPending) return;
   return (
     <LiveStoreProviderReact
       schema={schema}
-      storeId="pikaboard2"
+      storeId={session.data?.user.id}
       adapter={adapter}
       renderLoading={(_) => <div>Loading LiveStore ({_.stage})...</div>}
       batchUpdates={batchUpdates}

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/board/$boardId")({
   component: RouteComponent,
 });
 
-const interval = 100;
+const interval = 50;
 
 function RouteComponent() {
   const { store } = useStore();
