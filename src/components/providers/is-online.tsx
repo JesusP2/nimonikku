@@ -66,17 +66,11 @@ export function IsOnlineProvider({
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
     checkConnectivity();
-    // const interval = setInterval(() => {
-    //   if (navigator.onLine) {
-    //     checkConnectivity();
-    //   }
-    // }, 30000);
 
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      // clearInterval(interval);
     };
   }, []);
 

@@ -11,7 +11,7 @@ import { auth } from "./auth";
 import { appRouter } from "./routers";
 import { createContext } from "./trpc/context";
 
-export class Pikaboard extends makeDurableObject({
+export class NimonikkuDO extends makeDurableObject({
   onPush: async (message) => {
     console.dir(message, { depth: null });
   },
@@ -42,7 +42,7 @@ app.get("/websocket", (c) => {
       }
     },
     durableObject: {
-      name: "Pikaboard",
+      name: "NimonikkuDO",
     },
   });
 });

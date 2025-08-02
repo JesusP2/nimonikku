@@ -27,9 +27,9 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "pikaboard",
-        short_name: "pikaboard",
-        description: "pikaboard - PWA Application",
+        name: "nimonikku",
+        short_name: "nimonikku",
+        description: "nimonikku - PWA Application",
         theme_color: "#0c0c0c",
       },
       pwaAssets: {

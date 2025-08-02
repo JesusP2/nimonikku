@@ -1,25 +1,25 @@
 {
-  "name": "pikaboard-server",
+  "name": "nimonikku",
   "main": "src/server/index.ts",
   "compatibility_date": "2025-06-15",
   "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "pikaboard",
-      "database_id": "7afa72bc-216c-464a-9c47-6416d64df597",
+      "database_name": "nimonikku",
+      "database_id": "aedde7a3-46b6-4f74-bcc1-0847cffd9f95",
       "migrations_dir": "src/server/db/migrations"
     }
   ],
   "durable_objects": {
     "bindings": [
       {
-        "name": "Pikaboard",
-        "class_name": "Pikaboard"
+        "name": "NimonikkuDO",
+        "class_name": "NimonikkuDO"
       }
     ]
   },
-  "migrations": [{ "tag": "v1", "new_classes": ["Pikaboard"] }],
+  "migrations": [{ "tag": "v1", "new_classes": ["NimonikkuDO"] }],
   "observability": {
     "enabled": true,
     "logs": {
