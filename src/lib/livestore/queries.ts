@@ -59,3 +59,8 @@ export const cardCount$ = (deckId: string) =>
     tables.card.count().where({ deckId }),
     { label: `cardCount-${deckId}` }
   );
+
+export const allCards$ = queryDb(
+  tables.card.select().orderBy("createdAt", "desc"),
+  { label: "allCards" }
+);

@@ -7,22 +7,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
+import type { VariantProps } from "class-variance-authority";
 
 type ConfirmFnProps = {
   title: ReactNode;
   description: ReactNode;
   handleConfirm: () => void;
   handleCancel?: () => void;
+  variant?: VariantProps<typeof buttonVariants>["variant"];
 };
 
 type ConfirmDialogProviderState = {
-  confirmDelete: (config: ConfirmFnProps) => void;
+  openConfirmDialog: (config: ConfirmFnProps) => void;
 };
 
 const ConfirmDialogContext = createContext<ConfirmDialogProviderState>({
   // @ts-expect-error
-  confirmDelete: (config: ConfirmFnProps) => null,
+  openConfirmDialog: (config: ConfirmFnProps) => null,
 });
 
 export const useConfirmDialog = () => useContext(ConfirmDialogContext);
@@ -37,13 +39,15 @@ export function ConfirmDialogProvider({
     description: "",
     handleConfirm: () => null,
     handleCancel: () => null,
+    variant: "destructive",
   });
 
-  function confirmDelete({
+  function openConfirmDialog({
     title,
     description,
     handleConfirm,
     handleCancel,
+    variant,
   }: ConfirmFnProps) {
     setConfig({
       isOpen: true,
@@ -51,12 +55,13 @@ export function ConfirmDialogProvider({
       description,
       handleConfirm,
       handleCancel,
+      variant: variant || "destructive",
     });
   }
 
   return (
     <>
-      <ConfirmDialogContext.Provider value={{ confirmDelete }}>
+      <ConfirmDialogContext.Provider value={{ openConfirmDialog }}>
         {children}
         <Dialog
           open={config.isOpen}
@@ -80,7 +85,7 @@ export function ConfirmDialogProvider({
                 Cancel
               </Button>
               <Button
-                variant="destructive"
+                variant={config.variant}
                 onClick={() => {
                   config.handleConfirm();
                   setConfig({ ...config, isOpen: false });

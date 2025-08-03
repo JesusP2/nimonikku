@@ -13,7 +13,6 @@ export const tables = {
     columns: {
       id: State.SQLite.text({ primaryKey: true }),
       userId: State.SQLite.text(),
-      private: State.SQLite.integer({ nullable: true }),
       name: State.SQLite.text(),
       description: State.SQLite.text({ nullable: true }),
       createdAt: State.SQLite.datetime(),
@@ -62,7 +61,6 @@ export const events = {
     schema: Schema.Struct({
       id: Schema.String,
       userId: Schema.String,
-      private: Schema.optional(Schema.Number),
       name: Schema.String,
       description: Schema.optional(Schema.String),
       createdAt: Schema.Date,
@@ -75,7 +73,6 @@ export const events = {
       id: Schema.String,
       name: Schema.optional(Schema.String),
       description: Schema.optional(Schema.String),
-      private: Schema.optional(Schema.Number),
       updatedAt: Schema.Date,
     }),
   }),
@@ -149,13 +146,12 @@ export const events = {
 // Materializers map events to state changes
 const materializers = State.SQLite.materializers(events, {
   // Deck materializers
-  "v1.DeckCreated": ({ id, userId, private: isPrivate, name, description, createdAt, updatedAt }) =>
-    tables.deck.insert({ id, userId, private: isPrivate, name, description, createdAt, updatedAt }),
-  "v1.DeckUpdated": ({ id, name, description, private: isPrivate, updatedAt }) =>
+  "v1.DeckCreated": ({ id, userId, name, description, createdAt, updatedAt }) =>
+    tables.deck.insert({ id, userId, name, description, createdAt, updatedAt }),
+  "v1.DeckUpdated": ({ id, name, description, updatedAt }) =>
     tables.deck.update({ 
       ...(name !== undefined && { name }),
       ...(description !== undefined && { description }),
-      ...(isPrivate !== undefined && { private: isPrivate }),
       updatedAt 
     }).where({ id }),
   "v1.DeckDeleted": ({ id }) => tables.deck.delete().where({ id }),
