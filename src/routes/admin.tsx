@@ -17,6 +17,7 @@ import { Trash2, Edit3, Plus } from "lucide-react";
 import { useQuery, useStore } from "@livestore/react";
 import { events } from "@/server/livestore/schema";
 import { allDecks$, allCards$ } from "@/lib/livestore/queries";
+import { DeckActionsMenu } from "@/components/deck-actions-menu";
 
 export const Route = createFileRoute("/admin")({
 	component: AdminPage,
@@ -188,24 +189,11 @@ function AdminPage() {
 											<CardTitle>{deck.name}</CardTitle>
 											<CardDescription>{deck.description}</CardDescription>
 										</div>
-										<div className="flex gap-2">
+										<div className="flex items-center gap-2">
 											{deck.private && (
 												<Badge variant="secondary">Private</Badge>
 											)}
-											<Button
-												variant="outline"
-												size="sm"
-												onClick={() => setEditingDeck(deck)}
-											>
-												<Edit3 className="w-4 h-4" />
-											</Button>
-											<Button
-												variant="destructive"
-												size="sm"
-												onClick={() => deleteDeck(deck.id)}
-											>
-												<Trash2 className="w-4 h-4" />
-											</Button>
+											<DeckActionsMenu deck={deck} />
 										</div>
 									</div>
 								</CardHeader>

@@ -6,12 +6,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { DeckForm, type DeckFormData } from "@/components/deck-form";
 import { events } from "@/server/livestore/schema";
-import { Edit3 } from "lucide-react";
 
 interface Deck {
   id: string;
@@ -24,12 +21,12 @@ interface Deck {
 
 interface EditDeckDialogProps {
   deck: Deck;
-  trigger?: React.ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function EditDeckDialog({ deck, trigger }: EditDeckDialogProps) {
+export function EditDeckDialog({ deck, open, onOpenChange }: EditDeckDialogProps) {
   const { store } = useStore();
-  const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (data: DeckFormData) => {
@@ -44,7 +41,8 @@ export function EditDeckDialog({ deck, trigger }: EditDeckDialogProps) {
         })
       );
 
-      setOpen(false);
+
+      onOpenChange(false);
     } catch (error) {
       console.error("Failed to update deck:", error);
       throw error;
@@ -54,19 +52,11 @@ export function EditDeckDialog({ deck, trigger }: EditDeckDialogProps) {
   };
 
   const handleCancel = () => {
-    setOpen(false);
+    onOpenChange(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || (
-          <Button variant="outline" size="sm">
-            <Edit3 className="w-4 h-4 mr-2" />
-            Edit
-          </Button>
-        )}
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Deck</DialogTitle>

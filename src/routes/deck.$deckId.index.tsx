@@ -1,0 +1,125 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@livestore/react";
+import { deckById$, cardsByDeck$ } from "@/lib/livestore/queries";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { CardsList } from "@/components/cards-list";
+import { ArrowLeft, Plus } from "lucide-react";
+
+export const Route = createFileRoute("/deck/$deckId/")({
+  component: DeckInfoPage,
+});
+
+function DeckInfoPage() {
+  const { deckId } = Route.useParams();
+  const navigate = useNavigate();
+  
+  const deck = useQuery(deckById$(deckId))?.[0];
+  const cards = useQuery(cardsByDeck$(deckId)) || [];
+
+  if (!deck) {
+    return (
+      <div className="container mx-auto py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-muted-foreground">Deck not found</h1>
+          <Button 
+            onClick={() => navigate({ to: "/" })} 
+            className="mt-4"
+            variant="outline"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Home
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const handleAddCard = () => {
+    navigate({ to: `/deck/${deckId}/card/new` });
+  };
+
+  return (
+    <div className="container mx-auto py-8 space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <Button 
+          onClick={() => navigate({ to: "/" })} 
+          variant="outline" 
+          size="sm"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Button>
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold">{deck.name}</h1>
+          {deck.description && (
+            <p className="text-muted-foreground mt-1">{deck.description}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Deck Info Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            Deck Information
+            <div className="flex gap-2">
+              <Badge variant="secondary">
+                {cards.length} {cards.length === 1 ? "card" : "cards"}
+              </Badge>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <dt className="font-medium text-sm text-muted-foreground">Name</dt>
+              <dd className="text-sm">{deck.name}</dd>
+            </div>
+            <div>
+              <dt className="font-medium text-sm text-muted-foreground">Created</dt>
+              <dd className="text-sm">{new Date(deck.createdAt).toLocaleDateString()}</dd>
+            </div>
+            <div>
+              <dt className="font-medium text-sm text-muted-foreground">Last Updated</dt>
+              <dd className="text-sm">{new Date(deck.updatedAt).toLocaleDateString()}</dd>
+            </div>
+            <div>
+              <dt className="font-medium text-sm text-muted-foreground">Total Cards</dt>
+              <dd className="text-sm">{cards.length}</dd>
+            </div>
+            {deck.description && (
+              <div className="md:col-span-2">
+                <dt className="font-medium text-sm text-muted-foreground">Description</dt>
+                <dd className="text-sm mt-1">{deck.description}</dd>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Cards Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Cards</CardTitle>
+              <CardDescription>
+                All cards in this deck
+              </CardDescription>
+            </div>
+            <Button onClick={handleAddCard}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Card
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <CardsList cards={cards} deckId={deckId} />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

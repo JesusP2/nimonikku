@@ -12,7 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIdRouteImport } from './routes/auth.$id'
+import { Route as DeckDeckIdIndexRouteImport } from './routes/deck.$deckId.index'
+import { Route as DeckDeckIdCardNewRouteImport } from './routes/deck.$deckId.card.new'
+import { Route as DeckDeckIdCardCardIdRouteImport } from './routes/deck.$deckId.card.$cardId'
 import { Route as ApiAuthCallbackGoogleRouteImport } from './routes/api.auth.callback.google'
+import { Route as DeckDeckIdCardCardIdEditRouteImport } from './routes/deck.$deckId.card.$cardId.edit'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
@@ -29,44 +33,105 @@ const AuthIdRoute = AuthIdRouteImport.update({
   path: '/auth/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeckDeckIdIndexRoute = DeckDeckIdIndexRouteImport.update({
+  id: '/deck/$deckId/',
+  path: '/deck/$deckId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeckDeckIdCardNewRoute = DeckDeckIdCardNewRouteImport.update({
+  id: '/deck/$deckId/card/new',
+  path: '/deck/$deckId/card/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeckDeckIdCardCardIdRoute = DeckDeckIdCardCardIdRouteImport.update({
+  id: '/deck/$deckId/card/$cardId',
+  path: '/deck/$deckId/card/$cardId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthCallbackGoogleRoute = ApiAuthCallbackGoogleRouteImport.update({
   id: '/api/auth/callback/google',
   path: '/api/auth/callback/google',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeckDeckIdCardCardIdEditRoute =
+  DeckDeckIdCardCardIdEditRouteImport.update({
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => DeckDeckIdCardCardIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth/$id': typeof AuthIdRoute
+  '/deck/$deckId': typeof DeckDeckIdIndexRoute
   '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
+  '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdRouteWithChildren
+  '/deck/$deckId/card/new': typeof DeckDeckIdCardNewRoute
+  '/deck/$deckId/card/$cardId/edit': typeof DeckDeckIdCardCardIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth/$id': typeof AuthIdRoute
+  '/deck/$deckId': typeof DeckDeckIdIndexRoute
   '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
+  '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdRouteWithChildren
+  '/deck/$deckId/card/new': typeof DeckDeckIdCardNewRoute
+  '/deck/$deckId/card/$cardId/edit': typeof DeckDeckIdCardCardIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth/$id': typeof AuthIdRoute
+  '/deck/$deckId/': typeof DeckDeckIdIndexRoute
   '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
+  '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdRouteWithChildren
+  '/deck/$deckId/card/new': typeof DeckDeckIdCardNewRoute
+  '/deck/$deckId/card/$cardId/edit': typeof DeckDeckIdCardCardIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/auth/$id' | '/api/auth/callback/google'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/auth/$id'
+    | '/deck/$deckId'
+    | '/api/auth/callback/google'
+    | '/deck/$deckId/card/$cardId'
+    | '/deck/$deckId/card/new'
+    | '/deck/$deckId/card/$cardId/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth/$id' | '/api/auth/callback/google'
-  id: '__root__' | '/' | '/admin' | '/auth/$id' | '/api/auth/callback/google'
+  to:
+    | '/'
+    | '/admin'
+    | '/auth/$id'
+    | '/deck/$deckId'
+    | '/api/auth/callback/google'
+    | '/deck/$deckId/card/$cardId'
+    | '/deck/$deckId/card/new'
+    | '/deck/$deckId/card/$cardId/edit'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/auth/$id'
+    | '/deck/$deckId/'
+    | '/api/auth/callback/google'
+    | '/deck/$deckId/card/$cardId'
+    | '/deck/$deckId/card/new'
+    | '/deck/$deckId/card/$cardId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AuthIdRoute: typeof AuthIdRoute
+  DeckDeckIdIndexRoute: typeof DeckDeckIdIndexRoute
   ApiAuthCallbackGoogleRoute: typeof ApiAuthCallbackGoogleRoute
+  DeckDeckIdCardCardIdRoute: typeof DeckDeckIdCardCardIdRouteWithChildren
+  DeckDeckIdCardNewRoute: typeof DeckDeckIdCardNewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +157,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/deck/$deckId/': {
+      id: '/deck/$deckId/'
+      path: '/deck/$deckId'
+      fullPath: '/deck/$deckId'
+      preLoaderRoute: typeof DeckDeckIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deck/$deckId/card/new': {
+      id: '/deck/$deckId/card/new'
+      path: '/deck/$deckId/card/new'
+      fullPath: '/deck/$deckId/card/new'
+      preLoaderRoute: typeof DeckDeckIdCardNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deck/$deckId/card/$cardId': {
+      id: '/deck/$deckId/card/$cardId'
+      path: '/deck/$deckId/card/$cardId'
+      fullPath: '/deck/$deckId/card/$cardId'
+      preLoaderRoute: typeof DeckDeckIdCardCardIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/callback/google': {
       id: '/api/auth/callback/google'
       path: '/api/auth/callback/google'
@@ -99,14 +185,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthCallbackGoogleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/deck/$deckId/card/$cardId/edit': {
+      id: '/deck/$deckId/card/$cardId/edit'
+      path: '/edit'
+      fullPath: '/deck/$deckId/card/$cardId/edit'
+      preLoaderRoute: typeof DeckDeckIdCardCardIdEditRouteImport
+      parentRoute: typeof DeckDeckIdCardCardIdRoute
+    }
   }
 }
+
+interface DeckDeckIdCardCardIdRouteChildren {
+  DeckDeckIdCardCardIdEditRoute: typeof DeckDeckIdCardCardIdEditRoute
+}
+
+const DeckDeckIdCardCardIdRouteChildren: DeckDeckIdCardCardIdRouteChildren = {
+  DeckDeckIdCardCardIdEditRoute: DeckDeckIdCardCardIdEditRoute,
+}
+
+const DeckDeckIdCardCardIdRouteWithChildren =
+  DeckDeckIdCardCardIdRoute._addFileChildren(DeckDeckIdCardCardIdRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AuthIdRoute: AuthIdRoute,
+  DeckDeckIdIndexRoute: DeckDeckIdIndexRoute,
   ApiAuthCallbackGoogleRoute: ApiAuthCallbackGoogleRoute,
+  DeckDeckIdCardCardIdRoute: DeckDeckIdCardCardIdRouteWithChildren,
+  DeckDeckIdCardNewRoute: DeckDeckIdCardNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
