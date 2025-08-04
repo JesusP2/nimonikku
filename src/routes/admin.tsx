@@ -18,6 +18,7 @@ import { useQuery, useStore } from "@livestore/react";
 import { events } from "@/server/livestore/schema";
 import { allDecks$, allCards$ } from "@/lib/livestore/queries";
 import { DeckActionsMenu } from "@/components/deck-actions-menu";
+import { createNewCard, fromFSRSCard } from "@/lib/fsrs";
 
 export const Route = createFileRoute("/admin")({
 	component: AdminPage,
@@ -99,28 +100,23 @@ function AdminPage() {
 	};
 
 	const createCard = (
-		cardData: Omit<CardType, "id" | "createdAt" | "updatedAt">,
+		cardData: Pick<CardType, "deckId" | "frontMarkdown" | "backMarkdown" | "frontFiles" | "backFiles">,
 	) => {
 		const now = new Date();
 		const id = crypto.randomUUID();
+
+		// Create a new card using FSRS
+		const newFSRSCard = createNewCard();
+		const fsrsData = fromFSRSCard(newFSRSCard);
 
 		store.commit(events.cardCreated({
 			id,
 			deckId: cardData.deckId,
 			frontMarkdown: cardData.frontMarkdown,
 			backMarkdown: cardData.backMarkdown,
-			frontFiles: cardData.frontFiles,
-			backFiles: cardData.backFiles,
-			due: cardData.due,
-			stability: cardData.stability,
-			difficulty: cardData.difficulty,
-			rating: cardData.rating,
-			elapsed_days: cardData.elapsed_days,
-			scheduled_days: cardData.scheduled_days,
-			reps: cardData.reps,
-			lapses: cardData.lapses,
-			state: cardData.state,
-			last_review: cardData.last_review,
+			frontFiles: cardData.frontFiles || "",
+			backFiles: cardData.backFiles || "",
+			...fsrsData,
 			createdAt: now,
 			updatedAt: now,
 		}));
@@ -384,7 +380,7 @@ function CardForm({
 }: {
 	card?: CardType;
 	decks: readonly any[];
-	onSubmit: (data: Omit<CardType, "id" | "createdAt" | "updatedAt">) => void;
+	onSubmit: (data: Pick<CardType, "deckId" | "frontMarkdown" | "backMarkdown" | "frontFiles" | "backFiles">) => void;
 	onCancel: () => void;
 }) {
 	const [formData, setFormData] = useState({
@@ -393,16 +389,6 @@ function CardForm({
 		backMarkdown: card?.backMarkdown || "",
 		frontFiles: card?.frontFiles || "",
 		backFiles: card?.backFiles || "",
-		due: card?.due || new Date(),
-		stability: card?.stability || 1,
-		difficulty: card?.difficulty || 1,
-		rating: card?.rating || 0,
-		elapsed_days: card?.elapsed_days || 0,
-		scheduled_days: card?.scheduled_days || 1,
-		reps: card?.reps || 0,
-		lapses: card?.lapses || 0,
-		state: card?.state || 0,
-		last_review: card?.last_review,
 	});
 
 	const handleSubmit = (e: React.FormEvent) => {
@@ -462,36 +448,6 @@ function CardForm({
 							}
 							required
 						/>
-					</div>
-					<div className="grid grid-cols-2 gap-4">
-						<div>
-							<Label htmlFor="difficulty">Difficulty</Label>
-							<Input
-								id="difficulty"
-								type="number"
-								value={formData.difficulty}
-								onChange={(e) =>
-									setFormData((prev) => ({
-										...prev,
-										difficulty: Number(e.target.value),
-									}))
-								}
-							/>
-						</div>
-						<div>
-							<Label htmlFor="stability">Stability</Label>
-							<Input
-								id="stability"
-								type="number"
-								value={formData.stability}
-								onChange={(e) =>
-									setFormData((prev) => ({
-										...prev,
-										stability: Number(e.target.value),
-									}))
-								}
-							/>
-						</div>
 					</div>
 					<div className="flex gap-2">
 						<Button type="submit">{card ? "Update" : "Create"}</Button>

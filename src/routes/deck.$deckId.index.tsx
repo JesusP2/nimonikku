@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CardsList } from "@/components/cards-list";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Plus, Play } from "lucide-react";
 
 export const Route = createFileRoute("/deck/$deckId/")({
   component: DeckInfoPage,
@@ -40,6 +40,17 @@ function DeckInfoPage() {
     navigate({ to: `/deck/${deckId}/card/new` });
   };
 
+  const handleStartReview = () => {
+    navigate({ to: `/deck/${deckId}/review` });
+  };
+
+  // Calculate due cards
+  const now = new Date();
+  const dueCards = cards.filter(card => new Date(card.due) <= now);
+  const newCards = cards.filter(card => card.reps === 0);
+  const learningCards = cards.filter(card => card.reps > 0 && card.stability < 21);
+  const matureCards = cards.filter(card => card.stability >= 21);
+
   return (
     <div className="container mx-auto py-8 space-y-6">
       {/* Header */}
@@ -69,33 +80,74 @@ function DeckInfoPage() {
               <Badge variant="secondary">
                 {cards.length} {cards.length === 1 ? "card" : "cards"}
               </Badge>
+              {dueCards.length > 0 && (
+                <Badge variant="destructive">
+                  {dueCards.length} due
+                </Badge>
+              )}
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-4">
             <div>
-              <dt className="font-medium text-sm text-muted-foreground">Name</dt>
-              <dd className="text-sm">{deck.name}</dd>
+              <dt className="font-medium text-sm text-muted-foreground">New Cards</dt>
+              <dd className="text-2xl font-bold text-blue-600">{newCards.length}</dd>
             </div>
             <div>
-              <dt className="font-medium text-sm text-muted-foreground">Created</dt>
-              <dd className="text-sm">{new Date(deck.createdAt).toLocaleDateString()}</dd>
+              <dt className="font-medium text-sm text-muted-foreground">Learning</dt>
+              <dd className="text-2xl font-bold text-orange-600">{learningCards.length}</dd>
             </div>
             <div>
-              <dt className="font-medium text-sm text-muted-foreground">Last Updated</dt>
-              <dd className="text-sm">{new Date(deck.updatedAt).toLocaleDateString()}</dd>
+              <dt className="font-medium text-sm text-muted-foreground">Due Now</dt>
+              <dd className="text-2xl font-bold text-red-600">{dueCards.length}</dd>
             </div>
             <div>
-              <dt className="font-medium text-sm text-muted-foreground">Total Cards</dt>
-              <dd className="text-sm">{cards.length}</dd>
+              <dt className="font-medium text-sm text-muted-foreground">Mature</dt>
+              <dd className="text-2xl font-bold text-green-600">{matureCards.length}</dd>
             </div>
-            {deck.description && (
-              <div className="md:col-span-2">
-                <dt className="font-medium text-sm text-muted-foreground">Description</dt>
-                <dd className="text-sm mt-1">{deck.description}</dd>
+          </div>
+          
+          <div className="mt-6 pt-4 border-t">
+            <div className="grid gap-4 md:grid-cols-3">
+              <div>
+                <dt className="font-medium text-sm text-muted-foreground">Created</dt>
+                <dd className="text-sm">{new Date(deck.createdAt).toLocaleDateString()}</dd>
               </div>
-            )}
+              <div>
+                <dt className="font-medium text-sm text-muted-foreground">Last Updated</dt>
+                <dd className="text-sm">{new Date(deck.updatedAt).toLocaleDateString()}</dd>
+              </div>
+              <div>
+                <dt className="font-medium text-sm text-muted-foreground">Total Cards</dt>
+                <dd className="text-sm">{cards.length}</dd>
+              </div>
+            </div>
+          </div>
+          
+          {deck.description && (
+            <div className="mt-4 pt-4 border-t">
+              <dt className="font-medium text-sm text-muted-foreground">Description</dt>
+              <dd className="text-sm mt-1">{deck.description}</dd>
+            </div>
+          )}
+          
+          {/* Review Button */}
+          <div className="mt-6 pt-4 border-t">
+            <div className="flex gap-3">
+              <Button 
+                onClick={handleStartReview}
+                disabled={dueCards.length === 0}
+                className="flex-1"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                {dueCards.length > 0 ? `Review ${dueCards.length} Cards` : "No Cards Due"}
+              </Button>
+              <Button variant="outline" onClick={handleAddCard}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Card
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -103,18 +155,10 @@ function DeckInfoPage() {
       {/* Cards Section */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Cards</CardTitle>
-              <CardDescription>
-                All cards in this deck
-              </CardDescription>
-            </div>
-            <Button onClick={handleAddCard}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Card
-            </Button>
-          </div>
+          <CardTitle>Cards</CardTitle>
+          <CardDescription>
+            All cards in this deck
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <CardsList cards={cards} deckId={deckId} />

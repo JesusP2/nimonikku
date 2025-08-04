@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { MarkdownEditor } from "@/components/markdown-editor";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
+import { createNewCard, fromFSRSCard } from "@/lib/fsrs";
 import { ArrowLeft, RotateCcw, Save } from "lucide-react";
 
 interface CardData {
@@ -66,23 +67,19 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
         const now = new Date();
         const id = crypto.randomUUID();
         
+        // Create a new card using FSRS
+        const newFSRSCard = createNewCard();
+        const fsrsData = fromFSRSCard(newFSRSCard);
+        
         store.commit(events.cardCreated({
           id,
           deckId,
           frontMarkdown: frontMarkdown.trim(),
           backMarkdown: backMarkdown.trim(),
+          rating: 0,
           frontFiles: "",
           backFiles: "",
-          due: now, // New cards are immediately due
-          stability: 1,
-          difficulty: 1,
-          rating: 0,
-          elapsed_days: 0,
-          scheduled_days: 0,
-          reps: 0,
-          lapses: 0,
-          state: 0, // New state
-          last_review: undefined,
+          ...fsrsData,
           createdAt: now,
           updatedAt: now,
         }));

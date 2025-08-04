@@ -13,6 +13,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIdRouteImport } from './routes/auth.$id'
 import { Route as DeckDeckIdIndexRouteImport } from './routes/deck.$deckId.index'
+import { Route as DeckDeckIdReviewRouteImport } from './routes/deck.$deckId.review'
 import { Route as DeckDeckIdCardNewRouteImport } from './routes/deck.$deckId.card.new'
 import { Route as DeckDeckIdCardCardIdRouteImport } from './routes/deck.$deckId.card.$cardId'
 import { Route as ApiAuthCallbackGoogleRouteImport } from './routes/api.auth.callback.google'
@@ -36,6 +37,11 @@ const AuthIdRoute = AuthIdRouteImport.update({
 const DeckDeckIdIndexRoute = DeckDeckIdIndexRouteImport.update({
   id: '/deck/$deckId/',
   path: '/deck/$deckId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeckDeckIdReviewRoute = DeckDeckIdReviewRouteImport.update({
+  id: '/deck/$deckId/review',
+  path: '/deck/$deckId/review',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeckDeckIdCardNewRoute = DeckDeckIdCardNewRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth/$id': typeof AuthIdRoute
+  '/deck/$deckId/review': typeof DeckDeckIdReviewRoute
   '/deck/$deckId': typeof DeckDeckIdIndexRoute
   '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
   '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdRouteWithChildren
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth/$id': typeof AuthIdRoute
+  '/deck/$deckId/review': typeof DeckDeckIdReviewRoute
   '/deck/$deckId': typeof DeckDeckIdIndexRoute
   '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
   '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdRouteWithChildren
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth/$id': typeof AuthIdRoute
+  '/deck/$deckId/review': typeof DeckDeckIdReviewRoute
   '/deck/$deckId/': typeof DeckDeckIdIndexRoute
   '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
   '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdRouteWithChildren
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth/$id'
+    | '/deck/$deckId/review'
     | '/deck/$deckId'
     | '/api/auth/callback/google'
     | '/deck/$deckId/card/$cardId'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth/$id'
+    | '/deck/$deckId/review'
     | '/deck/$deckId'
     | '/api/auth/callback/google'
     | '/deck/$deckId/card/$cardId'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth/$id'
+    | '/deck/$deckId/review'
     | '/deck/$deckId/'
     | '/api/auth/callback/google'
     | '/deck/$deckId/card/$cardId'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AuthIdRoute: typeof AuthIdRoute
+  DeckDeckIdReviewRoute: typeof DeckDeckIdReviewRoute
   DeckDeckIdIndexRoute: typeof DeckDeckIdIndexRoute
   ApiAuthCallbackGoogleRoute: typeof ApiAuthCallbackGoogleRoute
   DeckDeckIdCardCardIdRoute: typeof DeckDeckIdCardCardIdRouteWithChildren
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/deck/$deckId'
       fullPath: '/deck/$deckId'
       preLoaderRoute: typeof DeckDeckIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deck/$deckId/review': {
+      id: '/deck/$deckId/review'
+      path: '/deck/$deckId/review'
+      fullPath: '/deck/$deckId/review'
+      preLoaderRoute: typeof DeckDeckIdReviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/deck/$deckId/card/new': {
@@ -210,6 +230,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AuthIdRoute: AuthIdRoute,
+  DeckDeckIdReviewRoute: DeckDeckIdReviewRoute,
   DeckDeckIdIndexRoute: DeckDeckIdIndexRoute,
   ApiAuthCallbackGoogleRoute: ApiAuthCallbackGoogleRoute,
   DeckDeckIdCardCardIdRoute: DeckDeckIdCardCardIdRouteWithChildren,

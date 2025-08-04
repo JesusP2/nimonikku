@@ -70,8 +70,6 @@ export function CardsList({ cards, deckId }: CardsListProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Front</TableHead>
-            <TableHead>Back</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Reviews</TableHead>
             <TableHead>Due Date</TableHead>
@@ -87,12 +85,6 @@ export function CardsList({ cards, deckId }: CardsListProps) {
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => handleCardClick(card.id)}
               >
-                <TableCell className="font-medium">
-                  {truncateText(card.frontMarkdown)}
-                </TableCell>
-                <TableCell>
-                  {truncateText(card.backMarkdown)}
-                </TableCell>
                 <TableCell>
                   <Badge variant={status.variant}>{status.label}</Badge>
                 </TableCell>
