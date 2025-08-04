@@ -1,14 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@livestore/react";
 import { cardById$, deckById$ } from "@/lib/livestore/queries";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Calendar, RotateCcw, Edit3 } from "lucide-react";
+import { ArrowLeft, Calendar, Edit3 } from "lucide-react";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 
-export const Route = createFileRoute("/deck/$deckId/card/$cardId")({
+export const Route = createFileRoute("/deck/$deckId/card/$cardId/")({
   component: CardViewPage,
 });
 
@@ -73,7 +73,6 @@ function CardViewPage() {
         </Button>
       </div>
 
-      {/* Card Statistics */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -126,9 +125,7 @@ function CardViewPage() {
         </CardContent>
       </Card>
 
-      {/* Card Content */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Front Side */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Front Side</CardTitle>
@@ -142,8 +139,6 @@ function CardViewPage() {
             )}
           </CardContent>
         </Card>
-
-        {/* Back Side */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Back Side</CardTitle>

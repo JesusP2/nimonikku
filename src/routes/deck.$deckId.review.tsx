@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@livestore/react";
 import { deckById$, cardsByDeck$ } from "@/lib/livestore/queries";
 import { CardReview } from "@/components/card-review";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -67,7 +67,6 @@ function ReviewPage() {
   if (dueCards.length === 0) {
     return (
       <div className="container mx-auto py-8 space-y-6">
-        {/* Header */}
         <div className="flex items-center gap-4">
           <Button 
             onClick={() => navigate({ to: `/deck/${deckId}` })} 
@@ -82,8 +81,6 @@ function ReviewPage() {
             <p className="text-muted-foreground">Review Session</p>
           </div>
         </div>
-
-        {/* No Cards Due */}
         <Card className="text-center py-12">
           <CardContent>
             <div className="space-y-4">
@@ -119,7 +116,6 @@ function ReviewPage() {
 
   return (
     <div className="container mx-auto py-8 space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <Button 
           onClick={() => navigate({ to: `/deck/${deckId}` })} 
@@ -134,8 +130,6 @@ function ReviewPage() {
           <p className="text-muted-foreground">Review Session</p>
         </div>
       </div>
-
-      {/* Progress */}
       <Card>
         <CardContent className="pt-6">
           <div className="space-y-4">
@@ -154,8 +148,6 @@ function ReviewPage() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Card Review */}
       {currentCard && (
         <CardReview
           card={currentCard}

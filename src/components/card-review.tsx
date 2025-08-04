@@ -7,7 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { scheduleCard, toFSRSCard, fromFSRSCard } from "@/lib/fsrs";
 import { events } from "@/server/livestore/schema";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye } from "lucide-react";
+import { ratings } from "@/lib/constants";
 
 interface CardData {
   id: string;
@@ -36,14 +37,6 @@ interface CardReviewProps {
   onComplete: () => void;
 }
 
-// FSRS rating mappings
-const RATINGS = {
-  AGAIN: 1,    // Red - Complete failure (forgot completely)
-  HARD: 2,     // Orange - Partial failure (struggled to remember)
-  GOOD: 3,     // Green - Success (remembered with some effort)
-  EASY: 4,     // Blue - Perfect success (remembered easily)
-} as const;
-
 export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
   const { store } = useStore();
   const [showBack, setShowBack] = useState(false);
@@ -54,16 +47,13 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
     
     setIsSubmitting(true);
     try {
-      // Convert our card to FSRS format
       const fsrsCard = toFSRSCard(card);
-      
-      // Schedule the card using FSRS
       const reviewResult = scheduleCard(fsrsCard, rating, new Date());
       const updatedFSRSData = fromFSRSCard(reviewResult.card);
 
-      // Commit the review to the store
       store.commit(events.cardReviewed({
         id: card.id,
+        rating,
         ...updatedFSRSData,
         updatedAt: new Date(),
       }));
@@ -119,7 +109,6 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
       <Card className="min-h-[400px]">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            {showBack ? "Back Side" : "Front Side"}
             {!showBack && (
               <Button 
                 onClick={() => setShowBack(true)} 
@@ -155,7 +144,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
       {showBack && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Button
-            onClick={() => handleRating(RATINGS.AGAIN)}
+            onClick={() => handleRating(ratings.AGAIN)}
             disabled={isSubmitting}
             variant="destructive"
             className="h-16 flex-col"
@@ -165,7 +154,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
           </Button>
           
           <Button
-            onClick={() => handleRating(RATINGS.HARD)}
+            onClick={() => handleRating(ratings.HARD)}
             disabled={isSubmitting}
             variant="secondary"
             className="h-16 flex-col border-orange-300 text-orange-700 hover:bg-orange-50"
@@ -175,7 +164,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
           </Button>
           
           <Button
-            onClick={() => handleRating(RATINGS.GOOD)}
+            onClick={() => handleRating(ratings.GOOD)}
             disabled={isSubmitting}
             variant="default"
             className="h-16 flex-col bg-green-600 hover:bg-green-700"
@@ -185,7 +174,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
           </Button>
           
           <Button
-            onClick={() => handleRating(RATINGS.EASY)}
+            onClick={() => handleRating(ratings.EASY)}
             disabled={isSubmitting}
             variant="outline"
             className="h-16 flex-col border-blue-300 text-blue-700 hover:bg-blue-50"

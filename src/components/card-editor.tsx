@@ -3,11 +3,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { useStore, useQuery } from "@livestore/react";
 import { deckById$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { MarkdownEditor } from "@/components/markdown-editor";
-import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { createNewCard, fromFSRSCard } from "@/lib/fsrs";
 import { ArrowLeft, RotateCcw, Save } from "lucide-react";
 
@@ -113,7 +110,6 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
 
   return (
     <div className="container mx-auto py-8 space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <Button onClick={handleCancel} variant="outline" size="sm">
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -127,7 +123,6 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
         </div>
       </div>
 
-      {/* Action Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleClearCard} variant="outline">
           <RotateCcw className="w-4 h-4 mr-2" />
@@ -139,45 +134,12 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
           {isSubmitting ? "Saving..." : mode === "create" ? "Create Card" : "Update Card"}
         </Button>
       </div>
-
-      {/* Markdown Editor */}
       <MarkdownEditor
         frontMarkdown={frontMarkdown}
         backMarkdown={backMarkdown}
         onFrontChange={setFrontMarkdown}
         onBackChange={setBackMarkdown}
       />
-
-      {/* Both Sides Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Card Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-medium mb-2">Front Side</h4>
-              <div className="p-3 border rounded-md bg-muted/20 min-h-[100px]">
-                {frontMarkdown.trim() ? (
-                  <MarkdownRenderer content={frontMarkdown} />
-                ) : (
-                  <p className="text-muted-foreground italic text-sm">No content</p>
-                )}
-              </div>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">Back Side</h4>
-              <div className="p-3 border rounded-md bg-muted/20 min-h-[100px]">
-                {backMarkdown.trim() ? (
-                  <MarkdownRenderer content={backMarkdown} />
-                ) : (
-                  <p className="text-muted-foreground italic text-sm">No content</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

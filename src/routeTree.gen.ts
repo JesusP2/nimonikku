@@ -9,21 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIdRouteImport } from './routes/auth.$id'
 import { Route as DeckDeckIdIndexRouteImport } from './routes/deck.$deckId.index'
 import { Route as DeckDeckIdReviewRouteImport } from './routes/deck.$deckId.review'
 import { Route as DeckDeckIdCardNewRouteImport } from './routes/deck.$deckId.card.new'
-import { Route as DeckDeckIdCardCardIdRouteImport } from './routes/deck.$deckId.card.$cardId'
 import { Route as ApiAuthCallbackGoogleRouteImport } from './routes/api.auth.callback.google'
+import { Route as DeckDeckIdCardCardIdIndexRouteImport } from './routes/deck.$deckId.card.$cardId.index'
 import { Route as DeckDeckIdCardCardIdEditRouteImport } from './routes/deck.$deckId.card.$cardId.edit'
 
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -49,113 +43,101 @@ const DeckDeckIdCardNewRoute = DeckDeckIdCardNewRouteImport.update({
   path: '/deck/$deckId/card/new',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DeckDeckIdCardCardIdRoute = DeckDeckIdCardCardIdRouteImport.update({
-  id: '/deck/$deckId/card/$cardId',
-  path: '/deck/$deckId/card/$cardId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiAuthCallbackGoogleRoute = ApiAuthCallbackGoogleRouteImport.update({
   id: '/api/auth/callback/google',
   path: '/api/auth/callback/google',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeckDeckIdCardCardIdIndexRoute =
+  DeckDeckIdCardCardIdIndexRouteImport.update({
+    id: '/deck/$deckId/card/$cardId/',
+    path: '/deck/$deckId/card/$cardId/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DeckDeckIdCardCardIdEditRoute =
   DeckDeckIdCardCardIdEditRouteImport.update({
-    id: '/edit',
-    path: '/edit',
-    getParentRoute: () => DeckDeckIdCardCardIdRoute,
+    id: '/deck/$deckId/card/$cardId/edit',
+    path: '/deck/$deckId/card/$cardId/edit',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/auth/$id': typeof AuthIdRoute
   '/deck/$deckId/review': typeof DeckDeckIdReviewRoute
   '/deck/$deckId': typeof DeckDeckIdIndexRoute
   '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
-  '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdRouteWithChildren
   '/deck/$deckId/card/new': typeof DeckDeckIdCardNewRoute
   '/deck/$deckId/card/$cardId/edit': typeof DeckDeckIdCardCardIdEditRoute
+  '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/auth/$id': typeof AuthIdRoute
   '/deck/$deckId/review': typeof DeckDeckIdReviewRoute
   '/deck/$deckId': typeof DeckDeckIdIndexRoute
   '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
-  '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdRouteWithChildren
   '/deck/$deckId/card/new': typeof DeckDeckIdCardNewRoute
   '/deck/$deckId/card/$cardId/edit': typeof DeckDeckIdCardCardIdEditRoute
+  '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/auth/$id': typeof AuthIdRoute
   '/deck/$deckId/review': typeof DeckDeckIdReviewRoute
   '/deck/$deckId/': typeof DeckDeckIdIndexRoute
   '/api/auth/callback/google': typeof ApiAuthCallbackGoogleRoute
-  '/deck/$deckId/card/$cardId': typeof DeckDeckIdCardCardIdRouteWithChildren
   '/deck/$deckId/card/new': typeof DeckDeckIdCardNewRoute
   '/deck/$deckId/card/$cardId/edit': typeof DeckDeckIdCardCardIdEditRoute
+  '/deck/$deckId/card/$cardId/': typeof DeckDeckIdCardCardIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
     | '/auth/$id'
     | '/deck/$deckId/review'
     | '/deck/$deckId'
     | '/api/auth/callback/google'
-    | '/deck/$deckId/card/$cardId'
     | '/deck/$deckId/card/new'
     | '/deck/$deckId/card/$cardId/edit'
+    | '/deck/$deckId/card/$cardId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/auth/$id'
     | '/deck/$deckId/review'
     | '/deck/$deckId'
     | '/api/auth/callback/google'
-    | '/deck/$deckId/card/$cardId'
     | '/deck/$deckId/card/new'
     | '/deck/$deckId/card/$cardId/edit'
+    | '/deck/$deckId/card/$cardId'
   id:
     | '__root__'
     | '/'
-    | '/admin'
     | '/auth/$id'
     | '/deck/$deckId/review'
     | '/deck/$deckId/'
     | '/api/auth/callback/google'
-    | '/deck/$deckId/card/$cardId'
     | '/deck/$deckId/card/new'
     | '/deck/$deckId/card/$cardId/edit'
+    | '/deck/$deckId/card/$cardId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
   AuthIdRoute: typeof AuthIdRoute
   DeckDeckIdReviewRoute: typeof DeckDeckIdReviewRoute
   DeckDeckIdIndexRoute: typeof DeckDeckIdIndexRoute
   ApiAuthCallbackGoogleRoute: typeof ApiAuthCallbackGoogleRoute
-  DeckDeckIdCardCardIdRoute: typeof DeckDeckIdCardCardIdRouteWithChildren
   DeckDeckIdCardNewRoute: typeof DeckDeckIdCardNewRoute
+  DeckDeckIdCardCardIdEditRoute: typeof DeckDeckIdCardCardIdEditRoute
+  DeckDeckIdCardCardIdIndexRoute: typeof DeckDeckIdCardCardIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -191,13 +173,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeckDeckIdCardNewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/deck/$deckId/card/$cardId': {
-      id: '/deck/$deckId/card/$cardId'
-      path: '/deck/$deckId/card/$cardId'
-      fullPath: '/deck/$deckId/card/$cardId'
-      preLoaderRoute: typeof DeckDeckIdCardCardIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/auth/callback/google': {
       id: '/api/auth/callback/google'
       path: '/api/auth/callback/google'
@@ -205,36 +180,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthCallbackGoogleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/deck/$deckId/card/$cardId/': {
+      id: '/deck/$deckId/card/$cardId/'
+      path: '/deck/$deckId/card/$cardId'
+      fullPath: '/deck/$deckId/card/$cardId'
+      preLoaderRoute: typeof DeckDeckIdCardCardIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/deck/$deckId/card/$cardId/edit': {
       id: '/deck/$deckId/card/$cardId/edit'
-      path: '/edit'
+      path: '/deck/$deckId/card/$cardId/edit'
       fullPath: '/deck/$deckId/card/$cardId/edit'
       preLoaderRoute: typeof DeckDeckIdCardCardIdEditRouteImport
-      parentRoute: typeof DeckDeckIdCardCardIdRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface DeckDeckIdCardCardIdRouteChildren {
-  DeckDeckIdCardCardIdEditRoute: typeof DeckDeckIdCardCardIdEditRoute
-}
-
-const DeckDeckIdCardCardIdRouteChildren: DeckDeckIdCardCardIdRouteChildren = {
-  DeckDeckIdCardCardIdEditRoute: DeckDeckIdCardCardIdEditRoute,
-}
-
-const DeckDeckIdCardCardIdRouteWithChildren =
-  DeckDeckIdCardCardIdRoute._addFileChildren(DeckDeckIdCardCardIdRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
   AuthIdRoute: AuthIdRoute,
   DeckDeckIdReviewRoute: DeckDeckIdReviewRoute,
   DeckDeckIdIndexRoute: DeckDeckIdIndexRoute,
   ApiAuthCallbackGoogleRoute: ApiAuthCallbackGoogleRoute,
-  DeckDeckIdCardCardIdRoute: DeckDeckIdCardCardIdRouteWithChildren,
   DeckDeckIdCardNewRoute: DeckDeckIdCardNewRoute,
+  DeckDeckIdCardCardIdEditRoute: DeckDeckIdCardCardIdEditRoute,
+  DeckDeckIdCardCardIdIndexRoute: DeckDeckIdCardCardIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

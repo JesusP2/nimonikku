@@ -15,8 +15,8 @@ export function createNewCard(): Card {
 }
 
 // Get the next review for a card based on rating
-export function scheduleCard(card: Card, rating: number, reviewDate = new Date()) {
-  return fsrsScheduler.repeat(card, reviewDate)[rating];
+export function scheduleCard(card: Card, rating: RATING, reviewDate = new Date()) {
+  return fsrsScheduler.repeat(card, reviewDate)[1]
 }
 
 // Helper to convert our card data to FSRS Card format
@@ -55,6 +55,6 @@ export function fromFSRSCard(fsrsCard: Card) {
     reps: fsrsCard.reps,
     lapses: fsrsCard.lapses,
     state: fsrsCard.state,
-    last_review: fsrsCard.last_review,
+    last_review: fsrsCard.last_review ?? new Date(),
   };
 }

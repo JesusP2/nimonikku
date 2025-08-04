@@ -7,9 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 
 interface Card {
   id: string;
@@ -44,10 +43,6 @@ export function CardsList({ cards, deckId }: CardsListProps) {
     navigate({ to: `/deck/${deckId}/card/${cardId}` });
   };
 
-  const truncateText = (text: string, maxLength: number = 50) => {
-    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
-  };
-
   const getCardStatus = (card: Card) => {
     if (card.reps === 0) return { label: "New", variant: "secondary" as const };
     if (new Date(card.due) <= new Date()) return { label: "Due", variant: "destructive" as const };
@@ -73,7 +68,6 @@ export function CardsList({ cards, deckId }: CardsListProps) {
             <TableHead>Status</TableHead>
             <TableHead>Reviews</TableHead>
             <TableHead>Due Date</TableHead>
-            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -94,18 +88,6 @@ export function CardsList({ cards, deckId }: CardsListProps) {
                     <Calendar className="w-3 h-3" />
                     {new Date(card.due).toLocaleDateString()}
                   </div>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCardClick(card.id);
-                    }}
-                  >
-                    <Eye className="w-4 h-4" />
-                  </Button>
                 </TableCell>
               </TableRow>
             );
