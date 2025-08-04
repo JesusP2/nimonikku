@@ -43,24 +43,3 @@ export const dueCards$ = (deckId: string) =>
       .orderBy("due", "asc"),
     { label: `dueCards-${deckId}` }
   );
-
-export const newCards$ = (deckId: string) =>
-  queryDb(
-    tables.card
-      .select()
-      .where({ deckId })
-      .where({ reps: 0 })
-      .orderBy("createdAt", "asc"),
-    { label: `newCards-${deckId}` }
-  );
-
-export const cardCount$ = (deckId: string) =>
-  queryDb(
-    tables.card.count().where({ deckId }),
-    { label: `cardCount-${deckId}` }
-  );
-
-export const allCards$ = queryDb(
-  tables.card.select().orderBy("createdAt", "desc"),
-  { label: "allCards" }
-);

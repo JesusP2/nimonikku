@@ -58,7 +58,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
         updatedAt: new Date(),
       }));
 
-      // Move to next card
+      // NOTE: we probably don't need this, we can just trigger onCompletedReview when there are no more dueCards left
       onNext();
     } catch (error) {
       console.error("Failed to review card:", error);
@@ -104,8 +104,6 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
           End Review
         </Button>
       </div>
-
-      {/* Card Content */}
       <Card className="min-h-[400px]">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -139,8 +137,6 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
           )}
         </CardContent>
       </Card>
-
-      {/* Rating Buttons */}
       {showBack && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Button
