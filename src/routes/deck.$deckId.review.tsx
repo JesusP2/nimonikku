@@ -120,6 +120,35 @@ function ReviewPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
+                <div className="text-sm text-muted-foreground">
+                  <span className="font-medium">{dueCards.length}</span> cards remaining
+                </div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  {again.length > 0 && (
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      {again.length} again
+                    </div>
+                  )}
+                  {hard.length > 0 && (
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                      {hard.length} hard
+                    </div>
+                  )}
+                  {good.length > 0 && (
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      {good.length} good
+                    </div>
+                  )}
+                  {easy.length > 0 && (
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      {easy.length} easy
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
