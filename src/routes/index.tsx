@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   const decks = useQuery(allDecks$) || [];
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-4">
+    <div className="max-w-5xl mx-auto p-6 space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold">Decks</h2>
         <NewDeckDialog />

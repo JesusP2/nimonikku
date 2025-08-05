@@ -67,43 +67,8 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
     }
   };
 
-  const getDifficultyColor = (difficulty: number) => {
-    if (difficulty < 3) return "text-green-600";
-    if (difficulty < 7) return "text-yellow-600";
-    return "text-red-600";
-  };
-
-  const getStabilityBadge = (stability: number) => {
-    if (stability < 1) return { variant: "destructive" as const, label: "New" };
-    if (stability < 7) return { variant: "secondary" as const, label: "Learning" };
-    if (stability < 30) return { variant: "default" as const, label: "Young" };
-    return { variant: "outline" as const, label: "Mature" };
-  };
-
-  const stabilityBadge = getStabilityBadge(card.stability);
-
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Card Info */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Badge variant={stabilityBadge.variant}>{stabilityBadge.label}</Badge>
-          <div className="text-sm text-muted-foreground">
-            Reviews: <span className="font-medium">{card.reps}</span>
-          </div>
-          <div className="text-sm text-muted-foreground">
-            Difficulty: <span className={`font-medium ${getDifficultyColor(card.difficulty)}`}>
-              {card.difficulty.toFixed(1)}
-            </span>
-          </div>
-          <div className="text-sm text-muted-foreground">
-            Stability: <span className="font-medium">{card.stability.toFixed(1)} days</span>
-          </div>
-        </div>
-        <Button variant="outline" onClick={onComplete}>
-          End Review
-        </Button>
-      </div>
       <Card className="min-h-[400px]">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">

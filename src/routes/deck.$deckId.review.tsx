@@ -14,7 +14,7 @@ export const Route = createFileRoute("/deck/$deckId/review")({
 function ReviewPage() {
   const { deckId } = Route.useParams();
   const navigate = useNavigate();
-  
+
   const deck = useQuery(deckById$(deckId))?.[0];
   const dueCards = useQuery(dueCards$(deckId)) || [];
   const currentCard = dueCards[0];
@@ -22,7 +22,7 @@ function ReviewPage() {
   const hard = dueCards.filter(card => card.rating === ratings.HARD);
   const good = dueCards.filter(card => card.rating === ratings.GOOD);
   const easy = dueCards.filter(card => card.rating === ratings.EASY);
-  
+
   const handleNextCard = () => {
     if (dueCards.length <= 1) {
       handleCompleteReview();
@@ -35,11 +35,11 @@ function ReviewPage() {
 
   if (!deck) {
     return (
-      <div className="container mx-auto py-8">
+      <div className="max-w-6xl mx-auto py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-muted-foreground">Deck not found</h1>
-          <Button 
-            onClick={() => navigate({ to: "/" })} 
+          <Button
+            onClick={() => navigate({ to: "/" })}
             className="mt-4"
             variant="outline"
           >
@@ -53,11 +53,11 @@ function ReviewPage() {
 
   if (dueCards.length <= 0) {
     return (
-      <div className="container mx-auto py-8 space-y-6">
+      <div className="max-w-6xl mx-auto py-8 space-y-6">
         <div className="flex items-center gap-4">
-          <Button 
-            onClick={() => navigate({ to: `/deck/${deckId}` })} 
-            variant="outline" 
+          <Button
+            onClick={() => navigate({ to: `/deck/${deckId}` })}
+            variant="outline"
             size="sm"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -85,7 +85,7 @@ function ReviewPage() {
                   <BookOpen className="w-4 h-4 mr-2" />
                   View Deck
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => navigate({ to: `/deck/${deckId}/card/new` })}
                 >
@@ -100,60 +100,50 @@ function ReviewPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <div className="max-w-4xl mx-auto py-8 space-y-6">
       <div className="flex items-center gap-4">
-        <Button 
-          onClick={() => navigate({ to: `/deck/${deckId}` })} 
-          variant="outline" 
+        <Button
+          onClick={() => navigate({ to: `/deck/${deckId}` })}
+          variant="outline"
           size="sm"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Deck
         </Button>
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold">{deck.name}</h1>
-          <p className="text-muted-foreground">Review Session</p>
-        </div>
       </div>
-      <Card>
-        <CardContent className="pt-6">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-muted-foreground">
-                  <span className="font-medium">{dueCards.length}</span> cards remaining
+
+      <div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              {again.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  {again.length} again
                 </div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  {again.length > 0 && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      {again.length} again
-                    </div>
-                  )}
-                  {hard.length > 0 && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                      {hard.length} hard
-                    </div>
-                  )}
-                  {good.length > 0 && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      {good.length} good
-                    </div>
-                  )}
-                  {easy.length > 0 && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      {easy.length} easy
-                    </div>
-                  )}
+              )}
+              {hard.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  {hard.length} hard
                 </div>
-              </div>
+              )}
+              {good.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  {good.length} good
+                </div>
+              )}
+              {easy.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  {easy.length} easy
+                </div>
+              )}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       {currentCard ? (
         <CardReview
           key={currentCard.id}

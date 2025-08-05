@@ -17,11 +17,11 @@ import { Toaster } from "./components/ui/sonner";
 import { routeTree } from "./routeTree.gen";
 import { queryClient, trpc } from "./utils/trpc";
 
-if (import.meta.env.DEV) {
-  scan({
-    enabled: import.meta.env.DEV,
-  });
-}
+// if (import.meta.env.DEV) {
+//   scan({
+//     enabled: import.meta.env.DEV,
+//   });
+// }
 
 const router = createRouter({
   routeTree,

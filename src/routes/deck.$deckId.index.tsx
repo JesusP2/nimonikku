@@ -20,7 +20,7 @@ function DeckInfoPage() {
 
   if (!deck) {
     return (
-      <div className="container mx-auto py-8">
+      <div className="max-w-6xl mx-auto py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-muted-foreground">Deck not found</h1>
           <Button 
@@ -52,7 +52,7 @@ function DeckInfoPage() {
   const matureCards = cards.filter(card => card.stability >= 21);
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <div className="max-w-6xl mx-auto py-8 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button 
