@@ -2,10 +2,9 @@ import { useState } from "react";
 import { useStore } from "@livestore/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
-import { scheduleCard, toFSRSCard, fromFSRSCard } from "@/lib/fsrs";
+import { scheduleCard, toFSRSCard, fromFSRSCard, getReviewTimePredictions, formatReviewTime } from "@/lib/fsrs";
 import { events } from "@/server/livestore/schema";
 import { Eye } from "lucide-react";
 import { ratings } from "@/lib/constants";
@@ -26,7 +25,7 @@ interface CardData {
   reps: number;
   lapses: number;
   state: number;
-  last_review?: Date;
+  last_review: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,10 +36,21 @@ interface CardReviewProps {
   onComplete: () => void;
 }
 
-export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
+export function CardReview({ card, onNext }: CardReviewProps) {
   const { store } = useStore();
   const [showBack, setShowBack] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const reviewTimes = showBack ? (() => {
+    const fsrsCard = toFSRSCard(card);
+    const predictions = getReviewTimePredictions(fsrsCard);
+    return {
+      again: formatReviewTime(predictions.again),
+      hard: formatReviewTime(predictions.hard),
+      good: formatReviewTime(predictions.good),
+      easy: formatReviewTime(predictions.easy),
+    };
+  })() : null;
 
   const handleRating = async (rating: number) => {
     if (isSubmitting) return;
@@ -49,6 +59,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
     try {
       const fsrsCard = toFSRSCard(card);
       const reviewResult = scheduleCard(fsrsCard, rating, new Date());
+      reviewResult
       const updatedFSRSData = fromFSRSCard(reviewResult.card);
 
       store.commit(events.cardReviewed({
@@ -102,7 +113,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
           )}
         </CardContent>
       </Card>
-      {showBack && (
+      {showBack && reviewTimes && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Button
             onClick={() => handleRating(ratings.AGAIN)}
@@ -111,7 +122,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
             className="h-16 flex-col"
           >
             <span className="text-lg font-bold">Again</span>
-            <span className="text-xs opacity-75">Forgot completely</span>
+            <span className="text-xs opacity-75">{reviewTimes.again}</span>
           </Button>
           
           <Button
@@ -121,7 +132,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
             className="h-16 flex-col border-orange-300 text-orange-700 hover:bg-orange-50"
           >
             <span className="text-lg font-bold">Hard</span>
-            <span className="text-xs opacity-75">Struggled to remember</span>
+            <span className="text-xs opacity-75">{reviewTimes.hard}</span>
           </Button>
           
           <Button
@@ -131,7 +142,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
             className="h-16 flex-col bg-green-600 hover:bg-green-700"
           >
             <span className="text-lg font-bold">Good</span>
-            <span className="text-xs opacity-75">Remembered with effort</span>
+            <span className="text-xs opacity-75">{reviewTimes.good}</span>
           </Button>
           
           <Button
@@ -141,7 +152,7 @@ export function CardReview({ card, onNext, onComplete }: CardReviewProps) {
             className="h-16 flex-col border-blue-300 text-blue-700 hover:bg-blue-50"
           >
             <span className="text-lg font-bold">Easy</span>
-            <span className="text-xs opacity-75">Remembered easily</span>
+            <span className="text-xs opacity-75">{reviewTimes.easy}</span>
           </Button>
         </div>
       )}

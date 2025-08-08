@@ -65,9 +65,6 @@ function DeckInfoPage() {
         </Button>
         <div className="flex-1">
           <h1 className="text-3xl font-bold">{deck.name}</h1>
-          {deck.description && (
-            <p className="text-muted-foreground mt-1">{deck.description}</p>
-          )}
         </div>
       </div>
 

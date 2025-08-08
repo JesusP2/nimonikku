@@ -1,4 +1,4 @@
-import { fsrs, generatorParameters, createEmptyCard, type Card } from 'ts-fsrs';
+import { fsrs, generatorParameters, createEmptyCard, type Card, Rating, type RecordLogItem } from 'ts-fsrs';
 
 // Configure FSRS parameters
 const params = generatorParameters({ 
@@ -15,8 +15,9 @@ export function createNewCard(): Card {
 }
 
 // Get the next review for a card based on rating
-export function scheduleCard(card: Card, rating: RATING, reviewDate = new Date()) {
-  return fsrsScheduler.repeat(card, reviewDate)[1]
+export function scheduleCard(card: Card, rating: number, reviewDate = new Date()) {
+  const results = fsrsScheduler.repeat(card, reviewDate);
+  return results[rating as keyof typeof results] as RecordLogItem;
 }
 
 // Helper to convert our card data to FSRS Card format
@@ -29,7 +30,7 @@ export function toFSRSCard(cardData: {
   reps: number;
   lapses: number;
   state: number;
-  last_review?: Date;
+  last_review: Date | null;
 }): Card {
   return {
     due: cardData.due,
@@ -41,10 +42,9 @@ export function toFSRSCard(cardData: {
     lapses: cardData.lapses,
     state: cardData.state,
     last_review: cardData.last_review,
-  };
+  } as Card;
 }
 
-// Helper to extract FSRS data from a Card
 export function fromFSRSCard(fsrsCard: Card) {
   return {
     due: fsrsCard.due,
@@ -57,4 +57,30 @@ export function fromFSRSCard(fsrsCard: Card) {
     state: fsrsCard.state,
     last_review: fsrsCard.last_review ?? new Date(),
   };
+}
+
+export function getReviewTimePredictions(card: Card, reviewDate = new Date()) {
+  const results = fsrsScheduler.repeat(card, reviewDate);
+  return {
+    again: results[Rating.Again].card.due,
+    hard: results[Rating.Hard].card.due,
+    good: results[Rating.Good].card.due,
+    easy: results[Rating.Easy].card.due,
+  };
+}
+
+export function formatReviewTime(futureDate: Date, currentDate = new Date()): string {
+  const diffMs = futureDate.getTime() - currentDate.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffMinutes < 1) return "< 1m";
+  if (diffMinutes < 60) return `${diffMinutes}m`;
+  if (diffHours < 24) return `${diffHours}h`;
+  if (diffDays < 30) return `${diffDays}d`;
+  if (diffMonths < 12) return `${diffMonths}mo`;
+  return `${diffYears}y`;
 }
