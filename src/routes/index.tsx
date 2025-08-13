@@ -73,7 +73,7 @@ function RouteComponent() {
                       {deck.name}
                     </CardTitle>
                   </div>
-                  <CardsState cards={deckCards[deck.id]} />
+                  <CardsState cards={deckCards[deck.id] || []} />
                 </CardHeader>
                 <CardFooter className="px-3 py-2 pt-0 border-t-0">
                   <div className="flex gap-1 w-full">

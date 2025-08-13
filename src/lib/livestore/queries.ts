@@ -4,6 +4,11 @@ import { tables } from "@/server/livestore/schema";
 // UI state for local-only state management
 export const uiState$ = queryDb(tables.uiState.get(), { label: "uiState" });
 
+// User settings
+export const userSettings$ = queryDb(tables.userSettings.select(), {
+  label: "userSettings",
+});
+
 // Deck queries
 export const allDecks$ = queryDb(
   tables.deck.select().orderBy("createdAt", "desc"),

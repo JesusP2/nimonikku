@@ -9,6 +9,7 @@ declare namespace Cloudflare {
 		GOOGLE_CLIENT_ID: string;
 		GOOGLE_CLIENT_SECRET: string;
 		RESEND_API_KEY: string;
+		OPENROUTER_API_KEY: string;
 		NimonikkuDO: DurableObjectNamespace<import("./src/server/index").NimonikkuDO>;
 		DB: D1Database;
 	}
@@ -18,7 +19,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "BETTER_AUTH_SECRET" | "VITE_SERVER_URL" | "ADMIN_SECRET" | "GOOGLE_CLIENT_ID" | "GOOGLE_CLIENT_SECRET" | "RESEND_API_KEY">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "BETTER_AUTH_SECRET" | "VITE_SERVER_URL" | "ADMIN_SECRET" | "GOOGLE_CLIENT_ID" | "GOOGLE_CLIENT_SECRET" | "RESEND_API_KEY" | "OPENROUTER_API_KEY">> {}
 }
 
 // Begin runtime types

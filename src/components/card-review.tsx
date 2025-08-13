@@ -1,13 +1,23 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useStore } from "@livestore/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
-import { scheduleCard, toFSRSCard, fromFSRSCard, getReviewTimePredictions, formatReviewTime } from "@/lib/fsrs";
+import {
+  scheduleCard,
+  toFSRSCard,
+  fromFSRSCard,
+  getReviewTimePredictions,
+  formatReviewTime,
+} from "@/lib/fsrs";
 import { events } from "@/server/livestore/schema";
 import { Eye } from "lucide-react";
 import { ratings } from "@/lib/constants";
+import { useQuery } from "@livestore/react";
+import { deckById$, userSettings$ } from "@/lib/livestore/queries";
+import { useIsOnline } from "./providers/is-online";
+import { toast } from "sonner";
 
 interface CardData {
   id: string;
@@ -40,35 +50,83 @@ export function CardReview({ card, onNext }: CardReviewProps) {
   const { store } = useStore();
   const [showBack, setShowBack] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rephrasedQuestion, setRephrasedQuestion] = useState<string | null>(
+    null,
+  );
+  const deck = useQuery(deckById$(card.deckId))?.[0];
+  const settings = useQuery(userSettings$)?.[0];
+  const { isOnline } = useIsOnline();
 
-  const reviewTimes = showBack ? (() => {
-    const fsrsCard = toFSRSCard(card);
-    const predictions = getReviewTimePredictions(fsrsCard);
-    return {
-      again: formatReviewTime(predictions.again),
-      hard: formatReviewTime(predictions.hard),
-      good: formatReviewTime(predictions.good),
-      easy: formatReviewTime(predictions.easy),
+  function shouldRephrase() {
+    if (deck?.ai !== "global") {
+      return deck?.ai === "true";
+    }
+    return settings.enableAI;
+  }
+  const rephraseCard = shouldRephrase();
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchRephrased = async () => {
+      if (!isOnline) {
+        toast.message("AI rephrasing unavailable offline—using original question.");
+      }
+      if (!rephraseCard || !isOnline) {
+        setRephrasedQuestion(null);
+        return;
+      }
+      const res = await fetch("/api/ai/rephrase", {
+        method: "POST",
+        body: JSON.stringify({ text: card.frontMarkdown }),
+        signal: controller.signal,
+      });
+      if (!res.ok) {
+        toast.message("Failed to fetch AI rephrased question.");
+        setRephrasedQuestion(null);
+        return;
+      }
+      const data = await res.json() as { outputText: string } | null;
+      if (res.ok && data?.outputText) {
+        setRephrasedQuestion(String(data.outputText));
+      } else {
+        setRephrasedQuestion(null);
+      }
     };
-  })() : null;
+    fetchRephrased();
+    return () => controller.abort();
+  }, [card.id, card.frontMarkdown, isOnline]);
+
+  const reviewTimes = showBack
+    ? (() => {
+      const fsrsCard = toFSRSCard(card);
+      const predictions = getReviewTimePredictions(fsrsCard);
+      return {
+        again: formatReviewTime(predictions.again),
+        hard: formatReviewTime(predictions.hard),
+        good: formatReviewTime(predictions.good),
+        easy: formatReviewTime(predictions.easy),
+      };
+    })()
+    : null;
 
   const handleRating = async (rating: number) => {
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
     try {
       const fsrsCard = toFSRSCard(card);
       const reviewResult = scheduleCard(fsrsCard, rating, new Date());
-      console.log('fsrsCard', fsrsCard)
-      console.log('reviewResult', reviewResult)
+      console.log("fsrsCard", fsrsCard);
+      console.log("reviewResult", reviewResult);
       const updatedFSRSData = fromFSRSCard(reviewResult.card);
 
-      store.commit(events.cardReviewed({
-        id: card.id,
-        rating,
-        ...updatedFSRSData,
-        updatedAt: new Date(),
-      }));
+      store.commit(
+        events.cardReviewed({
+          id: card.id,
+          rating,
+          ...updatedFSRSData,
+          updatedAt: new Date(),
+        }),
+      );
 
       // NOTE: we probably don't need this, we can just trigger onCompletedReview when there are no more dueCards left
       onNext();
@@ -85,8 +143,8 @@ export function CardReview({ card, onNext }: CardReviewProps) {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             {!showBack && (
-              <Button 
-                onClick={() => setShowBack(true)} 
+              <Button
+                onClick={() => setShowBack(true)}
                 variant="outline"
                 className="ml-4"
               >
@@ -98,16 +156,31 @@ export function CardReview({ card, onNext }: CardReviewProps) {
         </CardHeader>
         <CardContent className="min-h-[300px]">
           {!showBack ? (
-            <MarkdownRenderer content={card.frontMarkdown} />
+            <div className="space-y-2">
+              <MarkdownRenderer
+                content={rephrasedQuestion || card.frontMarkdown}
+              />
+              {rephrasedQuestion && (
+                <div className="text-xs text-muted-foreground">
+                  AI Rephrased
+                </div>
+              )}
+            </div>
           ) : (
             <div className="space-y-6">
               <div>
-                <h4 className="font-medium mb-2 text-muted-foreground">Question:</h4>
-                <MarkdownRenderer content={card.frontMarkdown} />
+                <h4 className="font-medium mb-2 text-muted-foreground">
+                  Question:
+                </h4>
+                <MarkdownRenderer
+                  content={rephrasedQuestion || card.frontMarkdown}
+                />
               </div>
               <Separator />
               <div>
-                <h4 className="font-medium mb-2 text-muted-foreground">Answer:</h4>
+                <h4 className="font-medium mb-2 text-muted-foreground">
+                  Answer:
+                </h4>
                 <MarkdownRenderer content={card.backMarkdown} />
               </div>
             </div>
@@ -125,7 +198,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
             <span className="text-lg font-bold">Again</span>
             <span className="text-xs opacity-75">{reviewTimes.again}</span>
           </Button>
-          
+
           <Button
             onClick={() => handleRating(ratings.HARD)}
             disabled={isSubmitting}
@@ -135,7 +208,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
             <span className="text-lg font-bold">Hard</span>
             <span className="text-xs opacity-75">{reviewTimes.hard}</span>
           </Button>
-          
+
           <Button
             onClick={() => handleRating(ratings.GOOD)}
             disabled={isSubmitting}
@@ -145,7 +218,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
             <span className="text-lg font-bold">Good</span>
             <span className="text-xs opacity-75">{reviewTimes.good}</span>
           </Button>
-          
+
           <Button
             onClick={() => handleRating(ratings.EASY)}
             disabled={isSubmitting}

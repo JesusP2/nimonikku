@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIdRouteImport } from './routes/auth.$id'
 import { Route as DeckDeckIdIndexRouteImport } from './routes/deck.$deckId.index'
@@ -18,6 +19,11 @@ import { Route as ApiAuthCallbackGoogleRouteImport } from './routes/api.auth.cal
 import { Route as DeckDeckIdCardCardIdIndexRouteImport } from './routes/deck.$deckId.card.$cardId.index'
 import { Route as DeckDeckIdCardCardIdEditRouteImport } from './routes/deck.$deckId.card.$cardId.edit'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -63,6 +69,7 @@ const DeckDeckIdCardCardIdEditRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
   '/auth/$id': typeof AuthIdRoute
   '/deck/$deckId/review': typeof DeckDeckIdReviewRoute
   '/deck/$deckId': typeof DeckDeckIdIndexRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
   '/auth/$id': typeof AuthIdRoute
   '/deck/$deckId/review': typeof DeckDeckIdReviewRoute
   '/deck/$deckId': typeof DeckDeckIdIndexRoute
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
   '/auth/$id': typeof AuthIdRoute
   '/deck/$deckId/review': typeof DeckDeckIdReviewRoute
   '/deck/$deckId/': typeof DeckDeckIdIndexRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/settings'
     | '/auth/$id'
     | '/deck/$deckId/review'
     | '/deck/$deckId'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/settings'
     | '/auth/$id'
     | '/deck/$deckId/review'
     | '/deck/$deckId'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/settings'
     | '/auth/$id'
     | '/deck/$deckId/review'
     | '/deck/$deckId/'
@@ -127,6 +139,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SettingsRoute: typeof SettingsRoute
   AuthIdRoute: typeof AuthIdRoute
   DeckDeckIdReviewRoute: typeof DeckDeckIdReviewRoute
   DeckDeckIdIndexRoute: typeof DeckDeckIdIndexRoute
@@ -138,6 +151,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -199,6 +219,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SettingsRoute: SettingsRoute,
   AuthIdRoute: AuthIdRoute,
   DeckDeckIdReviewRoute: DeckDeckIdReviewRoute,
   DeckDeckIdIndexRoute: DeckDeckIdIndexRoute,

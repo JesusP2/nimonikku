@@ -15,6 +15,7 @@ export const tables = {
       userId: State.SQLite.text(),
       name: State.SQLite.text(),
       description: State.SQLite.text({ nullable: true }),
+      ai: State.SQLite.text({ nullable: true }),
       createdAt: State.SQLite.datetime(),
       updatedAt: State.SQLite.datetime(),
     },
@@ -49,7 +50,18 @@ export const tables = {
       selectedDeck: Schema.String,
       studyMode: Schema.Literal("review", "learn", "cram"),
     }),
-    default: { id: SessionIdSymbol, value: { selectedDeck: "", studyMode: "review" } },
+    default: {
+      id: SessionIdSymbol,
+      value: { selectedDeck: "", studyMode: "review" },
+    },
+  }),
+  userSettings: State.SQLite.table({
+    name: "userSettings",
+    columns: {
+      id: State.SQLite.text({ primaryKey: true }),
+      userId: State.SQLite.text(),
+      enableAI: State.SQLite.boolean(),
+    },
   }),
 };
 
@@ -63,6 +75,7 @@ export const events = {
       userId: Schema.String,
       name: Schema.String,
       description: Schema.optional(Schema.String),
+      ai: Schema.optional(Schema.String),
       createdAt: Schema.Date,
       updatedAt: Schema.Date,
     }),
@@ -73,6 +86,7 @@ export const events = {
       id: Schema.String,
       name: Schema.optional(Schema.String),
       description: Schema.optional(Schema.String),
+      ai: Schema.optional(Schema.String),
       updatedAt: Schema.Date,
     }),
   }),
@@ -141,49 +155,153 @@ export const events = {
       id: Schema.String,
     }),
   }),
+  settingsCreated: Events.synced({
+    name: "v1.SettingsCreated",
+    schema: Schema.Struct({
+      id: Schema.String,
+      userId: Schema.String,
+      enableAI: Schema.Boolean,
+    }),
+  }),
+  toggleAIGlobalSetting: Events.synced({
+    name: "v1.ToggleAIGlobalSetting",
+    schema: Schema.Struct({
+      id: Schema.String,
+      enableAI: Schema.Boolean,
+    }),
+  }),
 };
 
 // Materializers map events to state changes
 const materializers = State.SQLite.materializers(events, {
   // Deck materializers
-  "v1.DeckCreated": ({ id, userId, name, description, createdAt, updatedAt }) =>
-    tables.deck.insert({ id, userId, name, description, createdAt, updatedAt }),
-  "v1.DeckUpdated": ({ id, name, description, updatedAt }) =>
-    tables.deck.update({ 
-      ...(name !== undefined && { name }),
-      ...(description !== undefined && { description }),
-      updatedAt 
-    }).where({ id }),
+  "v1.DeckCreated": ({
+    id,
+    userId,
+    name,
+    description,
+    ai,
+    createdAt,
+    updatedAt,
+  }) =>
+    tables.deck.insert({
+      id,
+      userId,
+      name,
+      description,
+      ai: ai ?? 'global',
+      createdAt,
+      updatedAt,
+    }),
+  "v1.DeckUpdated": ({
+    id,
+    name,
+    description,
+    ai,
+    updatedAt,
+  }) =>
+    tables.deck
+      .update({
+        ...(name !== undefined && { name }),
+        ...(description !== undefined && { description }),
+        ...(ai !== undefined && { ai }),
+        updatedAt,
+      })
+      .where({ id }),
   "v1.DeckDeleted": ({ id }) => tables.deck.delete().where({ id }),
 
   // Card materializers
-  "v1.CardCreated": ({ 
-    id, deckId, frontMarkdown, backMarkdown, frontFiles, backFiles,
-    due, stability, difficulty, rating, elapsed_days, scheduled_days,
-    reps, lapses, state, last_review, createdAt, updatedAt 
+  "v1.CardCreated": ({
+    id,
+    deckId,
+    frontMarkdown,
+    backMarkdown,
+    frontFiles,
+    backFiles,
+    due,
+    stability,
+    difficulty,
+    rating,
+    elapsed_days,
+    scheduled_days,
+    reps,
+    lapses,
+    state,
+    last_review,
+    createdAt,
+    updatedAt,
   }) =>
-    tables.card.insert({ 
-      id, deckId, frontMarkdown, backMarkdown, frontFiles, backFiles,
-      due, stability, difficulty, rating, elapsed_days, scheduled_days,
-      reps, lapses, state, last_review, createdAt, updatedAt 
+    tables.card.insert({
+      id,
+      deckId,
+      frontMarkdown,
+      backMarkdown,
+      frontFiles,
+      backFiles,
+      due,
+      stability,
+      difficulty,
+      rating,
+      elapsed_days,
+      scheduled_days,
+      reps,
+      lapses,
+      state,
+      last_review,
+      createdAt,
+      updatedAt,
     }),
-  "v1.CardUpdated": ({ id, frontMarkdown, backMarkdown, frontFiles, backFiles, updatedAt }) =>
-    tables.card.update({ 
-      ...(frontMarkdown !== undefined && { frontMarkdown }),
-      ...(backMarkdown !== undefined && { backMarkdown }),
-      ...(frontFiles !== undefined && { frontFiles }),
-      ...(backFiles !== undefined && { backFiles }),
-      updatedAt 
-    }).where({ id }),
-  "v1.CardReviewed": ({ 
-    id, due, stability, difficulty, rating, elapsed_days, scheduled_days,
-    reps, lapses, state, last_review, updatedAt 
+  "v1.CardUpdated": ({
+    id,
+    frontMarkdown,
+    backMarkdown,
+    frontFiles,
+    backFiles,
+    updatedAt,
   }) =>
-    tables.card.update({ 
-      due, stability, difficulty, rating, elapsed_days, scheduled_days,
-      reps, lapses, state, last_review, updatedAt 
-    }).where({ id }),
+    tables.card
+      .update({
+        ...(frontMarkdown !== undefined && { frontMarkdown }),
+        ...(backMarkdown !== undefined && { backMarkdown }),
+        ...(frontFiles !== undefined && { frontFiles }),
+        ...(backFiles !== undefined && { backFiles }),
+        updatedAt,
+      })
+      .where({ id }),
+  "v1.CardReviewed": ({
+    id,
+    due,
+    stability,
+    difficulty,
+    rating,
+    elapsed_days,
+    scheduled_days,
+    reps,
+    lapses,
+    state,
+    last_review,
+    updatedAt,
+  }) =>
+    tables.card
+      .update({
+        due,
+        stability,
+        difficulty,
+        rating,
+        elapsed_days,
+        scheduled_days,
+        reps,
+        lapses,
+        state,
+        last_review,
+        updatedAt,
+      })
+      .where({ id }),
   "v1.CardDeleted": ({ id }) => tables.card.delete().where({ id }),
+  "v1.SettingsCreated": ({ id, userId, enableAI }) =>
+    tables.userSettings.insert({ id, userId, enableAI }),
+  "v1.ToggleAIGlobalSetting": ({ enableAI }) =>
+    tables.userSettings.update({ enableAI }),
 });
 
 const state = State.SQLite.makeState({ tables, materializers });
