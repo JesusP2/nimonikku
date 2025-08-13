@@ -7,39 +7,43 @@ export const uiState$ = queryDb(tables.uiState.get(), { label: "uiState" });
 // Deck queries
 export const allDecks$ = queryDb(
   tables.deck.select().orderBy("createdAt", "desc"),
-  { label: "allDecks" }
+  { label: "allDecks" },
 );
 
 export const deckById$ = (deckId: string) =>
-  queryDb(
-    tables.deck.select().where({ id: deckId }),
-    { label: `deck-${deckId}` }
-  );
+  queryDb(tables.deck.select().where({ id: deckId }), {
+    label: `deck-${deckId}`,
+  });
 
 export const userDecks$ = (userId: string) =>
-  queryDb(
-    tables.deck.select().where({ userId }).orderBy("createdAt", "desc"),
-    { label: `userDecks-${userId}` }
-  );
+  queryDb(tables.deck.select().where({ userId }).orderBy("createdAt", "desc"), {
+    label: `userDecks-${userId}`,
+  });
 
 // Card queries
 export const cardsByDeck$ = (deckId: string) =>
-  queryDb(
-    tables.card.select().where({ deckId }).orderBy("createdAt", "desc"),
-    { label: `cardsByDeck-${deckId}` }
-  );
+  queryDb(tables.card.select().where({ deckId }).orderBy("createdAt", "desc"), {
+    label: `cardsByDeck-${deckId}`,
+  });
 
 export const cardById$ = (cardId: string) =>
-  queryDb(
-    tables.card.select().where({ id: cardId }),
-    { label: `card-${cardId}` }
-  );
+  queryDb(tables.card.select().where({ id: cardId }), {
+    label: `card-${cardId}`,
+  });
 
 export const dueCards$ = (deckId: string) =>
   queryDb(
     tables.card
       .select()
-      .where({ deckId, due: { op: '<=', value: new Date() } })
+      .where({ deckId, due: { op: "<=", value: new Date() } })
       .orderBy("due", "asc"),
-    { label: `dueCards-${deckId}` }
+    { label: `dueCards-${deckId}` },
+  );
+
+export const cardsState$ = (userDecksIds: string[]) =>
+  queryDb(
+    tables.card
+      .select("state", "id", "deckId")
+      .where({ deckId: { op: "IN", value: userDecksIds } }),
+    { label: "cardsState" },
   );

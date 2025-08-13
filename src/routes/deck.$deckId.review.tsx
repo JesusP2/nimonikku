@@ -5,7 +5,7 @@ import { CardReview } from "@/components/card-review";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, BookOpen, Calendar } from "lucide-react";
-import { ratings } from "@/lib/constants";
+import { CardsState } from "@/components/deck-cards-state";
 
 export const Route = createFileRoute("/deck/$deckId/review")({
   component: ReviewPage,
@@ -18,10 +18,6 @@ function ReviewPage() {
   const deck = useQuery(deckById$(deckId))?.[0];
   const dueCards = useQuery(dueCards$(deckId)) || [];
   const currentCard = dueCards[0];
-  const again = dueCards.filter(card => card.rating === ratings.AGAIN);
-  const hard = dueCards.filter(card => card.rating === ratings.HARD);
-  const good = dueCards.filter(card => card.rating === ratings.GOOD);
-  const easy = dueCards.filter(card => card.rating === ratings.EASY);
 
   const handleNextCard = () => {
     if (dueCards.length <= 1) {
@@ -37,14 +33,16 @@ function ReviewPage() {
     return (
       <div className="max-w-6xl mx-auto py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-muted-foreground">Deck not found</h1>
+          <h1 className="text-2xl font-bold text-muted-foreground">
+            Deck not found
+          </h1>
           <Button
             onClick={() => navigate({ to: "/" })}
             className="mt-4"
             variant="outline"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            Back to Dashboard
           </Button>
         </div>
       </div>
@@ -56,12 +54,12 @@ function ReviewPage() {
       <div className="max-w-6xl mx-auto py-8 space-y-6">
         <div className="flex items-center gap-4">
           <Button
-            onClick={() => navigate({ to: `/deck/${deckId}` })}
+            onClick={() => navigate({ to: "/" })}
             variant="outline"
             size="sm"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Deck
+            Back to Dashboard
           </Button>
           <div className="flex-1">
             <h1 className="text-2xl font-bold">{deck.name}</h1>
@@ -103,44 +101,19 @@ function ReviewPage() {
     <div className="max-w-4xl mx-auto py-8 space-y-6">
       <div className="flex items-center gap-4">
         <Button
-          onClick={() => navigate({ to: `/deck/${deckId}` })}
+          onClick={() => navigate({ to: "/" })}
           variant="outline"
           size="sm"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Deck
+          Back to Dashboard
         </Button>
       </div>
 
       <div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              {again.length > 0 && (
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                  {again.length} again
-                </div>
-              )}
-              {hard.length > 0 && (
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                  {hard.length} hard
-                </div>
-              )}
-              {good.length > 0 && (
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  {good.length} good
-                </div>
-              )}
-              {easy.length > 0 && (
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  {easy.length} easy
-                </div>
-              )}
-            </div>
+            <CardsState cards={dueCards} />
           </div>
         </div>
       </div>

@@ -59,7 +59,8 @@ export function CardReview({ card, onNext }: CardReviewProps) {
     try {
       const fsrsCard = toFSRSCard(card);
       const reviewResult = scheduleCard(fsrsCard, rating, new Date());
-      reviewResult
+      console.log('fsrsCard', fsrsCard)
+      console.log('reviewResult', reviewResult)
       const updatedFSRSData = fromFSRSCard(reviewResult.card);
 
       store.commit(events.cardReviewed({
@@ -129,7 +130,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
             onClick={() => handleRating(ratings.HARD)}
             disabled={isSubmitting}
             variant="secondary"
-            className="h-16 flex-col border-orange-300 text-orange-700 hover:bg-orange-50"
+            className="h-16 flex-col"
           >
             <span className="text-lg font-bold">Hard</span>
             <span className="text-xs opacity-75">{reviewTimes.hard}</span>
@@ -139,7 +140,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
             onClick={() => handleRating(ratings.GOOD)}
             disabled={isSubmitting}
             variant="default"
-            className="h-16 flex-col bg-green-600 hover:bg-green-700"
+            className="h-16 flex-col"
           >
             <span className="text-lg font-bold">Good</span>
             <span className="text-xs opacity-75">{reviewTimes.good}</span>
@@ -149,7 +150,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
             onClick={() => handleRating(ratings.EASY)}
             disabled={isSubmitting}
             variant="outline"
-            className="h-16 flex-col border-blue-300 text-blue-700 hover:bg-blue-50"
+            className="h-16 flex-col"
           >
             <span className="text-lg font-bold">Easy</span>
             <span className="text-xs opacity-75">{reviewTimes.easy}</span>

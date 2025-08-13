@@ -39,12 +39,12 @@ export function DeckActionsMenu({ deck }: DeckActionsMenuProps) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button type="button" variant="ghost" size="sm">
+          <Button type="button" variant="ghost" size="sm" className="h-6 w-6 p-0">
             <MoreVertical className="w-4 h-4" />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" side="bottom" sideOffset={4}>
           <DropdownMenuItem onClick={handleInfo}>
             <Info className="w-4 h-4 mr-2" />
             Info

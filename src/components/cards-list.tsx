@@ -44,9 +44,10 @@ export function CardsList({ cards, deckId }: CardsListProps) {
   };
 
   const getCardStatus = (card: Card) => {
-    if (card.reps === 0) return { label: "New", variant: "secondary" as const };
-    if (new Date(card.due) <= new Date()) return { label: "Due", variant: "destructive" as const };
-    return { label: "Learning", variant: "default" as const };
+    if (card.state === 0) return { label: 'New', variant: "secondary" as const };
+    else if (card.state === 1) return { label: 'Learning', variant: "default" as const };
+    else if (card.state === 2) return { label: 'Review', variant: "destructive" as const };
+    else return { label: 'Relearning', variant: 'secondary' as const };
   };
 
   if (cards.length === 0) {
@@ -74,8 +75,8 @@ export function CardsList({ cards, deckId }: CardsListProps) {
           {cards.map((card) => {
             const status = getCardStatus(card);
             return (
-              <TableRow 
-                key={card.id} 
+              <TableRow
+                key={card.id}
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => handleCardClick(card.id)}
               >
