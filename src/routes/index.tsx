@@ -1,11 +1,13 @@
+import { useQuery } from "@livestore/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Card, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { BookOpen, Play } from "lucide-react";
+import { CreateDeckDropdown } from "@/components/create-deck-dropdown";
+import { CardsState } from "@/components/deck-cards-state";
 import { NewDeckDialog } from "@/components/new-deck-dialog";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@livestore/react";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { allDecks$, cardsState$ } from "@/lib/livestore/queries";
-import { BookOpen, Play } from "lucide-react";
-import { CardsState } from "@/components/deck-cards-state";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -13,6 +15,7 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
   const decks = useQuery(allDecks$) || [];
+  const [isCreateDeckDialogOpen, setIsCreateDeckDialogOpen] = useState(false);
   const _deckCards = useQuery(cardsState$(decks.map((deck) => deck.id))) || [];
   const deckCards = _deckCards.reduce(
     (acc, card) => {
@@ -25,36 +28,38 @@ function RouteComponent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="mx-auto max-w-7xl p-6">
         <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 pb-6 border-b">
+          <div className="mb-6 flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-foreground">Your Decks</h1>
-              <p className="text-muted-foreground mt-2">
+              <h1 className="font-bold text-4xl text-foreground">Your Decks</h1>
+              <p className="mt-2 text-muted-foreground">
                 {decks.length === 0
                   ? "Create your first flashcard deck to get started"
                   : `Manage your ${decks.length} flashcard ${decks.length === 1 ? "deck" : "decks"}`}
               </p>
             </div>
-            <NewDeckDialog />
+            <CreateDeckDropdown />
           </div>
         </div>
         {decks.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="mx-auto w-24 h-24 border-2 border-dashed border-muted-foreground/30 rounded-2xl flex items-center justify-center mb-6">
-              <BookOpen className="w-12 h-12 text-muted-foreground" />
+          <div className="py-16 text-center">
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-2xl border-2 border-muted-foreground/30 border-dashed">
+              <BookOpen className="h-12 w-12 text-muted-foreground" />
             </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+            <h3 className="mb-2 font-semibold text-foreground text-xl">
               No decks yet
             </h3>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            <p className="mx-auto mb-6 max-w-md text-muted-foreground">
               Create your first flashcard deck to start learning. You can add
               cards, organize content, and track your progress.
             </p>
             <NewDeckDialog
+              open={isCreateDeckDialogOpen}
+              setOpen={setIsCreateDeckDialogOpen}
               trigger={
-                <Button size="lg">
-                  <BookOpen className="w-5 h-5 mr-2" />
+                <Button size="lg" onClick={() => setIsCreateDeckDialogOpen(true)}>
+                  <BookOpen className="mr-2 h-5 w-5" />
                   Create Your First Deck
                 </Button>
               }
@@ -66,23 +71,23 @@ function RouteComponent() {
               <Card key={deck.id} className="group">
                 <CardHeader className="px-3 py-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 border border-muted rounded flex items-center justify-center group-hover:border-foreground/20 transition-colors">
-                      <BookOpen className="w-3 h-3 text-muted-foreground" />
+                    <div className="flex h-5 w-5 items-center justify-center rounded border border-muted transition-colors group-hover:border-foreground/20">
+                      <BookOpen className="h-3 w-3 text-muted-foreground" />
                     </div>
-                    <CardTitle className="text-sm font-semibold text-foreground line-clamp-1">
+                    <CardTitle className="line-clamp-1 font-semibold text-foreground text-sm">
                       {deck.name}
                     </CardTitle>
                   </div>
                   <CardsState cards={deckCards[deck.id] || []} />
                 </CardHeader>
-                <CardFooter className="px-3 py-2 pt-0 border-t-0">
-                  <div className="flex gap-1 w-full">
-                    <Button asChild size="sm" className="flex-1 h-7 text-xs">
+                <CardFooter className="border-t-0 px-3 py-2 pt-0">
+                  <div className="flex w-full gap-1">
+                    <Button asChild size="sm" className="h-7 flex-1 text-xs">
                       <Link
-                        to={`/deck/$deckId/review`}
+                        to={"/deck/$deckId/review"}
                         params={{ deckId: deck.id }}
                       >
-                        <Play className="w-3 h-3 mr-1" />
+                        <Play className="mr-1 h-3 w-3" />
                         Study
                       </Link>
                     </Button>
@@ -90,10 +95,10 @@ function RouteComponent() {
                       asChild
                       variant="outline"
                       size="sm"
-                      className="flex-1 h-7 text-xs"
+                      className="h-7 flex-1 text-xs"
                     >
-                      <Link to={`/deck/$deckId`} params={{ deckId: deck.id }}>
-                        <BookOpen className="w-3 h-3 mr-1" />
+                      <Link to={"/deck/$deckId"} params={{ deckId: deck.id }}>
+                        <BookOpen className="mr-1 h-3 w-3" />
                         Manage
                       </Link>
                     </Button>

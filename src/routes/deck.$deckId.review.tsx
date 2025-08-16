@@ -1,11 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@livestore/react";
-import { deckById$, dueCards$ } from "@/lib/livestore/queries";
-import { CardReview } from "@/components/card-review";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen, Calendar } from "lucide-react";
+import { CardReview } from "@/components/card-review";
 import { CardsState } from "@/components/deck-cards-state";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { deckById$, dueCards$ } from "@/lib/livestore/queries";
 
 export const Route = createFileRoute("/deck/$deckId/review")({
   component: ReviewPage,
@@ -31,9 +31,9 @@ function ReviewPage() {
 
   if (!deck) {
     return (
-      <div className="max-w-6xl mx-auto py-8">
+      <div className="mx-auto max-w-6xl py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-muted-foreground">
+          <h1 className="font-bold text-2xl text-muted-foreground">
             Deck not found
           </h1>
           <Button
@@ -41,7 +41,7 @@ function ReviewPage() {
             className="mt-4"
             variant="outline"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Dashboard
           </Button>
         </div>
@@ -51,36 +51,36 @@ function ReviewPage() {
 
   if (dueCards.length <= 0) {
     return (
-      <div className="max-w-6xl mx-auto py-8 space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6 py-8">
         <div className="flex items-center gap-4">
           <Button
             onClick={() => navigate({ to: "/" })}
             variant="outline"
             size="sm"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Dashboard
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">{deck.name}</h1>
+            <h1 className="font-bold text-2xl">{deck.name}</h1>
             <p className="text-muted-foreground">Review Session</p>
           </div>
         </div>
-        <Card className="text-center py-12">
+        <Card className="py-12 text-center">
           <CardContent>
             <div className="space-y-4">
-              <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
-                <Calendar className="w-8 h-8 text-green-600" />
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                <Calendar className="h-8 w-8 text-green-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">All caught up!</h2>
-                <p className="text-muted-foreground mt-2">
+                <h2 className="font-semibold text-xl">All caught up!</h2>
+                <p className="mt-2 text-muted-foreground">
                   No cards are due for review right now.
                 </p>
               </div>
-              <div className="flex justify-center gap-4 mt-6">
+              <div className="mt-6 flex justify-center gap-4">
                 <Button onClick={() => navigate({ to: `/deck/${deckId}` })}>
-                  <BookOpen className="w-4 h-4 mr-2" />
+                  <BookOpen className="mr-2 h-4 w-4" />
                   View Deck
                 </Button>
                 <Button
@@ -98,14 +98,14 @@ function ReviewPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-8 space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6 py-8">
       <div className="flex items-center gap-4">
         <Button
           onClick={() => navigate({ to: "/" })}
           variant="outline"
           size="sm"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Dashboard
         </Button>
       </div>
@@ -125,7 +125,7 @@ function ReviewPage() {
           onComplete={handleCompleteReview}
         />
       ) : (
-        <div className="text-center py-8">
+        <div className="py-8 text-center">
           <p className="text-muted-foreground">Loading next card...</p>
         </div>
       )}

@@ -1,4 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
+import { Calendar } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -7,8 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Calendar } from "lucide-react";
 
 interface Card {
   id: string;
@@ -44,17 +44,20 @@ export function CardsList({ cards, deckId }: CardsListProps) {
   };
 
   const getCardStatus = (card: Card) => {
-    if (card.state === 0) return { label: 'New', variant: "secondary" as const };
-    else if (card.state === 1) return { label: 'Learning', variant: "default" as const };
-    else if (card.state === 2) return { label: 'Review', variant: "destructive" as const };
-    else return { label: 'Relearning', variant: 'secondary' as const };
+    if (card.state === 0)
+      return { label: "New", variant: "secondary" as const };
+    if (card.state === 1)
+      return { label: "Learning", variant: "default" as const };
+    if (card.state === 2)
+      return { label: "Review", variant: "destructive" as const };
+    return { label: "Relearning", variant: "secondary" as const };
   };
 
   if (cards.length === 0) {
     return (
-      <div className="text-center py-8">
+      <div className="py-8 text-center">
         <p className="text-muted-foreground">No cards found in this deck.</p>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="mt-1 text-muted-foreground text-sm">
           Click the "Add Card" button above to create your first card.
         </p>
       </div>
@@ -86,7 +89,7 @@ export function CardsList({ cards, deckId }: CardsListProps) {
                 <TableCell>{card.reps}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
+                    <Calendar className="h-3 w-3" />
                     {new Date(card.due).toLocaleDateString()}
                   </div>
                 </TableCell>

@@ -1,7 +1,14 @@
-import { fsrs, generatorParameters, createEmptyCard, type Card, Rating, type RecordLogItem } from 'ts-fsrs';
+import {
+  type Card,
+  createEmptyCard,
+  fsrs,
+  generatorParameters,
+  Rating,
+  type RecordLogItem,
+} from "ts-fsrs";
 
 // Configure FSRS parameters
-const params = generatorParameters({ 
+const params = generatorParameters({
   enable_fuzz: true,
   // You can customize other parameters here if needed
   // w: [0.4072, 1.1829, 3.1262, 15.4722, 7.2102, 0.5316, 1.0651, 0.0234, 1.616, 0.1544, 1.0824, 1.9813, 0.0953, 0.2975, 2.2042, 0.2407, 2.9466, 0.5034, 0.6567],
@@ -15,7 +22,11 @@ export function createNewCard(): Card {
 }
 
 // Get the next review for a card based on rating
-export function scheduleCard(card: Card, rating: number, reviewDate = new Date()) {
+export function scheduleCard(
+  card: Card,
+  rating: number,
+  reviewDate = new Date(),
+) {
   const results = fsrsScheduler.repeat(card, reviewDate);
   return results[rating as keyof typeof results] as RecordLogItem;
 }
@@ -69,7 +80,10 @@ export function getReviewTimePredictions(card: Card, reviewDate = new Date()) {
   };
 }
 
-export function formatReviewTime(futureDate: Date, currentDate = new Date()): string {
+export function formatReviewTime(
+  futureDate: Date,
+  currentDate = new Date(),
+): string {
   const diffMs = futureDate.getTime() - currentDate.getTime();
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));

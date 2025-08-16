@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
 import { useStore } from "@livestore/react";
+import { useNavigate } from "@tanstack/react-router";
+import { Edit3, Info, MoreVertical, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { EditDeckDialog } from "@/components/edit-deck-dialog";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { EditDeckDialog } from "@/components/edit-deck-dialog";
 import { events } from "@/server/livestore/schema";
-import { MoreVertical, Info, Edit3, Trash2 } from "lucide-react";
 import { useConfirmDialog } from "./providers/confirm-dialog";
 
 interface Deck {
@@ -39,18 +39,23 @@ export function DeckActionsMenu({ deck }: DeckActionsMenuProps) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button type="button" variant="ghost" size="sm" className="h-6 w-6 p-0">
-            <MoreVertical className="w-4 h-4" />
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+          >
+            <MoreVertical className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" sideOffset={4}>
           <DropdownMenuItem onClick={handleInfo}>
-            <Info className="w-4 h-4 mr-2" />
+            <Info className="mr-2 h-4 w-4" />
             Info
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
-            <Edit3 className="w-4 h-4 mr-2" />
+            <Edit3 className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
 
@@ -65,7 +70,7 @@ export function DeckActionsMenu({ deck }: DeckActionsMenuProps) {
             }
             className="text-destructive"
           >
-            <Trash2 className="w-4 h-4 mr-2" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -1,5 +1,6 @@
-import { useState } from "react";
 import { useStore } from "@livestore/react";
+import { useState } from "react";
+import { DeckForm, type DeckFormData } from "@/components/deck-form";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DeckForm, type DeckFormData } from "@/components/deck-form";
 import { events } from "@/server/livestore/schema";
 
 interface Deck {
@@ -25,7 +25,11 @@ interface EditDeckDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function EditDeckDialog({ deck, open, onOpenChange }: EditDeckDialogProps) {
+export function EditDeckDialog({
+  deck,
+  open,
+  onOpenChange,
+}: EditDeckDialogProps) {
   const { store } = useStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,9 +42,8 @@ export function EditDeckDialog({ deck, open, onOpenChange }: EditDeckDialogProps
           name: data.name.trim(),
           description: data.description?.trim() || "",
           updatedAt: new Date(),
-        })
+        }),
       );
-
 
       onOpenChange(false);
     } catch (error) {

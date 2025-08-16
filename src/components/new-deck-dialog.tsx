@@ -1,5 +1,8 @@
-import { useState } from "react";
 import { useStore } from "@livestore/react";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { DeckForm, type DeckFormData } from "@/components/deck-form";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,18 +11,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { DeckForm, type DeckFormData } from "@/components/deck-form";
 import { events } from "@/server/livestore/schema";
-import { Plus } from "lucide-react";
 
 interface NewDeckDialogProps {
   trigger?: React.ReactNode;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function NewDeckDialog({ trigger }: NewDeckDialogProps) {
+export function NewDeckDialog({ trigger, open, setOpen }: NewDeckDialogProps) {
   const { store } = useStore();
-  const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (data: DeckFormData) => {
@@ -28,7 +29,7 @@ export function NewDeckDialog({ trigger }: NewDeckDialogProps) {
       const now = new Date();
       const id = crypto.randomUUID();
       const userId = "user1"; // TODO: Get from auth context
-      
+
       store.commit(
         events.deckCreated({
           id,
@@ -37,7 +38,7 @@ export function NewDeckDialog({ trigger }: NewDeckDialogProps) {
           description: data.description?.trim() || "",
           createdAt: now,
           updatedAt: now,
-        })
+        }),
       );
 
       setOpen(false);
@@ -55,14 +56,16 @@ export function NewDeckDialog({ trigger }: NewDeckDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || (
+      {trigger === undefined ? (
+        <DialogTrigger asChild>
           <Button>
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             New Deck
           </Button>
-        )}
-      </DialogTrigger>
+        </DialogTrigger>
+      ) : (
+        trigger
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Deck</DialogTitle>

@@ -1,8 +1,6 @@
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,10 +11,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export const deckFormSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
-  description: z.string().max(500, "Description must be less than 500 characters").optional(),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(100, "Name must be less than 100 characters"),
+  description: z
+    .string()
+    .max(500, "Description must be less than 500 characters")
+    .optional(),
 });
 
 export type DeckFormData = z.infer<typeof deckFormSchema>;
@@ -29,12 +35,12 @@ interface DeckFormProps {
   isLoading?: boolean;
 }
 
-export function DeckForm({ 
-  initialData, 
-  onSubmit, 
-  onCancel, 
+export function DeckForm({
+  initialData,
+  onSubmit,
+  onCancel,
   submitLabel = "Submit",
-  isLoading = false 
+  isLoading = false,
 }: DeckFormProps) {
   const form = useForm<DeckFormData>({
     resolver: zodResolver(deckFormSchema),
@@ -69,7 +75,7 @@ export function DeckForm({
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="description"
@@ -77,10 +83,10 @@ export function DeckForm({
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea 
-                    placeholder="Enter deck description..." 
+                  <Textarea
+                    placeholder="Enter deck description..."
                     rows={3}
-                    {...field} 
+                    {...field}
                   />
                 </FormControl>
                 <FormDescription>
@@ -91,7 +97,7 @@ export function DeckForm({
             )}
           />
         </div>
-        
+
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button
             type="button"
@@ -101,11 +107,13 @@ export function DeckForm({
           >
             Cancel
           </Button>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={isLoading || form.formState.isSubmitting}
           >
-            {isLoading || form.formState.isSubmitting ? "Loading..." : submitLabel}
+            {isLoading || form.formState.isSubmitting
+              ? "Loading..."
+              : submitLabel}
           </Button>
         </div>
       </form>

@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@livestore/react";
-import { cardById$ } from "@/lib/livestore/queries";
+import { createFileRoute } from "@tanstack/react-router";
 import { CardEditor } from "@/components/card-editor";
+import { cardById$ } from "@/lib/livestore/queries";
 
 export const Route = createFileRoute("/deck/$deckId/card/$cardId/edit")({
   component: EditCardPage,

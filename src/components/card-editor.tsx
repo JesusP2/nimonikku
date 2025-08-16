@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useQuery, useStore } from "@livestore/react";
 import { useNavigate } from "@tanstack/react-router";
-import { useStore, useQuery } from "@livestore/react";
+import { ArrowLeft, RotateCcw, Save } from "lucide-react";
+import { useState } from "react";
+import { MarkdownEditor } from "@/components/markdown-editor";
+import { Button } from "@/components/ui/button";
+import { createNewCard, fromFSRSCard } from "@/lib/fsrs";
 import { deckById$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
-import { Button } from "@/components/ui/button";
-import { MarkdownEditor } from "@/components/markdown-editor";
-import { createNewCard, fromFSRSCard } from "@/lib/fsrs";
-import { ArrowLeft, RotateCcw, Save } from "lucide-react";
 
 interface CardData {
   id: string;
@@ -46,7 +46,11 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleClearCard = () => {
-    if (confirm("Are you sure you want to clear this card? This will reset both sides.")) {
+    if (
+      confirm(
+        "Are you sure you want to clear this card? This will reset both sides.",
+      )
+    ) {
       setFrontMarkdown("");
       setBackMarkdown("");
     }
@@ -63,32 +67,36 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
       if (mode === "create") {
         const now = new Date();
         const id = crypto.randomUUID();
-        
+
         // Create a new card using FSRS
         const newFSRSCard = createNewCard();
         const fsrsData = fromFSRSCard(newFSRSCard);
-        
-        store.commit(events.cardCreated({
-          id,
-          deckId,
-          frontMarkdown: frontMarkdown.trim(),
-          backMarkdown: backMarkdown.trim(),
-          rating: 0,
-          frontFiles: "",
-          backFiles: "",
-          ...fsrsData,
-          createdAt: now,
-          updatedAt: now,
-        }));
+
+        store.commit(
+          events.cardCreated({
+            id,
+            deckId,
+            frontMarkdown: frontMarkdown.trim(),
+            backMarkdown: backMarkdown.trim(),
+            rating: 0,
+            frontFiles: "",
+            backFiles: "",
+            ...fsrsData,
+            createdAt: now,
+            updatedAt: now,
+          }),
+        );
       } else if (mode === "edit" && cardId) {
-        store.commit(events.cardUpdated({
-          id: cardId,
-          frontMarkdown: frontMarkdown.trim(),
-          backMarkdown: backMarkdown.trim(),
-          frontFiles: "",
-          backFiles: "",
-          updatedAt: new Date(),
-        }));
+        store.commit(
+          events.cardUpdated({
+            id: cardId,
+            frontMarkdown: frontMarkdown.trim(),
+            backMarkdown: backMarkdown.trim(),
+            frontFiles: "",
+            backFiles: "",
+            updatedAt: new Date(),
+          }),
+        );
       }
 
       navigate({ to: `/deck/${deckId}` });
@@ -109,14 +117,14 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto py-8 space-y-6">
+    <div className="mx-auto max-w-6xl space-y-6 py-8">
       <div className="flex items-center gap-4">
         <Button onClick={handleCancel} variant="outline" size="sm">
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Deck
         </Button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold">
+          <h1 className="font-bold text-2xl">
             {mode === "create" ? "Create New Card" : "Edit Card"}
           </h1>
           <p className="text-muted-foreground">Deck: {deck.name}</p>
@@ -125,13 +133,17 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
 
       <div className="flex gap-2">
         <Button onClick={handleClearCard} variant="outline">
-          <RotateCcw className="w-4 h-4 mr-2" />
+          <RotateCcw className="mr-2 h-4 w-4" />
           Clear Card
         </Button>
         <div className="flex-1" />
         <Button onClick={handleSave} disabled={isSubmitting}>
-          <Save className="w-4 h-4 mr-2" />
-          {isSubmitting ? "Saving..." : mode === "create" ? "Create Card" : "Update Card"}
+          <Save className="mr-2 h-4 w-4" />
+          {isSubmitting
+            ? "Saving..."
+            : mode === "create"
+              ? "Create Card"
+              : "Update Card"}
         </Button>
       </div>
       <MarkdownEditor

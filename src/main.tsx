@@ -35,8 +35,8 @@ const router = createRouter({
           <IsOnlineProvider>
             <AuthProvider>
               <ConfirmDialogProvider>
-                  {children}
-                  <Toaster richColors />
+                {children}
+                <Toaster richColors />
               </ConfirmDialogProvider>
             </AuthProvider>
           </IsOnlineProvider>

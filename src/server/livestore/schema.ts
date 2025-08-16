@@ -189,17 +189,11 @@ const materializers = State.SQLite.materializers(events, {
       userId,
       name,
       description,
-      ai: ai ?? 'global',
+      ai: ai ?? "global",
       createdAt,
       updatedAt,
     }),
-  "v1.DeckUpdated": ({
-    id,
-    name,
-    description,
-    ai,
-    updatedAt,
-  }) =>
+  "v1.DeckUpdated": ({ id, name, description, ai, updatedAt }) =>
     tables.deck
       .update({
         ...(name !== undefined && { name }),
@@ -208,8 +202,10 @@ const materializers = State.SQLite.materializers(events, {
         updatedAt,
       })
       .where({ id }),
-  "v1.DeckDeleted": ({ id }) => tables.deck.delete().where({ id }),
-
+  "v1.DeckDeleted": ({ id }) => [
+    tables.card.delete().where({ deckId: id }),
+    tables.deck.delete().where({ id }),
+  ],
   // Card materializers
   "v1.CardCreated": ({
     id,

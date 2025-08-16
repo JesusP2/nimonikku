@@ -4,12 +4,12 @@ import {
   handleWebSocket,
   makeDurableObject,
 } from "@livestore/sync-cf/cf-worker";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { generateText } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { auth } from "./auth";
-import { generateText } from "ai";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { appRouter } from "./routers";
 import { createContext } from "./trpc/context";
 
@@ -65,7 +65,7 @@ app.post("/api/ai/rephrase", async (c) => {
 
     try {
       const openrouter = createOpenRouter({
-        apiKey:"test"
+        apiKey: "test",
       });
 
       const { text } = await generateText({

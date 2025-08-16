@@ -1,10 +1,10 @@
+import { RefreshCw } from "lucide-react";
 import { useState } from "react";
+import { MarkdownRenderer } from "@/components/markdown-renderer";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { MarkdownRenderer } from "@/components/markdown-renderer";
-import { RefreshCw } from "lucide-react";
 
 interface MarkdownEditorProps {
   frontMarkdown: string;
@@ -21,8 +21,10 @@ export function MarkdownEditor({
 }: MarkdownEditorProps) {
   const [currentSide, setCurrentSide] = useState<"front" | "back">("front");
 
-  const currentMarkdown = currentSide === "front" ? frontMarkdown : backMarkdown;
-  const setCurrentMarkdown = currentSide === "front" ? onFrontChange : onBackChange;
+  const currentMarkdown =
+    currentSide === "front" ? frontMarkdown : backMarkdown;
+  const setCurrentMarkdown =
+    currentSide === "front" ? onFrontChange : onBackChange;
 
   const handleFlipCard = () => {
     setCurrentSide(currentSide === "front" ? "back" : "front");
@@ -30,14 +32,14 @@ export function MarkdownEditor({
 
   return (
     <>
-      <div className="flex justify-center items-center gap-4">
+      <div className="flex items-center justify-center gap-4">
         <Button onClick={handleFlipCard} variant="outline">
-          <RefreshCw className="w-4 h-4 mr-2" />
+          <RefreshCw className="mr-2 h-4 w-4" />
           Flip Card ({currentSide === "front" ? "Back" : "Front"})
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Markdown Editor</CardTitle>
@@ -57,11 +59,13 @@ export function MarkdownEditor({
             <CardTitle>Preview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="min-h-[400px] p-4 border rounded-md bg-muted/20">
+            <div className="min-h-[400px] rounded-md border bg-muted/20 p-4">
               {currentMarkdown.trim() ? (
                 <MarkdownRenderer content={currentMarkdown} />
               ) : (
-                <p className="text-muted-foreground italic">Preview will appear here...</p>
+                <p className="text-muted-foreground italic">
+                  Preview will appear here...
+                </p>
               )}
             </div>
           </CardContent>

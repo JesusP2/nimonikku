@@ -1,23 +1,22 @@
+import { useQuery, useStore } from "@livestore/react";
+import { Eye } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useStore } from "@livestore/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { ratings } from "@/lib/constants";
 import {
-  scheduleCard,
-  toFSRSCard,
+  formatReviewTime,
   fromFSRSCard,
   getReviewTimePredictions,
-  formatReviewTime,
+  scheduleCard,
+  toFSRSCard,
 } from "@/lib/fsrs";
-import { events } from "@/server/livestore/schema";
-import { Eye } from "lucide-react";
-import { ratings } from "@/lib/constants";
-import { useQuery } from "@livestore/react";
 import { deckById$, userSettings$ } from "@/lib/livestore/queries";
+import { events } from "@/server/livestore/schema";
 import { useIsOnline } from "./providers/is-online";
-import { toast } from "sonner";
 
 interface CardData {
   id: string;
@@ -68,7 +67,9 @@ export function CardReview({ card, onNext }: CardReviewProps) {
     const controller = new AbortController();
     const fetchRephrased = async () => {
       if (!isOnline) {
-        toast.message("AI rephrasing unavailable offline—using original question.");
+        toast.message(
+          "AI rephrasing unavailable offline—using original question.",
+        );
       }
       if (!rephraseCard || !isOnline) {
         setRephrasedQuestion(null);
@@ -84,7 +85,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
         setRephrasedQuestion(null);
         return;
       }
-      const data = await res.json() as { outputText: string } | null;
+      const data = (await res.json()) as { outputText: string } | null;
       if (res.ok && data?.outputText) {
         setRephrasedQuestion(String(data.outputText));
       } else {
@@ -97,15 +98,15 @@ export function CardReview({ card, onNext }: CardReviewProps) {
 
   const reviewTimes = showBack
     ? (() => {
-      const fsrsCard = toFSRSCard(card);
-      const predictions = getReviewTimePredictions(fsrsCard);
-      return {
-        again: formatReviewTime(predictions.again),
-        hard: formatReviewTime(predictions.hard),
-        good: formatReviewTime(predictions.good),
-        easy: formatReviewTime(predictions.easy),
-      };
-    })()
+        const fsrsCard = toFSRSCard(card);
+        const predictions = getReviewTimePredictions(fsrsCard);
+        return {
+          again: formatReviewTime(predictions.again),
+          hard: formatReviewTime(predictions.hard),
+          good: formatReviewTime(predictions.good),
+          easy: formatReviewTime(predictions.easy),
+        };
+      })()
     : null;
 
   const handleRating = async (rating: number) => {
@@ -138,7 +139,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6">
       <Card className="min-h-[400px]">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -148,7 +149,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
                 variant="outline"
                 className="ml-4"
               >
-                <Eye className="w-4 h-4 mr-2" />
+                <Eye className="mr-2 h-4 w-4" />
                 Show Answer
               </Button>
             )}
@@ -161,7 +162,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
                 content={rephrasedQuestion || card.frontMarkdown}
               />
               {rephrasedQuestion && (
-                <div className="text-xs text-muted-foreground">
+                <div className="text-muted-foreground text-xs">
                   AI Rephrased
                 </div>
               )}
@@ -169,7 +170,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
           ) : (
             <div className="space-y-6">
               <div>
-                <h4 className="font-medium mb-2 text-muted-foreground">
+                <h4 className="mb-2 font-medium text-muted-foreground">
                   Question:
                 </h4>
                 <MarkdownRenderer
@@ -178,7 +179,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
               </div>
               <Separator />
               <div>
-                <h4 className="font-medium mb-2 text-muted-foreground">
+                <h4 className="mb-2 font-medium text-muted-foreground">
                   Answer:
                 </h4>
                 <MarkdownRenderer content={card.backMarkdown} />
@@ -188,14 +189,14 @@ export function CardReview({ card, onNext }: CardReviewProps) {
         </CardContent>
       </Card>
       {showBack && reviewTimes && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <Button
             onClick={() => handleRating(ratings.AGAIN)}
             disabled={isSubmitting}
             variant="destructive"
             className="h-16 flex-col"
           >
-            <span className="text-lg font-bold">Again</span>
+            <span className="font-bold text-lg">Again</span>
             <span className="text-xs opacity-75">{reviewTimes.again}</span>
           </Button>
 
@@ -205,7 +206,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
             variant="secondary"
             className="h-16 flex-col"
           >
-            <span className="text-lg font-bold">Hard</span>
+            <span className="font-bold text-lg">Hard</span>
             <span className="text-xs opacity-75">{reviewTimes.hard}</span>
           </Button>
 
@@ -215,7 +216,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
             variant="default"
             className="h-16 flex-col"
           >
-            <span className="text-lg font-bold">Good</span>
+            <span className="font-bold text-lg">Good</span>
             <span className="text-xs opacity-75">{reviewTimes.good}</span>
           </Button>
 
@@ -225,14 +226,14 @@ export function CardReview({ card, onNext }: CardReviewProps) {
             variant="outline"
             className="h-16 flex-col"
           >
-            <span className="text-lg font-bold">Easy</span>
+            <span className="font-bold text-lg">Easy</span>
             <span className="text-xs opacity-75">{reviewTimes.easy}</span>
           </Button>
         </div>
       )}
 
       {isSubmitting && (
-        <div className="text-center py-4">
+        <div className="py-4 text-center">
           <div className="text-muted-foreground">Processing review...</div>
         </div>
       )}

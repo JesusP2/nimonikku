@@ -1,3 +1,4 @@
+import type { VariantProps } from "class-variance-authority";
 import { createContext, type ReactNode, useContext, useState } from "react";
 import {
   Dialog,
@@ -7,8 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button, buttonVariants } from "../ui/button";
-import type { VariantProps } from "class-variance-authority";
+import { Button, type buttonVariants } from "../ui/button";
 
 type ConfirmFnProps = {
   title: ReactNode;
