@@ -74,11 +74,13 @@ function DeckInfoPage() {
                     "Are you sure you want to delete this deck? This action cannot be undone.",
                   handleConfirm: () => {
                     navigate({ to: "/" });
-                    store.commit(
-                      events.deckDeleted({
-                        id: deck.id,
-                      }),
-                    );
+                    setTimeout(() => {
+                      store.commit(
+                        events.deckDeleted({
+                          id: deck.id,
+                        }),
+                      );
+                    }, 100);
                   },
                 })
               }

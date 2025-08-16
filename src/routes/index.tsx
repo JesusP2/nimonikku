@@ -58,7 +58,10 @@ function RouteComponent() {
               open={isCreateDeckDialogOpen}
               setOpen={setIsCreateDeckDialogOpen}
               trigger={
-                <Button size="lg" onClick={() => setIsCreateDeckDialogOpen(true)}>
+                <Button
+                  size="lg"
+                  onClick={() => setIsCreateDeckDialogOpen(true)}
+                >
                   <BookOpen className="mr-2 h-5 w-5" />
                   Create Your First Deck
                 </Button>
