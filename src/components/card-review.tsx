@@ -1,5 +1,5 @@
 import { useQuery, useStore } from "@livestore/react";
-import { Eye } from "lucide-react";
+import { Eye, LoaderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
@@ -51,9 +51,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
   const { store } = useStore();
   const [showBack, setShowBack] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [rephrasedQuestion, setRephrasedQuestion] = useState<string | null>(
-    null,
-  );
+  const [rephrasedText, setRephrasedText] = useState<string | null>(null);
   const deck = useQuery(deckById$(card.deckId))?.[0];
   const settings = useQuery(userSettings$)?.[0];
   const { isOnline } = useIsOnline();
@@ -68,9 +66,9 @@ export function CardReview({ card, onNext }: CardReviewProps) {
 
   useEffect(() => {
     if (query.isSuccess) {
-      setRephrasedQuestion(query.data.outputText);
+      setRephrasedText(query.data.outputText);
     } else if (query.isError) {
-      setRephrasedQuestion(null);
+      setRephrasedText(null);
       toast.error("Failed to fetch AI rephrased question.");
     }
   }, [query.isLoading]);
@@ -144,10 +142,14 @@ export function CardReview({ card, onNext }: CardReviewProps) {
         <CardContent className="min-h-[300px]">
           {!showBack ? (
             <div className="space-y-2">
-              <MarkdownRenderer
-                content={rephrasedQuestion || card.frontMarkdown}
-              />
-              {rephrasedQuestion && (
+              {query.isLoading ? (
+                <LoaderIcon className="h-4 w-4 animate-spin" />
+              ) : (
+                <MarkdownRenderer
+                  content={rephrasedText || card.frontMarkdown}
+                />
+              )}
+              {rephrasedText && (
                 <div className="text-muted-foreground text-xs">
                   AI Rephrased
                 </div>
@@ -159,9 +161,13 @@ export function CardReview({ card, onNext }: CardReviewProps) {
                 <h4 className="mb-2 font-medium text-muted-foreground">
                   Question:
                 </h4>
-                <MarkdownRenderer
-                  content={rephrasedQuestion || card.frontMarkdown}
-                />
+                {query.isLoading ? (
+                  <LoaderIcon className="h-4 w-4 animate-spin" />
+                ) : (
+                  <MarkdownRenderer
+                    content={rephrasedText || card.frontMarkdown}
+                  />
+                )}
               </div>
               <Separator />
               <div>
