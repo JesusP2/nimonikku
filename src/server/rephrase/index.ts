@@ -2,6 +2,7 @@ import * as z from "zod";
 import { os } from "@orpc/server";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { generateText } from "ai";
+import { env } from "cloudflare:workers";
 
 export const rephraseTextSchema = z.object({
   text: z.string().min(1),
@@ -11,7 +12,7 @@ export const rephraseText = os
   .input(rephraseTextSchema)
   .handler(async ({ input }) => {
     const openrouter = createOpenRouter({
-      apiKey: "test",
+      apiKey: env.OPENROUTER_KEY,
     });
 
     const { text } = await generateText({

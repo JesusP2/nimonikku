@@ -1,6 +1,6 @@
 import { useQuery, useStore } from "@livestore/react";
 import { Eye } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ import {
 import { deckById$, userSettings$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
 import { useIsOnline } from "./providers/is-online";
+import { useQuery as useTanstackQuery } from "@tanstack/react-query";
+import { orpcQuery } from "@/lib/orpc";
 
 interface CardData {
   id: string;
@@ -55,6 +57,23 @@ export function CardReview({ card, onNext }: CardReviewProps) {
   const deck = useQuery(deckById$(card.deckId))?.[0];
   const settings = useQuery(userSettings$)?.[0];
   const { isOnline } = useIsOnline();
+  const query = useTanstackQuery({
+    enabled: card.frontMarkdown.length > 0 && shouldRephrase() && isOnline,
+    ...orpcQuery.rephraseText.queryOptions({
+      input: {
+        text: card.frontMarkdown,
+      },
+    }),
+  });
+
+  useEffect(() => {
+    if (query.isSuccess) {
+      setRephrasedQuestion(query.data.outputText);
+    } else if (query.isError) {
+      setRephrasedQuestion(null);
+      toast.error("Failed to fetch AI rephrased question.");
+    }
+  }, [query.isLoading]);
 
   function shouldRephrase() {
     if (deck?.ai !== "global") {
@@ -62,51 +81,18 @@ export function CardReview({ card, onNext }: CardReviewProps) {
     }
     return settings.enableAI;
   }
-  const rephraseCard = shouldRephrase();
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchRephrased = async () => {
-      if (!isOnline) {
-        toast.message(
-          "AI rephrasing unavailable offline—using original question.",
-        );
-      }
-      if (!rephraseCard || !isOnline) {
-        setRephrasedQuestion(null);
-        return;
-      }
-      const res = await fetch("/api/ai/rephrase", {
-        method: "POST",
-        body: JSON.stringify({ text: card.frontMarkdown }),
-        signal: controller.signal,
-      });
-      if (!res.ok) {
-        toast.message("Failed to fetch AI rephrased question.");
-        setRephrasedQuestion(null);
-        return;
-      }
-      const data = (await res.json()) as { outputText: string } | null;
-      if (res.ok && data?.outputText) {
-        setRephrasedQuestion(String(data.outputText));
-      } else {
-        setRephrasedQuestion(null);
-      }
-    };
-    fetchRephrased();
-    return () => controller.abort();
-  }, [card.id, card.frontMarkdown, isOnline]);
 
   const reviewTimes = showBack
     ? (() => {
-        const fsrsCard = toFSRSCard(card);
-        const predictions = getReviewTimePredictions(fsrsCard);
-        return {
-          again: formatReviewTime(predictions.again),
-          hard: formatReviewTime(predictions.hard),
-          good: formatReviewTime(predictions.good),
-          easy: formatReviewTime(predictions.easy),
-        };
-      })()
+      const fsrsCard = toFSRSCard(card);
+      const predictions = getReviewTimePredictions(fsrsCard);
+      return {
+        again: formatReviewTime(predictions.again),
+        hard: formatReviewTime(predictions.hard),
+        good: formatReviewTime(predictions.good),
+        easy: formatReviewTime(predictions.easy),
+      };
+    })()
     : null;
 
   const handleRating = async (rating: number) => {
