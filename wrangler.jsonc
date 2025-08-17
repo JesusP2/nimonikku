@@ -16,6 +16,10 @@
       {
         "name": "NimonikkuDO",
         "class_name": "NimonikkuDO"
+      },
+      {
+        "name": "CACHE",
+        "class_name": "DurableObjectRateLimiter"
       }
     ]
   },

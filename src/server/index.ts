@@ -1,4 +1,4 @@
-import type { env } from "cloudflare:workers";
+import { env } from "cloudflare:workers";
 import {
   handleWebSocket,
   makeDurableObject,
@@ -8,6 +8,9 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { auth } from "./auth";
 import { handler } from "./orpc";
+import { rateLimiter } from "hono-rate-limiter";
+import { DurableObjectStore } from "@hono-rate-limiter/cloudflare";
+export { DurableObjectRateLimiter } from "@hono-rate-limiter/cloudflare";
 
 export class NimonikkuDO extends makeDurableObject({
   onPush: async (message) => {
@@ -20,6 +23,16 @@ export class NimonikkuDO extends makeDurableObject({
 
 const app = new Hono<{ Bindings: typeof env }>();
 
+app.use((c, next) =>
+  rateLimiter<{ Bindings: typeof env }>({
+    windowMs: 60,
+    limit: 60,
+    standardHeaders: "draft-6", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+    keyGenerator: (c) => c.req.header("cf-connecting-ip") ?? "",
+    store: new DurableObjectStore({ namespace: c.env.CACHE }),
+  })(c, next)
+);
+
 app.use(logger());
 app.use(
   "/*",
@@ -30,7 +43,6 @@ app.use(
     credentials: true,
   }),
 );
-
 app.get("/websocket", (c) => {
   return handleWebSocket(c.req.raw, c.env, c.executionCtx, {
     validatePayload: (payload: any) => {
