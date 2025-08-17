@@ -5,13 +5,12 @@ import {
   admin,
   anonymous,
   magicLink,
-  oneTap,
   oneTimeToken,
 } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import { Resend } from "resend";
 import { db } from "@/server/db";
-import * as schema from "./db/schema/auth";
+import * as schema from "../db/schema/auth";
 import { magicLinkTemplate } from "./emails/magic-link";
 import { forgotPasswordTemplate } from "./emails/otp";
 

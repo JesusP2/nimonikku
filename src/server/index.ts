@@ -1,17 +1,13 @@
 import type { env } from "cloudflare:workers";
-import { trpcServer } from "@hono/trpc-server";
 import {
   handleWebSocket,
   makeDurableObject,
 } from "@livestore/sync-cf/cf-worker";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { generateText } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { auth } from "./auth";
-import { appRouter } from "./routers";
-import { createContext } from "./trpc/context";
+import { handler } from "./orpc";
 
 export class NimonikkuDO extends makeDurableObject({
   onPush: async (message) => {
@@ -49,58 +45,19 @@ app.get("/websocket", (c) => {
   });
 });
 
-// Lightweight connectivity endpoint for online checks
 app.get("/api/ping", (c) => c.json({ ok: true }));
-
-app.post("/api/ai/rephrase", async (c) => {
-  try {
-    const { text: inputText } = await c.req.json<{ text: string }>();
-    if (
-      !inputText ||
-      typeof inputText !== "string" ||
-      inputText.trim().length === 0
-    ) {
-      return c.json({ error: "Missing question" }, 400);
-    }
-
-    try {
-      const openrouter = createOpenRouter({
-        apiKey: "test",
-      });
-
-      const { text } = await generateText({
-        model: openrouter("google/gemma-2-9b-it"),
-        prompt: `Rewrite this question in a different way. Return only the question, no extra symbols no extra words, only the rephrased question:\n\n${inputText}`,
-      });
-
-      const outputText = (text || "").trim();
-      if (outputText.length > 0) {
-        return c.json({ outputText });
-      }
-    } catch (err) {
-      console.error("OpenRouter rephrase failed:", err);
-    }
-    return c.json({ outputText: inputText });
-  } catch (error) {
-    console.error(error);
-    return c.json({ error: "Bad Request" }, 400);
-  }
-});
-
 app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
+app.use("/api/*", async (c, next) => {
+  const { matched, response } = await handler.handle(c.req.raw, {
+    prefix: "/api",
+    context: {},
+  });
 
-app.use(
-  "/trpc/*",
-  trpcServer({
-    router: appRouter,
-    createContext: (_opts, context) => {
-      return createContext({ context });
-    },
-  }),
-);
+  if (matched) {
+    return c.newResponse(response.body, response);
+  }
 
-app.get("/", (c) => {
-  return c.text("OK");
+  await next();
 });
 
 export default app;

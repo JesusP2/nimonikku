@@ -4,11 +4,9 @@ import {
   Link,
   Outlet,
 } from "@tanstack/react-router";
-import type { trpc } from "@/utils/trpc";
 import "../index.css";
 
 export interface RouterAppContext {
-  trpc: typeof trpc;
   queryClient: QueryClient;
 }
 

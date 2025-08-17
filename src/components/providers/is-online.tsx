@@ -1,3 +1,4 @@
+import { client } from "@/lib/orpc";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type IsOnlineProviderProps = {
@@ -44,13 +45,11 @@ export function IsOnlineProvider({
 
       setIsChecking(true);
       try {
-        // Use a cache-busting parameter to ensure we're actually testing network connectivity
-        const response = await fetch("/api/ping", {
-          method: "GET",
-          cache: "no-store",
+        const res = await client.ping(undefined, {
           signal: AbortSignal.timeout(5000),
-        });
-        setIsOnline(response.ok);
+        })
+        console.log(res)
+        setIsOnline(res.ok);
       } catch {
         setIsOnline(false);
       } finally {
