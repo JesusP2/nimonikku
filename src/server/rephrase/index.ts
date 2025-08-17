@@ -15,7 +15,11 @@ export const rephraseText = os
     });
 
     const { text } = await generateText({
-      model: openrouter("google/gemma-2-9b-it"),
+      model: openrouter("meta-llama/llama-3.2-3b-instruct", {
+        provider: {
+          order: ["lambda/bf16"],
+        },
+      }),
       prompt: `Rewrite this question in a different way. Return only the question, no extra symbols no extra words, only the rephrased question:\n\n${input.text}`,
     });
 
@@ -24,4 +28,4 @@ export const rephraseText = os
       return { outputText };
     }
     throw new Error("No output text");
-  })
+  });

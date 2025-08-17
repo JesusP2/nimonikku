@@ -56,6 +56,9 @@ importers:
       '@orpc/server':
         specifier: ^1.8.1
         version: 1.8.1(@opentelemetry/api@1.9.0)(ws@8.18.2)
+      '@orpc/tanstack-query':
+        specifier: ^1.8.1
+        version: 1.8.1(@opentelemetry/api@1.9.0)(@orpc/client@1.8.1(@opentelemetry/api@1.9.0))(@tanstack/query-core@5.81.2)
       '@radix-ui/react-accordion':
         specifier: ^1.2.11
         version: 1.2.11(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2179,6 +2182,12 @@ packages:
 
   '@orpc/standard-server@1.8.1':
     resolution: {integrity: sha512-SgVoxnmRAhrF0usZcz72F8FcneM4Rp+UYMhggwwnCEtjKtKXddg89J/to2bkpH/P5x8JMVI/uE2YXRG8CtU6Cg==}
+
+  '@orpc/tanstack-query@1.8.1':
+    resolution: {integrity: sha512-bsjT499Ql0Ln7iEHiLjwFXc6Ig6EJg4Dtaj0L30ssOr2KVVfrW8B+BdqlJYFSmfDx2mPbmZoyMfc6bwNgJVnKA==}
+    peerDependencies:
+      '@orpc/client': 1.8.1
+      '@tanstack/query-core': '>=5.80.2'
 
   '@parcel/watcher-android-arm64@2.5.1':
     resolution: {integrity: sha512-KF8+j9nNbUN8vzOFDpRMsaKBHZ/mcjEjMToVMJOhTozkDonQFFrRcfdLWn6yWKCmJKmdVxSgHiYvTCef4/qcBA==}
@@ -8795,6 +8804,14 @@ snapshots:
   '@orpc/standard-server@1.8.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@orpc/shared': 1.8.1(@opentelemetry/api@1.9.0)
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+
+  '@orpc/tanstack-query@1.8.1(@opentelemetry/api@1.9.0)(@orpc/client@1.8.1(@opentelemetry/api@1.9.0))(@tanstack/query-core@5.81.2)':
+    dependencies:
+      '@orpc/client': 1.8.1(@opentelemetry/api@1.9.0)
+      '@orpc/shared': 1.8.1(@opentelemetry/api@1.9.0)
+      '@tanstack/query-core': 5.81.2
     transitivePeerDependencies:
       - '@opentelemetry/api'
 
