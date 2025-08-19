@@ -10,6 +10,7 @@ import { auth } from "./auth";
 import { handler } from "./orpc";
 import { rateLimiter } from "hono-rate-limiter";
 import { DurableObjectStore } from "@hono-rate-limiter/cloudflare";
+import { uploadRouter } from "./file-storage";
 export { DurableObjectRateLimiter } from "@hono-rate-limiter/cloudflare";
 
 export class NimonikkuDO extends makeDurableObject({
@@ -59,6 +60,10 @@ app.get("/websocket", (c) => {
 
 app.get("/api/ping", (c) => c.json({ ok: true }));
 app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
+
+app.get('/api/upload/*', (c) => uploadRouter.handlers.GET(c.req.raw));
+app.post('/api/upload/*', (c) => uploadRouter.handlers.POST(c.req.raw));
+
 app.use("/api/*", async (c, next) => {
   const { matched, response } = await handler.handle(c.req.raw, {
     prefix: "/api",

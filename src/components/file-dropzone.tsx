@@ -2,13 +2,27 @@ import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Upload, File, ImageIcon, Loader2, X } from "lucide-react"
+import { useUploadRoute } from 'pushduck/client';
 import { cn } from "@/lib/utils"
+import type { AppUploadRouter } from "@/server/file-storage";
 
 interface FileWithPreview extends File {
   preview?: string
 }
 
 export function FileDropzone() {
+  const { uploadFiles } = useUploadRoute<AppUploadRouter>('imageUpload', {
+    endpoint: '/api/upload',
+    onProgress: (progress) => {
+      console.log('onProgress', Date.now(), progress)
+    },
+    onSuccess: (data) => {
+      console.log('onSuccess', Date.now(), data)
+    },
+    onError: (error) => {
+      console.log('onError', Date.now(), error)
+    },
+  });
   const [file, setFile] = useState<FileWithPreview | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
@@ -42,6 +56,7 @@ export function FileDropzone() {
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
+    console.log('handleFileSelect', selectedFile)
     if (selectedFile) {
       const fileWithPreview = selectedFile as FileWithPreview
 
@@ -58,13 +73,7 @@ export function FileDropzone() {
     if (!file) return
 
     setIsUploading(true)
-
-    // Simulate upload delay
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    // Here you would typically upload to your server
-    console.log("Uploading file:", file.name)
-
+    uploadFiles([file])
     setIsUploading(false)
     // Reset after successful upload
     setFile(null)
