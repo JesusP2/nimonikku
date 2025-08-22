@@ -6,5 +6,5 @@ export const importDeckSchema = z.file();
 export const importDeck = os
   .input(importDeckSchema)
   .handler(async ({ input }) => {
-    console.error("input error", input.name);
+    console.log("input", input.name);
   });

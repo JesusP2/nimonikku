@@ -59,10 +59,8 @@ app.get("/websocket", (c) => {
   });
 });
 
-app.get("/debug-sentry", (c) => {
-  throw new Error("error - pong");
-  return c.json({ text: "pong" });
-});
+app.get("/api/ping", (c) => c.json({ text: "pong" }));
+
 app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
 
 app.get("/api/upload/*", (c) => uploadRouter.handlers.GET(c.req.raw));
