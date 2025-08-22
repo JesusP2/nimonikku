@@ -22,7 +22,6 @@ export function ImportDeckDialog({
 
   const handleSubmit = async (file: File) => {
     setIsSubmitting(true);
-    // throw new Error("Not implemented");
     try {
       // const now = new Date();
       // const id = crypto.randomUUID();
