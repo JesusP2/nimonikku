@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@daveyplate/better-auth-ui':
         specifier: ^1.7.4
-        version: 1.7.4(p5yp35qghs2rute77puvbbkhbm)
+        version: 1.7.4(tyfd6fuh54mwgqb3kq4sizerby)
       '@excalidraw/excalidraw':
         specifier: ^0.18.0
         version: 0.18.0(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -52,7 +52,7 @@ importers:
         version: 1.0.5-dev.2
       '@openrouter/ai-sdk-provider':
         specifier: ^1.1.2
-        version: 1.1.2(ai@5.0.12(zod@3.25.67))(zod@3.25.67)
+        version: 1.1.2(ai@5.0.12(zod@4.0.17))(zod@4.0.17)
       '@orpc/client':
         specifier: ^1.8.1
         version: 1.8.1(@opentelemetry/api@1.9.0)
@@ -143,6 +143,12 @@ importers:
       '@radix-ui/react-visually-hidden':
         specifier: ^1.2.3
         version: 1.2.3(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@sentry/cloudflare':
+        specifier: ^10.5.0
+        version: 10.5.0(@cloudflare/workers-types@4.20250816.0)
+      '@sentry/react':
+        specifier: ^10.5.0
+        version: 10.5.0(react@19.1.0)
       '@tailwindcss/vite':
         specifier: ^4.0.15
         version: 4.1.10(vite@6.3.5(@types/node@22.15.32)(jiti@2.4.2)(lightningcss@1.30.1)(sass@1.51.0)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
@@ -157,7 +163,7 @@ importers:
         version: 1.121.27(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       ai:
         specifier: 5.0.12
-        version: 5.0.12(zod@3.25.67)
+        version: 5.0.12(zod@4.0.17)
       better-auth:
         specifier: ^1.2.9
         version: 1.2.10
@@ -196,7 +202,7 @@ importers:
         version: 12.18.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       pushduck:
         specifier: ^0.1.22
-        version: 0.1.22(react@19.1.0)(zod@3.25.67)
+        version: 0.1.22(react@19.1.0)(zod@4.0.17)
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -246,8 +252,8 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.32)(jiti@2.4.2)(lightningcss@1.30.1)(sass@1.51.0)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
       zod:
-        specifier: ^3.25.16
-        version: 3.25.67
+        specifier: ^4.0.17
+        version: 4.0.17
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.0.0
@@ -3500,6 +3506,45 @@ packages:
 
   '@selderee/plugin-htmlparser2@0.11.0':
     resolution: {integrity: sha512-P33hHGdldxGabLFjPPpaTxVolMrzrcegejx+0GxjrIb9Zv48D8yAIA/QTDR2dFl7Uz7urX8aX6+5bCZslr+gWQ==}
+
+  '@sentry-internal/browser-utils@10.5.0':
+    resolution: {integrity: sha512-4KIJdEj/8Ip9yqJleVSFe68r/U5bn5o/lYUwnFNEnDNxmpUbOlr7x3DXYuRFi1sfoMUxK9K1DrjnBkR7YYF00g==}
+    engines: {node: '>=18'}
+
+  '@sentry-internal/feedback@10.5.0':
+    resolution: {integrity: sha512-x79P4VZwUxb1EGZb9OQ5EEgrDWFCUlrbzHBwV/oocQA5Ss1SFz5u6cP5Ak7yJtILiJtdGzAyAoQOy4GKD13D4Q==}
+    engines: {node: '>=18'}
+
+  '@sentry-internal/replay-canvas@10.5.0':
+    resolution: {integrity: sha512-5nrRKd5swefd9+sFXFZ/NeL3bz/VxBls3ubAQ3afak15FikkSyHq3oKRKpMOtDsiYKXE3Bc0y3rF5A+y3OXjIA==}
+    engines: {node: '>=18'}
+
+  '@sentry-internal/replay@10.5.0':
+    resolution: {integrity: sha512-Dp4coE/nPzhFrYH3iVrpVKmhNJ1m/jGXMEDBCNg3wJZRszI41Hrj0jCAM0Y2S3Q4IxYOmFYaFbGtVpAznRyOHg==}
+    engines: {node: '>=18'}
+
+  '@sentry/browser@10.5.0':
+    resolution: {integrity: sha512-o5pEJeZ/iZ7Fmaz2sIirThfnmSVNiP5ZYhacvcDi0qc288TmBbikCX3fXxq3xiSkhXfe1o5QIbNyovzfutyuVw==}
+    engines: {node: '>=18'}
+
+  '@sentry/cloudflare@10.5.0':
+    resolution: {integrity: sha512-SZU7CJxOl7WH6MRz+IALpyotkA7DxIdn6WKZiprzHKn8Q2u4bINt0Vs6fkocNy7kb9tc5GCcmIdo0dN/+mfi2Q==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@cloudflare/workers-types': ^4.x
+    peerDependenciesMeta:
+      '@cloudflare/workers-types':
+        optional: true
+
+  '@sentry/core@10.5.0':
+    resolution: {integrity: sha512-jTJ8NhZSKB2yj3QTVRXfCCngQzAOLThQUxCl9A7Mv+XF10tP7xbH/88MVQ5WiOr2IzcmrB9r2nmUe36BnMlLjA==}
+    engines: {node: '>=18'}
+
+  '@sentry/react@10.5.0':
+    resolution: {integrity: sha512-UHanvg+oIAvE/Hm76QCCdxYgb+tIuF0JszQoROApl5C5RxRfJJcU643pASQs6BDvrtxbuMQ/AHTacLTYpsn0cg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: ^16.14.0 || 17.x || 18.x || 19.x
 
   '@simplewebauthn/browser@13.1.0':
     resolution: {integrity: sha512-WuHZ/PYvyPJ9nxSzgHtOEjogBhwJfC8xzYkPC+rR/+8chl/ft4ngjiK8kSU5HtRJfczupyOh33b25TjYbvwAcg==}
@@ -6851,6 +6896,9 @@ packages:
   zod@3.25.67:
     resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
 
+  zod@4.0.17:
+    resolution: {integrity: sha512-1PHjlYRevNxxdy2JZ8JcNAw7rX8V9P1AKkP+x/xZfxB0K5FYfuV+Ug6P/6NVSR2jHQ+FzDDoDHS04nYUsOIyLQ==}
+
   zustand@4.5.7:
     resolution: {integrity: sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==}
     engines: {node: '>=12.7.0'}
@@ -6868,19 +6916,19 @@ packages:
 
 snapshots:
 
-  '@ai-sdk/gateway@1.0.6(zod@3.25.67)':
+  '@ai-sdk/gateway@1.0.6(zod@4.0.17)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.3(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 3.0.3(zod@4.0.17)
+      zod: 4.0.17
 
-  '@ai-sdk/provider-utils@3.0.3(zod@3.25.67)':
+  '@ai-sdk/provider-utils@3.0.3(zod@4.0.17)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@standard-schema/spec': 1.0.0
       eventsource-parser: 3.0.3
-      zod: 3.25.67
-      zod-to-json-schema: 3.24.6(zod@3.25.67)
+      zod: 4.0.17
+      zod-to-json-schema: 3.24.6(zod@4.0.17)
 
   '@ai-sdk/provider@2.0.0':
     dependencies:
@@ -7696,7 +7744,7 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@daveyplate/better-auth-ui@1.7.4(p5yp35qghs2rute77puvbbkhbm)':
+  '@daveyplate/better-auth-ui@1.7.4(tyfd6fuh54mwgqb3kq4sizerby)':
     dependencies:
       '@better-fetch/fetch': 1.1.18
       '@daveyplate/better-auth-tanstack': 1.3.6(@tanstack/query-core@5.81.2)(@tanstack/react-query@5.81.2(react@19.1.0))(better-auth@1.2.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7736,7 +7784,7 @@ snapshots:
       tailwind-merge: 2.6.0
       tailwindcss: 4.1.10
       ua-parser-js: 2.0.3
-      zod: 3.25.67
+      zod: 4.0.17
 
   '@drizzle-team/brocli@0.10.2': {}
 
@@ -8733,10 +8781,10 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@openrouter/ai-sdk-provider@1.1.2(ai@5.0.12(zod@3.25.67))(zod@3.25.67)':
+  '@openrouter/ai-sdk-provider@1.1.2(ai@5.0.12(zod@4.0.17))(zod@4.0.17)':
     dependencies:
-      ai: 5.0.12(zod@3.25.67)
-      zod: 3.25.67
+      ai: 5.0.12(zod@4.0.17)
+      zod: 4.0.17
 
   '@opentelemetry/api@1.9.0': {}
 
@@ -10118,6 +10166,48 @@ snapshots:
       domhandler: 5.0.3
       selderee: 0.11.0
 
+  '@sentry-internal/browser-utils@10.5.0':
+    dependencies:
+      '@sentry/core': 10.5.0
+
+  '@sentry-internal/feedback@10.5.0':
+    dependencies:
+      '@sentry/core': 10.5.0
+
+  '@sentry-internal/replay-canvas@10.5.0':
+    dependencies:
+      '@sentry-internal/replay': 10.5.0
+      '@sentry/core': 10.5.0
+
+  '@sentry-internal/replay@10.5.0':
+    dependencies:
+      '@sentry-internal/browser-utils': 10.5.0
+      '@sentry/core': 10.5.0
+
+  '@sentry/browser@10.5.0':
+    dependencies:
+      '@sentry-internal/browser-utils': 10.5.0
+      '@sentry-internal/feedback': 10.5.0
+      '@sentry-internal/replay': 10.5.0
+      '@sentry-internal/replay-canvas': 10.5.0
+      '@sentry/core': 10.5.0
+
+  '@sentry/cloudflare@10.5.0(@cloudflare/workers-types@4.20250816.0)':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@sentry/core': 10.5.0
+    optionalDependencies:
+      '@cloudflare/workers-types': 4.20250816.0
+
+  '@sentry/core@10.5.0': {}
+
+  '@sentry/react@10.5.0(react@19.1.0)':
+    dependencies:
+      '@sentry/browser': 10.5.0
+      '@sentry/core': 10.5.0
+      hoist-non-react-statics: 3.3.2
+      react: 19.1.0
+
   '@simplewebauthn/browser@13.1.0': {}
 
   '@simplewebauthn/server@13.1.1':
@@ -10517,13 +10607,13 @@ snapshots:
 
   acorn@8.15.0: {}
 
-  ai@5.0.12(zod@3.25.67):
+  ai@5.0.12(zod@4.0.17):
     dependencies:
-      '@ai-sdk/gateway': 1.0.6(zod@3.25.67)
+      '@ai-sdk/gateway': 1.0.6(zod@4.0.17)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.3(zod@3.25.67)
+      '@ai-sdk/provider-utils': 3.0.3(zod@4.0.17)
       '@opentelemetry/api': 1.9.0
-      zod: 3.25.67
+      zod: 4.0.17
 
   ajv@8.17.1:
     dependencies:
@@ -12570,12 +12660,12 @@ snapshots:
 
   pure-rand@6.1.0: {}
 
-  pushduck@0.1.22(react@19.1.0)(zod@3.25.67):
+  pushduck@0.1.22(react@19.1.0)(zod@4.0.17):
     dependencies:
       aws4fetch: 1.0.20
     optionalDependencies:
       react: 19.1.0
-      zod: 3.25.67
+      zod: 4.0.17
 
   pvtsutils@1.3.6:
     dependencies:
@@ -13757,13 +13847,15 @@ snapshots:
       mustache: 4.2.0
       stacktracey: 2.1.8
 
-  zod-to-json-schema@3.24.6(zod@3.25.67):
+  zod-to-json-schema@3.24.6(zod@4.0.17):
     dependencies:
-      zod: 3.25.67
+      zod: 4.0.17
 
   zod@3.22.3: {}
 
   zod@3.25.67: {}
+
+  zod@4.0.17: {}
 
   zustand@4.5.7(@types/react@19.1.8)(react@19.1.0):
     dependencies:

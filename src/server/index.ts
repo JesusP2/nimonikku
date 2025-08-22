@@ -1,4 +1,5 @@
 import { env } from "cloudflare:workers";
+import * as Sentry from "@sentry/cloudflare";
 import {
   handleWebSocket,
   makeDurableObject,
@@ -31,7 +32,7 @@ app.use((c, next) =>
     standardHeaders: "draft-6", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
     keyGenerator: (c) => c.req.header("cf-connecting-ip") ?? "",
     store: new DurableObjectStore({ namespace: c.env.CACHE }),
-  })(c, next)
+  })(c, next),
 );
 
 app.use(logger());
@@ -58,11 +59,14 @@ app.get("/websocket", (c) => {
   });
 });
 
-app.get("/api/ping", (c) => c.json({ ok: true }));
+app.get("/debug-sentry", (c) => {
+  throw new Error("error - pong");
+  return c.json({ text: "pong" });
+});
 app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
 
-app.get('/api/upload/*', (c) => uploadRouter.handlers.GET(c.req.raw));
-app.post('/api/upload/*', (c) => uploadRouter.handlers.POST(c.req.raw));
+app.get("/api/upload/*", (c) => uploadRouter.handlers.GET(c.req.raw));
+app.post("/api/upload/*", (c) => uploadRouter.handlers.POST(c.req.raw));
 
 app.use("/api/*", async (c, next) => {
   const { matched, response } = await handler.handle(c.req.raw, {
@@ -77,4 +81,21 @@ app.use("/api/*", async (c, next) => {
   await next();
 });
 
-export default app;
+export default Sentry.withSentry(
+  (env) => {
+    const { id: versionId } = env.CF_VERSION_METADATA;
+    return {
+      dsn: env.SENTRY_DSN,
+      release: versionId,
+      sendDefaultPii: true,
+      integrations: [
+        Sentry.captureConsoleIntegration(),
+        Sentry.extraErrorDataIntegration(),
+      ],
+      tracesSampleRate: 1.0,
+      enableLogs: true,
+    };
+  },
+  // your existing worker export
+  app,
+);

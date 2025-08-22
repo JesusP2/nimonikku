@@ -10,18 +10,9 @@ interface FileWithPreview extends File {
   preview?: string
 }
 
-export function FileDropzone() {
+export function FileDropzone({ onFileUpload }: { onFileUpload: (file: FileWithPreview) => Promise<void> }) {
   const { uploadFiles } = useUploadRoute<AppUploadRouter>('imageUpload', {
     endpoint: '/api/upload',
-    onProgress: (progress) => {
-      console.log('onProgress', Date.now(), progress)
-    },
-    onSuccess: (data) => {
-      console.log('onSuccess', Date.now(), data)
-    },
-    onError: (error) => {
-      console.log('onError', Date.now(), error)
-    },
   });
   const [file, setFile] = useState<FileWithPreview | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
@@ -40,31 +31,23 @@ export function FileDropzone() {
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     setIsDragOver(false)
-
     const droppedFile = e.dataTransfer.files[0]
     if (droppedFile) {
       const fileWithPreview = droppedFile as FileWithPreview
-
-      // Create preview URL for images
       if (droppedFile.type.startsWith("image/")) {
         fileWithPreview.preview = URL.createObjectURL(droppedFile)
       }
-
       setFile(fileWithPreview)
     }
   }, [])
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
-    console.log('handleFileSelect', selectedFile)
     if (selectedFile) {
       const fileWithPreview = selectedFile as FileWithPreview
-
-      // Create preview URL for images
       if (selectedFile.type.startsWith("image/")) {
         fileWithPreview.preview = URL.createObjectURL(selectedFile)
       }
-
       setFile(fileWithPreview)
     }
   }, [])
@@ -73,9 +56,9 @@ export function FileDropzone() {
     if (!file) return
 
     setIsUploading(true)
-    uploadFiles([file])
+    await uploadFiles([file])
+    await onFileUpload(file)
     setIsUploading(false)
-    // Reset after successful upload
     setFile(null)
   }
 
@@ -128,7 +111,7 @@ export function FileDropzone() {
             <p className="text-xs text-muted-foreground">Supports all file types</p>
           </div>
         ) : (
-          <div className="p-6">
+          <div className="p-2">
             <div className="flex items-start gap-4">
               {/* File Icon or Image Preview */}
               <div className="flex-shrink-0">
