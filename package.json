@@ -79,6 +79,7 @@
     "embla-carousel-react": "^8.6.0",
     "hono": "^4.7.6",
     "hono-rate-limiter": "^0.4.2",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.473.0",
     "marked": "^16.1.2",
     "motion": "^12.18.1",

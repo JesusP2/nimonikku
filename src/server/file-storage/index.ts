@@ -1,5 +1,5 @@
-import { createUploadConfig } from "pushduck/server";
 import { env } from "cloudflare:workers";
+import { createUploadConfig } from "pushduck/server";
 
 const { s3, config } = createUploadConfig()
   .provider("cloudflareR2", {

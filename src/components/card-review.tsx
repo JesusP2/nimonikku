@@ -1,4 +1,5 @@
 import { useQuery, useStore } from "@livestore/react";
+import { useQuery as useTanstackQuery } from "@tanstack/react-query";
 import { Eye, LoaderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -15,10 +16,9 @@ import {
   toFSRSCard,
 } from "@/lib/fsrs";
 import { deckById$, userSettings$ } from "@/lib/livestore/queries";
+import { orpcQuery } from "@/lib/orpc";
 import { events } from "@/server/livestore/schema";
 import { useIsOnline } from "./providers/is-online";
-import { useQuery as useTanstackQuery } from "@tanstack/react-query";
-import { orpcQuery } from "@/lib/orpc";
 
 interface CardData {
   id: string;
@@ -82,15 +82,15 @@ export function CardReview({ card, onNext }: CardReviewProps) {
 
   const reviewTimes = showBack
     ? (() => {
-      const fsrsCard = toFSRSCard(card);
-      const predictions = getReviewTimePredictions(fsrsCard);
-      return {
-        again: formatReviewTime(predictions.again),
-        hard: formatReviewTime(predictions.hard),
-        good: formatReviewTime(predictions.good),
-        easy: formatReviewTime(predictions.easy),
-      };
-    })()
+        const fsrsCard = toFSRSCard(card);
+        const predictions = getReviewTimePredictions(fsrsCard);
+        return {
+          again: formatReviewTime(predictions.again),
+          hard: formatReviewTime(predictions.hard),
+          good: formatReviewTime(predictions.good),
+          easy: formatReviewTime(predictions.easy),
+        };
+      })()
     : null;
 
   const handleRating = async (rating: number) => {

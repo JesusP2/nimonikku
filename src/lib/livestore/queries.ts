@@ -47,11 +47,9 @@ export const dueCards$ = (deckId: string) =>
 
 export const cardsState$ = (userDecksIds: string[]) =>
   queryDb(
-    tables.card
-      .select("state", "id", "deckId", "due")
-      .where({
-        deckId: { op: "IN", value: userDecksIds },
-        due: { op: "<=", value: new Date() },
-      }),
+    tables.card.select("state", "id", "deckId", "due").where({
+      deckId: { op: "IN", value: userDecksIds },
+      due: { op: "<=", value: new Date() },
+    }),
     { label: "cardsState" },
   );

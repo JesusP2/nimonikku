@@ -2,6 +2,7 @@ import { useQuery, useStore } from "@livestore/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Play, Plus, TrashIcon } from "lucide-react";
 import { CardsList } from "@/components/cards-list";
+import { useConfirmDialog } from "@/components/providers/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +19,6 @@ import {
   userSettings$,
 } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
-import { useConfirmDialog } from "@/components/providers/confirm-dialog";
 
 export const Route = createFileRoute("/deck/$deckId/")({
   component: DeckInfoPage,

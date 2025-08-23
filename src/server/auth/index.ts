@@ -1,12 +1,7 @@
 import { env } from "cloudflare:workers";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import {
-  admin,
-  anonymous,
-  magicLink,
-  oneTimeToken,
-} from "better-auth/plugins";
+import { admin, anonymous, magicLink, oneTimeToken } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import { Resend } from "resend";
 import { db } from "@/server/db";

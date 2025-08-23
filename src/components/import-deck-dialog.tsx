@@ -1,9 +1,11 @@
 import { useStore } from "@livestore/react";
-import { useState } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import * as zip from "jszip";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { FileDropzone } from "./file-dropzone";
 import { orpcClient } from "@/lib/orpc";
+import { FileDropzone } from "./file-dropzone";
+
 // import { useUploadRoute } from 'pushduck/client';
 // import type { AppUploadRouter } from "@/server/file-storage";
 
@@ -12,10 +14,7 @@ interface NewDeckDialogProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function ImportDeckDialog({
-  open,
-  setOpen,
-}: NewDeckDialogProps) {
+export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
   const { store } = useStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   // const { uploadFiles } = useUploadRoute<AppUploadRouter>('imageUpload', {
@@ -28,7 +27,14 @@ export function ImportDeckDialog({
       // const now = new Date();
       // const id = crypto.randomUUID();
       // const userId = "user1"; // TODO: Get from auth context
-      await orpcClient.importDeck(file);
+      const {
+        "collection.anki21b": sqliteDb,
+        media,
+        meta,
+        "collection.anki2": _,
+        ...mediaFiles
+      } = (await zip.loadAsync(file)).files;
+      // await orpcClient.importDeck(file);
 
       // store.commit(
       //   events.deckCreated({

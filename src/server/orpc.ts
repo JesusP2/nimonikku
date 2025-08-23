@@ -1,6 +1,6 @@
 import { RPCHandler } from "@orpc/server/fetch";
-import { rephraseText } from "./rephrase";
 import { importDeck } from "./import-deck";
+import { rephraseText } from "./rephrase";
 
 const router = {
   rephraseText,
