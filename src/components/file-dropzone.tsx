@@ -11,9 +11,6 @@ interface FileWithPreview extends File {
 }
 
 export function FileDropzone({ onFileUpload }: { onFileUpload: (file: FileWithPreview) => Promise<void> }) {
-  const { uploadFiles } = useUploadRoute<AppUploadRouter>('imageUpload', {
-    endpoint: '/api/upload',
-  });
   const [file, setFile] = useState<FileWithPreview | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
@@ -56,7 +53,6 @@ export function FileDropzone({ onFileUpload }: { onFileUpload: (file: FileWithPr
     if (!file) return
 
     setIsUploading(true)
-    await uploadFiles([file])
     await onFileUpload(file)
     setIsUploading(false)
     setFile(null)
@@ -79,7 +75,6 @@ export function FileDropzone({ onFileUpload }: { onFileUpload: (file: FileWithPr
 
   return (
     <div className="w-full space-y-4">
-      {/* Dropzone */}
       <Card
         className={cn(
           "relative border-2 border-dashed transition-all duration-200 cursor-pointer",
@@ -113,7 +108,6 @@ export function FileDropzone({ onFileUpload }: { onFileUpload: (file: FileWithPr
         ) : (
           <div className="p-2">
             <div className="flex items-start gap-4">
-              {/* File Icon or Image Preview */}
               <div className="flex-shrink-0">
                 {file.preview ? (
                   <div className="relative">
@@ -133,15 +127,11 @@ export function FileDropzone({ onFileUpload }: { onFileUpload: (file: FileWithPr
                   </div>
                 )}
               </div>
-
-              {/* File Details */}
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium truncate">{file.name}</h4>
                 <p className="text-sm text-muted-foreground">{formatFileSize(file.size)}</p>
                 <p className="text-xs text-muted-foreground mt-1">{file.type || "Unknown type"}</p>
               </div>
-
-              {/* Remove Button */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -155,8 +145,6 @@ export function FileDropzone({ onFileUpload }: { onFileUpload: (file: FileWithPr
           </div>
         )}
       </Card>
-
-      {/* Upload Button */}
       {file && (
         <div className="flex justify-center">
           <Button onClick={handleUpload} disabled={isUploading} className="min-w-32">

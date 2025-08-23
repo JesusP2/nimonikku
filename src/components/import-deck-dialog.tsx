@@ -1,12 +1,11 @@
 import { useStore } from "@livestore/react";
 import { useState } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import type { DeckFormData } from "@/components/deck-form";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { events } from "@/server/livestore/schema";
 import { FileDropzone } from "./file-dropzone";
-import { orpcClient, orpcQuery } from "@/lib/orpc";
-import { useMutation } from "@tanstack/react-query";
+import { orpcClient } from "@/lib/orpc";
+// import { useUploadRoute } from 'pushduck/client';
+// import type { AppUploadRouter } from "@/server/file-storage";
 
 interface NewDeckDialogProps {
   open: boolean;
@@ -19,6 +18,9 @@ export function ImportDeckDialog({
 }: NewDeckDialogProps) {
   const { store } = useStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // const { uploadFiles } = useUploadRoute<AppUploadRouter>('imageUpload', {
+  //   endpoint: '/api/upload',
+  // });
 
   const handleSubmit = async (file: File) => {
     setIsSubmitting(true);
