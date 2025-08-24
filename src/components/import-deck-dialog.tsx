@@ -1,13 +1,13 @@
 import { useStore } from "@livestore/react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import * as zip from "jszip";
-import * as fzstd from "fzstd";
+import zip from "jszip";
+import fzstd from "fzstd";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { FileDropzone } from "./file-dropzone";
 
-import { useUploadRoute, type S3UploadedFile } from "pushduck/client";
+import { useUploadRoute } from "pushduck/client";
 import type { AppUploadRouter } from "@/server/file-storage";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { events } from "@/server/livestore/schema";
 import { createEmptyCard } from "ts-fsrs";
 import { fromFSRSCard } from "@/lib/fsrs";
