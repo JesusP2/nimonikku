@@ -58,9 +58,11 @@ export function FileDropzone({
     if (!file) return;
 
     setIsUploading(true);
+    delete file.preview;
     await onFileUpload(file);
     setIsUploading(false);
     setFile(null);
+    handleRemoveFile();
   };
 
   const handleRemoveFile = () => {

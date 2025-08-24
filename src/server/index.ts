@@ -12,6 +12,7 @@ import { rateLimiter } from "hono-rate-limiter";
 import { auth } from "./auth";
 import { uploadRouter } from "./file-storage";
 import { handler } from "./orpc";
+import { storage } from "./storage";
 
 export { DurableObjectRateLimiter } from "@hono-rate-limiter/cloudflare";
 
@@ -65,7 +66,13 @@ app.get("/api/ping", (c) => c.json({ text: "pong" }));
 app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
 
 app.get("/api/upload/*", (c) => uploadRouter.handlers.GET(c.req.raw));
-app.post("/api/upload/*", (c) => uploadRouter.handlers.POST(c.req.raw));
+app.post("/api/upload/*", async (c) => {
+  const session = await auth.api.getSession(c.req.raw);
+  return storage.run(
+    session?.session.userId,
+    async () => uploadRouter.handlers.POST(c.req.raw),
+  );
+});
 
 app.use("/api/*", async (c, next) => {
   const { matched, response } = await handler.handle(c.req.raw, {
