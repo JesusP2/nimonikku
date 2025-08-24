@@ -21,12 +21,11 @@ const url = new URL("http://localhost:5173/worker.sql-wasm.js");
 const worker = new Worker(url);
 export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
   const { store } = useStore();
-  const [files, setFiles] = useState<S3UploadedFile[]>([]);
   const collectionFile = useRef<File | null>(null);
-  const { uploadFiles, files: filess } = useUploadRoute<AppUploadRouter>(
+  const { uploadFiles } = useUploadRoute<AppUploadRouter>(
     "documentUpload",
     {
-      onSuccess: async (files) => onSuccess(),
+      onSuccess: async () => onSuccess(),
       endpoint: "/api/upload",
     },
   );
