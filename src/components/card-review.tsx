@@ -48,6 +48,7 @@ interface CardReviewProps {
 }
 
 export function CardReview({ card, onNext }: CardReviewProps) {
+  console.log(card)
   const { store } = useStore();
   const [showBack, setShowBack] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

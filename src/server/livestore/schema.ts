@@ -27,8 +27,8 @@ export const tables = {
       deckId: State.SQLite.text(),
       frontMarkdown: State.SQLite.text(),
       backMarkdown: State.SQLite.text(),
-      frontFiles: State.SQLite.text(),
-      backFiles: State.SQLite.text(),
+      frontFiles: State.SQLite.json(),
+      backFiles: State.SQLite.json(),
       due: State.SQLite.datetime(),
       stability: State.SQLite.real(),
       difficulty: State.SQLite.real(),
@@ -105,8 +105,8 @@ export const events = {
       deckId: Schema.String,
       frontMarkdown: Schema.String,
       backMarkdown: Schema.String,
-      frontFiles: Schema.String,
-      backFiles: Schema.String,
+      frontFiles: Schema.JsonValue,
+      backFiles: Schema.JsonValue,
       due: Schema.Date,
       stability: Schema.Number,
       difficulty: Schema.Number,
@@ -127,8 +127,8 @@ export const events = {
       id: Schema.String,
       frontMarkdown: Schema.optional(Schema.String),
       backMarkdown: Schema.optional(Schema.String),
-      frontFiles: Schema.optional(Schema.String),
-      backFiles: Schema.optional(Schema.String),
+      frontFiles: Schema.optional(Schema.JsonValue),
+      backFiles: Schema.optional(Schema.JsonValue),
       updatedAt: Schema.Date,
     }),
   }),
@@ -170,10 +170,17 @@ export const events = {
       enableAI: Schema.Boolean,
     }),
   }),
+  deleteAll: Events.synced({
+    name: "v1.DeleteAll",
+    schema: Schema.Struct({
+      id: Schema.String,
+    }),
+  }),
 };
 
 // Materializers map events to state changes
 const materializers = State.SQLite.materializers(events, {
+  'v1.DeleteAll': () => tables.deck.delete(),
   // Deck materializers
   "v1.DeckCreated": ({
     id,
