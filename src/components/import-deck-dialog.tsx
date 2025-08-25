@@ -1,7 +1,7 @@
 import { useStore } from "@livestore/react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import zip from "jszip";
-import fzstd from "fzstd";
+import * as fzstd from "fzstd";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { FileDropzone } from "./file-dropzone";
 
