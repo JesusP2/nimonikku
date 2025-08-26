@@ -35,7 +35,7 @@ function DeckInfoPage() {
   const cards = useQuery(cardsByDeck$(deckId)) || [];
 
   const now = new Date();
-  const dueCards = cards.filter((card) => new Date(card.due) <= now);
+  const dueCards = cards.filter((card) => new Date(card.due) <= now && card.state !== 0);
 
   const handleAddCard = () => {
     navigate({ to: `/deck/${deckId}/card/new` });
@@ -46,7 +46,7 @@ function DeckInfoPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 py-8">
+    <div className="mx-auto max-w-6xl space-y-6 p-6">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button

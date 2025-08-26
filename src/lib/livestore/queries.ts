@@ -40,7 +40,7 @@ export const dueCards$ = (deckId: string) =>
   queryDb(
     tables.card
       .select()
-      .where({ deckId, due: { op: "<=", value: new Date() } })
+      .where({ deckId, due: { op: "<=", value: new Date() }, state: { op: '!=', value: 0 } })
       .orderBy("due", "asc"),
     { label: `dueCards-${deckId}` },
   );
