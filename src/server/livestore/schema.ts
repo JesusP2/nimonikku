@@ -16,6 +16,9 @@ export const tables = {
       name: State.SQLite.text(),
       description: State.SQLite.text({ nullable: true }),
       ai: State.SQLite.text({ nullable: true }),
+      newCardsPerDay: State.SQLite.integer(),
+      lastReset: State.SQLite.datetime(),
+      resetTime: State.SQLite.json(),
       createdAt: State.SQLite.datetime(),
       updatedAt: State.SQLite.datetime(),
     },
@@ -76,6 +79,9 @@ export const events = {
       name: Schema.String,
       description: Schema.optional(Schema.String),
       ai: Schema.optional(Schema.String),
+      newCardsPerDay: Schema.optional(Schema.Number),
+      resetTime: Schema.optional(Schema.JsonValue),
+      lastReset: Schema.optional(Schema.Date),
       createdAt: Schema.Date,
       updatedAt: Schema.Date,
     }),
@@ -87,6 +93,9 @@ export const events = {
       name: Schema.optional(Schema.String),
       description: Schema.optional(Schema.String),
       ai: Schema.optional(Schema.String),
+      newCardsPerDay: Schema.optional(Schema.Number),
+      resetTime: Schema.optional(Schema.JsonValue),
+      lastReset: Schema.optional(Schema.Date),
       updatedAt: Schema.Date,
     }),
   }),
@@ -180,7 +189,7 @@ export const events = {
 
 // Materializers map events to state changes
 const materializers = State.SQLite.materializers(events, {
-  'v1.DeleteAll': () => tables.deck.delete(),
+  "v1.DeleteAll": () => tables.deck.delete(),
   // Deck materializers
   "v1.DeckCreated": ({
     id,
@@ -188,6 +197,9 @@ const materializers = State.SQLite.materializers(events, {
     name,
     description,
     ai,
+    lastReset,
+    resetTime,
+    newCardsPerDay,
     createdAt,
     updatedAt,
   }) =>
@@ -197,15 +209,30 @@ const materializers = State.SQLite.materializers(events, {
       name,
       description,
       ai: ai ?? "global",
+      newCardsPerDay: newCardsPerDay ?? 20,
+      lastReset: lastReset ?? new Date(),
+      resetTime: resetTime ?? { hour: 0, minute: 0 },
       createdAt,
       updatedAt,
     }),
-  "v1.DeckUpdated": ({ id, name, description, ai, updatedAt }) =>
+  "v1.DeckUpdated": ({
+    id,
+    name,
+    description,
+    ai,
+    lastReset,
+    resetTime,
+    newCardsPerDay,
+    updatedAt,
+  }) =>
     tables.deck
       .update({
         ...(name !== undefined && { name }),
         ...(description !== undefined && { description }),
         ...(ai !== undefined && { ai }),
+        ...(newCardsPerDay !== undefined && { newCardsPerDay }),
+        ...(resetTime !== undefined && { resetTime }),
+        ...(lastReset !== undefined && { lastReset }),
         updatedAt,
       })
       .where({ id }),
