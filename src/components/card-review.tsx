@@ -100,8 +100,6 @@ export function CardReview({ card, onNext }: CardReviewProps) {
     try {
       const fsrsCard = toFSRSCard(card);
       const reviewResult = scheduleCard(fsrsCard, rating, new Date());
-      console.log("fsrsCard", fsrsCard);
-      console.log("reviewResult", reviewResult);
       const updatedFSRSData = fromFSRSCard(reviewResult.card);
 
       store.commit(
