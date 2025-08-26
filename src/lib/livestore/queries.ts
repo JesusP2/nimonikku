@@ -44,12 +44,3 @@ export const dueCards$ = (deckId: string) =>
       .orderBy("due", "asc"),
     { label: `dueCards-${deckId}` },
   );
-
-export const cardsState$ = (userDecksIds: string[]) =>
-  queryDb(
-    tables.card.select("state", "id", "deckId", "due").where({
-      deckId: { op: "IN", value: userDecksIds },
-      due: { op: "<=", value: new Date() },
-    }),
-    { label: "cardsState" },
-  );
