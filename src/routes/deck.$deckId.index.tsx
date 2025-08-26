@@ -128,47 +128,6 @@ function DeckInfoPage() {
               </div>
             </div>
           </div>
-          <div className="mt-6 border-t pt-4">
-            <dt className="mb-2 font-medium text-muted-foreground text-sm">
-              AI Settings
-            </dt>
-            <div>
-              <Label className="mb-2 block text-sm">
-                AI Question Rephrasing
-              </Label>
-              <RadioGroup
-                value={deck.ai || "global"}
-                onValueChange={(value) => {
-                  store.commit(
-                    events.deckUpdated({
-                      id: deck.id,
-                      ai: value,
-                      updatedAt: new Date(),
-                    }),
-                  );
-                }}
-                className="grid gap-2 md:grid-cols-3"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="global" id="ai-global" />
-                  <Label htmlFor="ai-global">
-                    Use Global ({settings?.enableAI ? "Enabled" : "Disabled"})
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="true" id="ai-true" />
-                  <Label htmlFor="ai-true">Enabled</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="false" id="ai-false" />
-                  <Label htmlFor="ai-false">Disabled</Label>
-                </div>
-              </RadioGroup>
-              <p className="mt-2 text-muted-foreground text-xs">
-                Override global setting for this deck.
-              </p>
-            </div>
-          </div>
           {deck.description && (
             <div className="mt-4 border-t pt-4">
               <dt className="font-medium text-muted-foreground text-sm">
@@ -194,6 +153,50 @@ function DeckInfoPage() {
                 Add Card
               </Button>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>AI Settings</CardTitle>
+          <CardDescription>Configure AI behavior for this deck</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div>
+            <Label className="mb-2 block text-sm">
+              AI Question Rephrasing
+            </Label>
+            <RadioGroup
+              value={deck.ai || "global"}
+              onValueChange={(value) => {
+                store.commit(
+                  events.deckUpdated({
+                    id: deck.id,
+                    ai: value,
+                    updatedAt: new Date(),
+                  }),
+                );
+              }}
+              className="grid gap-2 md:grid-cols-3"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="global" id="ai-global" />
+                <Label htmlFor="ai-global">
+                  Use Global ({settings?.enableAI ? "Enabled" : "Disabled"})
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="true" id="ai-true" />
+                <Label htmlFor="ai-true">Enabled</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="false" id="ai-false" />
+                <Label htmlFor="ai-false">Disabled</Label>
+              </div>
+            </RadioGroup>
+            <p className="mt-2 text-muted-foreground text-xs">
+              Override global setting for this deck.
+            </p>
           </div>
         </CardContent>
       </Card>
