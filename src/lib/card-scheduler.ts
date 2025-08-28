@@ -1,0 +1,121 @@
+import type { useStore } from "@livestore/react";
+import { events } from "@/server/livestore/schema";
+import { cardsByDeck$, userDecksLastReset$ } from "./livestore/queries";
+
+type Store = ReturnType<typeof useStore>['store'];
+export class CardScheduler {
+  private store: Store;
+  private intervalId: NodeJS.Timeout | null = null;
+  private readonly CHECK_INTERVAL_MS = 60 * 1000;
+  private userId: string;
+
+  constructor(store: Store, userId: string) {
+    this.store = store;
+    this.userId = userId;
+  }
+
+  start() {
+    if (this.intervalId) {
+      this.stop();
+    }
+    this.checkAndProcessDecks();
+    this.intervalId = setInterval(() => {
+      this.checkAndProcessDecks();
+    }, this.CHECK_INTERVAL_MS);
+  }
+
+  stop() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  private checkAndProcessDecks() {
+    try {
+      const decks = this.store.query(userDecksLastReset$(this.userId));
+      decks.forEach(deck => this.processDeckIfResetNeeded(deck));
+    } catch (error) {
+      console.error("Error in card scheduler:", error);
+    }
+  }
+
+  private processDeckIfResetNeeded(deck: any) {
+    const now = new Date();
+    const lastReset = new Date(deck.lastReset);
+    const resetTime = deck.resetTime || { hour: 0, minute: 0 };
+    // Create today's reset time
+    const todayReset = new Date();
+    todayReset.setHours(resetTime.hour, resetTime.minute, 0, 0);
+    const shouldReset = now >= todayReset && lastReset < todayReset;
+    console.log(`Should reset for deck ${deck.id}: ${shouldReset}`);
+    
+    if (shouldReset) {
+      this.moveNewCardsToLearning(deck);
+    }
+  }
+
+  private moveNewCardsToLearning(deck: any) {
+    try {
+      const allCards = this.store.query(cardsByDeck$(deck.id));
+      
+      const newCards = allCards
+        .filter(card => card.state === 0)
+        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+        .slice(0, deck.newCardsPerDay);
+
+      const now = new Date();
+      for (const card of newCards) {
+        this.store.commit(
+          events.cardReviewed({
+            id: card.id,
+            due: now,
+            stability: card.stability,
+            difficulty: card.difficulty,
+            rating: card.rating,
+            elapsed_days: card.elapsed_days,
+            scheduled_days: card.scheduled_days,
+            reps: card.reps,
+            lapses: card.lapses,
+            state: 1,
+            last_review: new Date(),
+            updatedAt: new Date(),
+          })
+        );
+      }
+
+      this.store.commit(
+        events.deckUpdated({
+          id: deck.id,
+          lastReset: now,
+          updatedAt: now,
+        })
+      );
+
+      if (newCards.length > 0) {
+        console.log(`Moved ${newCards.length} new cards to learning for deck: ${deck.name}`);
+      }
+    } catch (error) {
+      console.error(`Error moving cards for deck ${deck.id}:`, error);
+    }
+  }
+}
+
+// Singleton instance
+let schedulerInstance: CardScheduler | null = null;
+
+export const startCardScheduler = (store: Store) => {
+  if (schedulerInstance) {
+    schedulerInstance.stop();
+  }
+  schedulerInstance = new CardScheduler(store, "user1");
+  schedulerInstance.start();
+  return schedulerInstance;
+};
+
+export const stopCardScheduler = () => {
+  if (schedulerInstance) {
+    schedulerInstance.stop();
+    schedulerInstance = null;
+  }
+};

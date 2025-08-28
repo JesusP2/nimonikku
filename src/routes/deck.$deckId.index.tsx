@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -35,7 +36,9 @@ function DeckInfoPage() {
   const cards = useQuery(cardsByDeck$(deckId)) || [];
 
   const now = new Date();
-  const dueCards = cards.filter((card) => new Date(card.due) <= now && card.state !== 0);
+  const dueCards = cards.filter(
+    (card) => new Date(card.due) <= now && card.state !== 0,
+  );
 
   const handleAddCard = () => {
     navigate({ to: `/deck/${deckId}/card/new` });
@@ -47,7 +50,6 @@ function DeckInfoPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <Button
           onClick={() => navigate({ to: "/" })}
@@ -65,6 +67,22 @@ function DeckInfoPage() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <h1>Deck Information</h1>
+            <Button
+              onClick={() => {
+                store.commit(
+                  events.resetDeck({
+                    id: deck.id,
+                  }),
+                );
+                store.commit(
+                  events.resetCards({
+                    id: deck.id,
+                  }),
+                );
+              }}
+            >
+              reset
+            </Button>
             <Button
               variant="destructive"
               onClick={() =>
@@ -163,9 +181,7 @@ function DeckInfoPage() {
         </CardHeader>
         <CardContent>
           <div>
-            <Label className="mb-2 block text-sm">
-              AI Question Rephrasing
-            </Label>
+            <Label className="mb-2 block text-sm">AI Question Rephrasing</Label>
             <RadioGroup
               value={deck.ai || "global"}
               onValueChange={(value) => {
@@ -197,6 +213,116 @@ function DeckInfoPage() {
             <p className="mt-2 text-muted-foreground text-xs">
               Override global setting for this deck.
             </p>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Deck Scheduling</CardTitle>
+          <CardDescription>
+            Configure daily card limits and reset timing
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            <div>
+              <Label htmlFor="new-cards-per-day" className="block text-sm">
+                New Cards Per Day
+              </Label>
+              <Input
+                id="new-cards-per-day"
+                type="number"
+                min="1"
+                max="100"
+                value={deck.newCardsPerDay}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  if (!isNaN(value) && value >= 1 && value <= 100) {
+                    store.commit(
+                      events.deckUpdated({
+                        id: deck.id,
+                        newCardsPerDay: value,
+                        updatedAt: new Date(),
+                      }),
+                    );
+                  }
+                }}
+                className="mt-1 w-32"
+              />
+              <p className="mt-1 text-muted-foreground text-xs">
+                Maximum number of new cards to introduce each day
+              </p>
+            </div>
+            <div>
+              <Label htmlFor="reset-hour" className="block text-sm">
+                Reset Hour (0-23)
+              </Label>
+              <Input
+                id="reset-hour"
+                type="number"
+                min="0"
+                max="23"
+                value={deck.resetTime?.hour ?? 0}
+                onChange={(e) => {
+                  const hour = parseInt(e.target.value);
+                  if (!isNaN(hour) && hour >= 0 && hour <= 23) {
+                    store.commit(
+                      events.deckUpdated({
+                        id: deck.id,
+                        resetTime: {
+                          ...deck.resetTime,
+                          hour,
+                        },
+                        updatedAt: new Date(),
+                      }),
+                    );
+                  }
+                }}
+                className="mt-1 w-20"
+              />
+              <p className="mt-1 text-muted-foreground text-xs">
+                Hour when new cards become available (24-hour format)
+              </p>
+            </div>
+            <div>
+              <Label htmlFor="reset-minute" className="block text-sm">
+                Reset Minute (0-59)
+              </Label>
+              <Input
+                id="reset-minute"
+                type="number"
+                min="0"
+                max="59"
+                value={deck.resetTime?.minute ?? 0}
+                onChange={(e) => {
+                  const minute = parseInt(e.target.value);
+                  if (!isNaN(minute) && minute >= 0 && minute <= 59) {
+                    store.commit(
+                      events.deckUpdated({
+                        id: deck.id,
+                        resetTime: {
+                          ...deck.resetTime,
+                          minute,
+                        },
+                        updatedAt: new Date(),
+                      }),
+                    );
+                  }
+                }}
+                className="mt-1 w-20"
+              />
+              <p className="mt-1 text-muted-foreground text-xs">
+                Minute when new cards become available
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 border-t pt-4">
+            <div className="text-muted-foreground text-sm">
+              <p>
+                <span className="font-medium">Last Reset:</span>{" "}
+                {new Date(deck.lastReset).toLocaleString()}
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>

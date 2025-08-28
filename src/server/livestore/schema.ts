@@ -185,6 +185,18 @@ export const events = {
       id: Schema.String,
     }),
   }),
+  resetDeck: Events.synced({
+    name: "v1.ResetDeck",
+    schema: Schema.Struct({
+      id: Schema.String,
+    }),
+  }),
+  resetCards: Events.synced({
+    name: "v1.ResetCards",
+    schema: Schema.Struct({
+      id: Schema.String,
+    }),
+  }),
 };
 
 // Materializers map events to state changes
@@ -332,6 +344,12 @@ const materializers = State.SQLite.materializers(events, {
     tables.userSettings.insert({ id, userId, enableAI }),
   "v1.ToggleAIGlobalSetting": ({ enableAI }) =>
     tables.userSettings.update({ enableAI }),
+  "v1.ResetDeck": ({ id }) => {
+    const now = new Date("2023-07-01T00:00:00.000Z");
+    return tables.deck.update({ lastReset: now }).where({ id });
+  },
+  "v1.ResetCards": ({ id }) =>
+    tables.card.update({ state: 0 }).where({ deckId: id }),
 });
 
 const state = State.SQLite.makeState({ tables, materializers });

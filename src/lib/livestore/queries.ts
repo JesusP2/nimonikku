@@ -25,6 +25,17 @@ export const userDecks$ = (userId: string) =>
     label: `userDecks-${userId}`,
   });
 
+export const userDecksLastReset$ = (userId: string) =>
+  queryDb(
+    tables.deck
+      .select("lastReset", "id", "newCardsPerDay")
+      .where({ userId })
+      .orderBy("createdAt", "desc"),
+    {
+      label: `userDecksLastReset-${userId}`,
+    },
+  );
+
 // Card queries
 export const cardsByDeck$ = (deckId: string) =>
   queryDb(tables.card.select().where({ deckId }).orderBy("createdAt", "desc"), {
@@ -40,7 +51,17 @@ export const dueCards$ = (deckId: string) =>
   queryDb(
     tables.card
       .select()
-      .where({ deckId, due: { op: "<=", value: new Date() }, state: { op: '!=', value: 0 } })
+      .where({
+        deckId,
+        due: { op: "<=", value: new Date() },
+        state: { op: "!=", value: 0 },
+      })
       .orderBy("due", "asc"),
     { label: `dueCards-${deckId}` },
   );
+
+export const resetDeck$ = (deckId: string) => {
+  const now = new Date("2023-07-01T00:00:00.000Z");
+  queryDb(tables.deck.update({ lastReset: now }).where({ id: deckId }));
+  queryDb(tables.card.update({ state: 0 }).where({ deckId: deckId }));
+};
