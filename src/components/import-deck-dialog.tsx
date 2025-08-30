@@ -88,7 +88,6 @@ export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
               deckId,
               frontMarkdown: front,
               backMarkdown: back,
-              rating: 0,
               frontFiles: [],
               backFiles: [],
               ...card,

@@ -27,34 +27,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { Card as FsrsCard } from "ts-fsrs";
 
-interface Card {
+export interface CustomCard extends FsrsCard {
   id: string;
   deckId: string;
   frontMarkdown: string;
   backMarkdown: string;
   frontFiles: string;
   backFiles: string;
-  due: Date;
-  stability: number;
-  difficulty: number;
-  rating: number;
-  elapsed_days: number;
-  scheduled_days: number;
-  reps: number;
-  lapses: number;
-  state: number;
-  last_review?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
 interface CardsListProps {
-  cards: Card[];
+  cards: CustomCard[];
   deckId: string;
 }
 
-const getCardStatus = (card: Card) => {
+const getCardStatus = (card: CustomCard) => {
   if (card.state === 0)
     return { label: "New", variant: "secondary" as const };
   if (card.state === 1)
@@ -64,7 +55,7 @@ const getCardStatus = (card: Card) => {
   return { label: "Relearning", variant: "secondary" as const };
 };
 
-const createColumns = (): ColumnDef<Card>[] => [
+const createColumns = (): ColumnDef<CustomCard>[] => [
   {
     accessorKey: "state",
     header: "Status",

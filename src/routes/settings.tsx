@@ -19,7 +19,7 @@ function SettingsPage() {
       store.commit(
         events.settingsCreated({
           id: window.crypto.randomUUID(),
-          userId: "session",
+          userId: "user1",
           enableAI: checked,
         }),
       );

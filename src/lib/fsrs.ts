@@ -1,3 +1,4 @@
+import type { CustomCard } from "@/components/cards-list";
 import {
   type Card,
   createEmptyCard,
@@ -31,18 +32,7 @@ export function scheduleCard(
   return results[rating as keyof typeof results] as RecordLogItem;
 }
 
-// Helper to convert our card data to FSRS Card format
-export function toFSRSCard(cardData: {
-  due: Date;
-  stability: number;
-  difficulty: number;
-  elapsed_days: number;
-  scheduled_days: number;
-  reps: number;
-  lapses: number;
-  state: number;
-  last_review: Date | null;
-}): Card {
+export function toFSRSCard(cardData: CustomCard): Card {
   return {
     due: cardData.due,
     stability: cardData.stability,
@@ -59,8 +49,9 @@ export function toFSRSCard(cardData: {
 export function fromFSRSCard(fsrsCard: Card) {
   return {
     due: fsrsCard.due,
-    stability: fsrsCard.stability,
+    stability: isNaN(fsrsCard.stability) ? 0 : fsrsCard.stability,
     difficulty: fsrsCard.difficulty,
+    learning_steps: fsrsCard.learning_steps,
     elapsed_days: fsrsCard.elapsed_days,
     scheduled_days: fsrsCard.scheduled_days,
     reps: fsrsCard.reps,
@@ -72,6 +63,7 @@ export function fromFSRSCard(fsrsCard: Card) {
 
 export function getReviewTimePredictions(card: Card, reviewDate = new Date()) {
   const results = fsrsScheduler.repeat(card, reviewDate);
+  console.log(results)
   return {
     again: results[Rating.Again].card.due,
     hard: results[Rating.Hard].card.due,

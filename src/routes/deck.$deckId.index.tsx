@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
 import {
   cardsByDeck$,
   deckById$,
@@ -183,12 +184,12 @@ function DeckInfoPage() {
           <div>
             <Label className="mb-2 block text-sm">AI Question Rephrasing</Label>
             <RadioGroup
-              value={deck.ai || "global"}
+              value={deck.enableAI || "global"}
               onValueChange={(value) => {
                 store.commit(
                   events.deckUpdated({
                     id: deck.id,
-                    ai: value,
+                    enableAI: value,
                     updatedAt: new Date(),
                   }),
                 );
@@ -314,6 +315,31 @@ function DeckInfoPage() {
               <p className="mt-1 text-muted-foreground text-xs">
                 Minute when new cards become available
               </p>
+            </div>
+            <div>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="limit-new-cards" className="text-sm">
+                    Limit Daily New Cards
+                  </Label>
+                  <p className="text-muted-foreground text-xs">
+                    When enabled, only add enough new cards to reach the daily limit (accounting for cards already in learning)
+                  </p>
+                </div>
+                <Switch
+                  id="limit-new-cards"
+                  checked={deck.limitNewCardsToDaily ?? true}
+                  onCheckedChange={(checked) => {
+                    store.commit(
+                      events.deckUpdated({
+                        id: deck.id,
+                        limitNewCardsToDaily: checked,
+                        updatedAt: new Date(),
+                      }),
+                    );
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="mt-4 border-t pt-4">
