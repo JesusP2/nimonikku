@@ -78,7 +78,7 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
             deckId,
             frontMarkdown: frontMarkdown.trim(),
             backMarkdown: backMarkdown.trim(),
-            rating: 0,
+            learning_steps: 0,
             frontFiles: [],
             backFiles: [],
             ...fsrsData,
