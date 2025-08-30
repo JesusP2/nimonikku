@@ -1,8 +1,8 @@
 import type { useStore } from "@livestore/react";
-import { events } from "@/server/livestore/schema";
-import { cardsByDeck$, userDecksLastReset$ } from "./livestore/queries";
-import { fsrsScheduler } from "./fsrs";
 import { Rating } from "ts-fsrs";
+import { events } from "@/server/livestore/schema";
+import { fsrsScheduler } from "./fsrs";
+import { cardsByDeck$, userDecksLastReset$ } from "./livestore/queries";
 
 type Store = ReturnType<typeof useStore>["store"];
 export class CardScheduler {
@@ -81,13 +81,14 @@ export class CardScheduler {
         .sort(
           (a, b) =>
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        ).map(card => {
+        )
+        .map((card) => {
           const results = fsrsScheduler.repeat(card, new Date());
-        return {
-          ...results[Rating.Good].card,
-          due: new Date(),
-        }
-      })
+          return {
+            ...results[Rating.Good].card,
+            due: new Date(),
+          };
+        })
         .slice(0, cardsToMove);
 
       const now = new Date();

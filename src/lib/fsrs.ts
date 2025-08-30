@@ -1,4 +1,3 @@
-import type { CustomCard } from "@/components/cards-list";
 import {
   type Card,
   createEmptyCard,
@@ -7,6 +6,7 @@ import {
   Rating,
   type RecordLogItem,
 } from "ts-fsrs";
+import type { CustomCard } from "@/components/cards-list";
 
 // Configure FSRS parameters
 const params = generatorParameters({
@@ -63,7 +63,7 @@ export function fromFSRSCard(fsrsCard: Card) {
 
 export function getReviewTimePredictions(card: Card, reviewDate = new Date()) {
   const results = fsrsScheduler.repeat(card, reviewDate);
-  console.log(results)
+  console.log(results);
   return {
     again: results[Rating.Again].card.due,
     hard: results[Rating.Hard].card.due,

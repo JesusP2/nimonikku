@@ -1,16 +1,15 @@
 import { useStore } from "@livestore/react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import zip from "jszip";
 import * as fzstd from "fzstd";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { FileDropzone } from "./file-dropzone";
-
+import zip from "jszip";
 import { useUploadRoute } from "pushduck/client";
-import type { AppUploadRouter } from "@/server/file-storage";
 import { useRef } from "react";
-import { events } from "@/server/livestore/schema";
 import { createEmptyCard } from "ts-fsrs";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { fromFSRSCard } from "@/lib/fsrs";
+import type { AppUploadRouter } from "@/server/file-storage";
+import { events } from "@/server/livestore/schema";
+import { FileDropzone } from "./file-dropzone";
 
 interface NewDeckDialogProps {
   open: boolean;
@@ -22,13 +21,10 @@ const worker = new Worker(url);
 export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
   const { store } = useStore();
   const collectionFile = useRef<File | null>(null);
-  const { uploadFiles } = useUploadRoute<AppUploadRouter>(
-    "documentUpload",
-    {
-      onSuccess: async () => onSuccess(),
-      endpoint: "/api/upload",
-    },
-  );
+  const { uploadFiles } = useUploadRoute<AppUploadRouter>("documentUpload", {
+    onSuccess: async () => onSuccess(),
+    endpoint: "/api/upload",
+  });
 
   async function onSuccess() {
     worker.postMessage({
@@ -68,8 +64,8 @@ export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
         if (!notes) return;
         (notes as any[]).forEach((note) => {
           const card = fromFSRSCard(createEmptyCard());
-          let front = note[7].replaceAll("\u001f", "\n");
-          let back = note[6].replaceAll("\u001f", "\n");
+          const front = note[7].replaceAll("\u001f", "\n");
+          const back = note[6].replaceAll("\u001f", "\n");
           // TODO: fk this, need to find a way to map files to cards
           // find substring that matches [placeholder:number_placeholder2] placeholder and placeholder can be any string
           // const placeholderRegex = /\[(.*?):(\d+)_(.*?)\]/g;

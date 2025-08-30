@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
+import crypto from "crypto";
 import { createUploadConfig } from "pushduck/server";
 import { storage } from "../storage";
-import crypto from "crypto";
 
 const { s3 } = createUploadConfig()
   .provider("cloudflareR2", {
@@ -19,20 +19,20 @@ export const uploadRouter = s3.createRouter({
   documentUpload: s3
     .file()
     .max("1MB")
-    .middleware(async function (options) {
+    .middleware(async (options) => {
       const userId = storage.getStore();
       return {
         ...options.metadata,
         userId: userId ?? "anonymous",
       };
     })
-  .paths({
-    prefix: 'media',
-    generateKey: ({ metadata, file }) => {
-      const id = crypto.randomUUID();
-      return `media/${metadata.userId}/${id}/${file.name}`;
-    },
-  })
+    .paths({
+      prefix: "media",
+      generateKey: ({ metadata, file }) => {
+        const id = crypto.randomUUID();
+        return `media/${metadata.userId}/${id}/${file.name}`;
+      },
+    })
     .onUploadError(({ error }) => {
       console.error("Failed to upload file:", error);
     }),

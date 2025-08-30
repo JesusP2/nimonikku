@@ -3,12 +3,8 @@ export function CardsState({
 }: {
   cards: readonly { id: string; state: number }[];
 }) {
-  const learningCards = cards.filter(
-    (card) => card.state === 1,
-  ).length;
-  const reviewCards = cards.filter(
-    (card) => card.state === 2,
-  ).length;
+  const learningCards = cards.filter((card) => card.state === 1).length;
+  const reviewCards = cards.filter((card) => card.state === 2).length;
   const relearningCards = cards.filter((card) => card.state === 3).length;
 
   return (

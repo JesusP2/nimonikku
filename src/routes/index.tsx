@@ -3,10 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BookOpen } from "lucide-react";
 import { useState } from "react";
 import { CreateDeckDropdown } from "@/components/create-deck-dropdown";
+import { DeckCard } from "@/components/deck-card";
 import { NewDeckDialog } from "@/components/new-deck-dialog";
 import { Button } from "@/components/ui/button";
 import { allDecks$ } from "@/lib/livestore/queries";
-import { DeckCard } from "@/components/deck-card";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -60,7 +60,9 @@ function RouteComponent() {
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-            {decks.map((deck) => <DeckCard key={deck.id} deck={deck} />)}
+            {decks.map((deck) => (
+              <DeckCard key={deck.id} deck={deck} />
+            ))}
           </div>
         )}
       </div>

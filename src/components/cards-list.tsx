@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   type ColumnDef,
@@ -9,7 +8,16 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, Calendar, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+  ArrowUpDown,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
+import * as React from "react";
+import type { Card as FsrsCard } from "ts-fsrs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +35,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Card as FsrsCard } from "ts-fsrs";
 
 export interface CustomCard extends FsrsCard {
   id: string;
@@ -46,8 +53,7 @@ interface CardsListProps {
 }
 
 const getCardStatus = (card: CustomCard) => {
-  if (card.state === 0)
-    return { label: "New", variant: "secondary" as const };
+  if (card.state === 0) return { label: "New", variant: "secondary" as const };
   if (card.state === 1)
     return { label: "Learning", variant: "default" as const };
   if (card.state === 2)
@@ -61,7 +67,11 @@ const createColumns = (): ColumnDef<CustomCard>[] => [
     header: "Status",
     cell: ({ row }) => {
       const status = getCardStatus(row.original);
-      return <Badge variant={status.variant} className="w-20 justify-center">{status.label}</Badge>;
+      return (
+        <Badge variant={status.variant} className="w-20 justify-center">
+          {status.label}
+        </Badge>
+      );
     },
   },
   {
@@ -151,7 +161,7 @@ export function CardsList({ cards, deckId }: CardsListProps) {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -165,13 +175,15 @@ export function CardsList({ cards, deckId }: CardsListProps) {
                 <TableRow
                   key={row.id}
                   className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => navigate({ to: `/deck/${deckId}/card/${row.original.id}` })}
+                  onClick={() =>
+                    navigate({ to: `/deck/${deckId}/card/${row.original.id}` })
+                  }
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -191,12 +203,17 @@ export function CardsList({ cards, deckId }: CardsListProps) {
         </Table>
       </div>
       <div className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+        <div className="flex items-center gap-6 text-muted-foreground text-sm">
           <div>
-            Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
+            Showing{" "}
+            {table.getState().pagination.pageIndex *
+              table.getState().pagination.pageSize +
+              1}{" "}
+            to{" "}
             {Math.min(
-              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-              table.getFilteredRowModel().rows.length
+              (table.getState().pagination.pageIndex + 1) *
+                table.getState().pagination.pageSize,
+              table.getFilteredRowModel().rows.length,
             )}{" "}
             of {table.getFilteredRowModel().rows.length} card(s)
           </div>
@@ -209,7 +226,9 @@ export function CardsList({ cards, deckId }: CardsListProps) {
               }}
             >
               <SelectTrigger className="h-8 w-[80px]">
-                <SelectValue placeholder={table.getState().pagination.pageSize} />
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 20, 30, 50, 100].map((pageSize) => (

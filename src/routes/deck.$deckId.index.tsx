@@ -237,7 +237,7 @@ function DeckInfoPage() {
                 max="100"
                 value={deck.newCardsPerDay}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value);
+                  const value = Number.parseInt(e.target.value);
                   if (!isNaN(value) && value >= 1 && value <= 100) {
                     store.commit(
                       events.deckUpdated({
@@ -265,7 +265,7 @@ function DeckInfoPage() {
                 max="23"
                 value={deck.resetTime?.hour ?? 0}
                 onChange={(e) => {
-                  const hour = parseInt(e.target.value);
+                  const hour = Number.parseInt(e.target.value);
                   if (!isNaN(hour) && hour >= 0 && hour <= 23) {
                     store.commit(
                       events.deckUpdated({
@@ -296,7 +296,7 @@ function DeckInfoPage() {
                 max="59"
                 value={deck.resetTime?.minute ?? 0}
                 onChange={(e) => {
-                  const minute = parseInt(e.target.value);
+                  const minute = Number.parseInt(e.target.value);
                   if (!isNaN(minute) && minute >= 0 && minute <= 59) {
                     store.commit(
                       events.deckUpdated({
@@ -323,7 +323,8 @@ function DeckInfoPage() {
                     Limit Daily New Cards
                   </Label>
                   <p className="text-muted-foreground text-xs">
-                    When enabled, only add enough new cards to reach the daily limit (accounting for cards already in learning)
+                    When enabled, only add enough new cards to reach the daily
+                    limit (accounting for cards already in learning)
                   </p>
                 </div>
                 <Switch
