@@ -13,6 +13,7 @@ import { auth } from "./auth";
 import { uploadRouter } from "./file-storage";
 import { handler } from "./orpc";
 import { storage } from "./storage";
+import { jwtVerify, createRemoteJWKSet } from "jose";
 
 export { DurableObjectRateLimiter } from "@hono-rate-limiter/cloudflare";
 
@@ -30,7 +31,7 @@ const app = new Hono<{ Bindings: typeof env }>();
 app.use((c, next) =>
   rateLimiter<{ Bindings: typeof env }>({
     windowMs: 60,
-    limit: 60,
+    limit: 600,
     standardHeaders: "draft-6", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
     keyGenerator: (c) => c.req.header("cf-connecting-ip") ?? "",
     store: new DurableObjectStore({ namespace: c.env.CACHE }),
@@ -49,9 +50,18 @@ app.use(
 );
 app.get("/websocket", (c) => {
   return handleWebSocket(c.req.raw, c.env, c.executionCtx, {
-    validatePayload: (payload: any) => {
-      console.log("validatePayload", payload);
-      if (payload?.authToken !== "insecure-token-change-me") {
+    validatePayload: async (data: { authToken?: string }) => {
+      if (!data.authToken) {
+        throw new Error("Missing auth token");
+      }
+      const baseUrl = c.env.VITE_SERVER_URL;
+      const url = `${baseUrl}/api/auth/jwks`;
+      const jwks = createRemoteJWKSet(new URL(url));
+      const { payload } = await jwtVerify(data.authToken, jwks, {
+        issuer: baseUrl,
+        audience: baseUrl,
+      });
+      if (!payload.sub) {
         throw new Error("Invalid auth token");
       }
     },
@@ -68,9 +78,8 @@ app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
 app.get("/api/upload/*", (c) => uploadRouter.handlers.GET(c.req.raw));
 app.post("/api/upload/*", async (c) => {
   const session = await auth.api.getSession(c.req.raw);
-  return storage.run(
-    session?.session.userId,
-    async () => uploadRouter.handlers.POST(c.req.raw),
+  return storage.run(session?.session.userId, async () =>
+    uploadRouter.handlers.POST(c.req.raw),
   );
 });
 

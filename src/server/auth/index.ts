@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, anonymous, magicLink, oneTimeToken } from "better-auth/plugins";
+import { admin, anonymous, jwt, magicLink, oneTimeToken } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import { Resend } from "resend";
 import { db } from "@/server/db";
@@ -17,7 +17,7 @@ export const auth = betterAuth({
     schema: schema,
   }),
   plugins: [
-    oneTimeToken(),
+    jwt(),
     anonymous(),
     magicLink({
       sendMagicLink: async ({ email, url }) => {

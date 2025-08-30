@@ -197,6 +197,9 @@ importers:
       hono-rate-limiter:
         specifier: ^0.4.2
         version: 0.4.2(hono@4.8.2)
+      jose:
+        specifier: ^6.1.0
+        version: 6.1.0
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
@@ -5297,6 +5300,9 @@ packages:
 
   jose@5.10.0:
     resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
+
+  jose@6.1.0:
+    resolution: {integrity: sha512-TTQJyoEoKcC1lscpVDCSsVgYzUDg/0Bt3WE//WiTPK6uOCQC2KZS4MpugbMWt/zyjkopgZoXhZuCi00gLudfUA==}
 
   jotai-scope@0.7.2:
     resolution: {integrity: sha512-Gwed97f3dDObrO43++2lRcgOqw4O2sdr4JCjP/7eHK1oPACDJ7xKHGScpJX9XaflU+KBHXF+VhwECnzcaQiShg==}
@@ -12085,6 +12091,8 @@ snapshots:
   jiti@2.4.2: {}
 
   jose@5.10.0: {}
+
+  jose@6.1.0: {}
 
   jotai-scope@0.7.2(jotai@2.11.0(@types/react@19.1.8)(react@19.1.0))(react@19.1.0):
     dependencies:

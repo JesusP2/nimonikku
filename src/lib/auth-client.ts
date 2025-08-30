@@ -1,6 +1,7 @@
 import {
   adminClient,
   anonymousClient,
+  jwtClient,
   magicLinkClient,
   // oneTapClient,
   organizationClient,
@@ -11,7 +12,6 @@ import { createAuthClient } from "better-auth/react";
 export const authClient = createAuthClient({
   baseURL: import.meta.env.VITE_SERVER_URL,
   plugins: [
-    passkeyClient(),
     // oneTapClient({
     //   clientId: "YOUR_CLIENT_ID",
     //   // Optional client configuration:
@@ -27,9 +27,11 @@ export const authClient = createAuthClient({
     //     maxAttempts: 5, // Maximum number of attempts before triggering onPromptNotification (default: 5)
     //   },
     // }),
+    jwtClient(),
     organizationClient(),
     anonymousClient(),
     magicLinkClient(),
     adminClient(),
+    passkeyClient(),
   ],
 });
