@@ -57,7 +57,10 @@ export const dueCards$ = (deckId: string) =>
       .select()
       .where({
         deckId,
-        due: { op: "<=", value: new Date() },
+        due: {
+          op: "<=",
+          value: new Date(new Date().getTime() + 1000 * 60 * 10),
+        },
         state: { op: "!=", value: 0 },
       })
       .orderBy("due", "asc"),
