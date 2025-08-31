@@ -4,14 +4,15 @@ import {
   LiveStoreProvider as LiveStoreProviderReact,
   useStore,
 } from "@livestore/react";
-import { useQuery } from "@tanstack/react-query";
 import type React from "react";
 import { useEffect } from "react";
 import { unstable_batchedUpdates as batchUpdates } from "react-dom";
-import { authClient } from "@/lib/auth-client";
 import { startCardScheduler, stopCardScheduler } from "@/lib/card-scheduler";
-import { schema } from "@/server/livestore/schema";
+import { events, schema } from "@/server/livestore/schema";
 import LiveStoreWorker from "../../livestore.worker?worker";
+import { userSettings$ } from "@/lib/livestore/queries";
+import { useSession } from "@/hooks/use-session";
+import { authClient } from "@/lib/auth-client";
 
 const adapter = makePersistedAdapter({
   storage: { type: "opfs" },
@@ -19,10 +20,21 @@ const adapter = makePersistedAdapter({
   sharedWorker: LiveStoreSharedWorker,
 });
 
-function SchedulerInitializer() {
+function SchedulerInitializer({ userId }: { userId?: string }) {
   const { store } = useStore();
 
   useEffect(() => {
+    if (!userId)  return;
+    const [userSettings] = store.query(userSettings$(userId));
+    if (!userSettings) {
+      store.commit(
+        events.settingsCreated({
+          id: crypto.randomUUID(),
+          userId,
+          enableAI: false,
+        }),
+      );
+    }
     if (store) {
       startCardScheduler(store);
       return () => {
@@ -35,25 +47,8 @@ function SchedulerInitializer() {
 }
 
 export function LiveStoreProvider({ children }: { children: React.ReactNode }) {
-  const session = useQuery({
-    queryKey: ["session"],
-    queryFn: async () => {
-      let jwt = null;
-      const session = await authClient.getSession({
-        fetchOptions: {
-          onSuccess: (ctx) => {
-            jwt = ctx.response.headers.get("set-auth-jwt");
-          },
-        },
-      });
-      console.log(jwt);
-      return {
-        ...session.data,
-        jwt,
-      };
-    },
-  });
-  if (session.isLoading) return;
+  const session = authClient.useSession();
+  if (session.isPending) return;
   return (
     <LiveStoreProviderReact
       schema={schema}
@@ -61,9 +56,8 @@ export function LiveStoreProvider({ children }: { children: React.ReactNode }) {
       adapter={adapter}
       renderLoading={(_) => <div>Loading LiveStore ({_.stage})...</div>}
       batchUpdates={batchUpdates}
-      syncPayload={{ authToken: session.data?.jwt ?? "invalid-token" }}
     >
-      <SchedulerInitializer />
+      <SchedulerInitializer userId={session.data?.user?.id} />
       {children}
     </LiveStoreProviderReact>
   );

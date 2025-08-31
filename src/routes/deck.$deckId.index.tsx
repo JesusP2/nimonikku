@@ -21,6 +21,7 @@ import {
   userSettings$,
 } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
+import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/deck/$deckId/")({
   component: DeckInfoPage,
@@ -32,8 +33,9 @@ function DeckInfoPage() {
   const navigate = useNavigate();
   const { store } = useStore();
 
+  const session = authClient.useSession();
   const deck = useQuery(deckById$(deckId))?.[0];
-  const settings = useQuery(userSettings$)?.[0];
+  const settings = useQuery(userSettings$(session.data?.user?.id))?.[0];
   const cards = useQuery(cardsByDeck$(deckId)) || [];
 
   const now = new Date();
@@ -75,11 +77,11 @@ function DeckInfoPage() {
                     id: deck.id,
                   }),
                 );
-                store.commit(
-                  events.resetCards({
-                    id: deck.id,
-                  }),
-                );
+                // store.commit(
+                //   events.resetCards({
+                //     id: deck.id,
+                //   }),
+                // );
               }}
             >
               reset

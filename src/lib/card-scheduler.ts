@@ -3,6 +3,7 @@ import { Rating } from "ts-fsrs";
 import { events } from "@/server/livestore/schema";
 import { fsrsScheduler } from "./fsrs";
 import { cardsByDeck$, userDecksLastReset$ } from "./livestore/queries";
+import type { CustomCard } from "@/components/cards-list";
 
 type Store = ReturnType<typeof useStore>["store"];
 export class CardScheduler {
@@ -50,7 +51,6 @@ export class CardScheduler {
     const todayReset = new Date();
     todayReset.setHours(resetTime.hour, resetTime.minute, 0, 0);
     const shouldReset = now >= todayReset && lastReset < todayReset;
-    console.log(`Should reset for deck ${deck.id}: ${shouldReset}`);
 
     if (shouldReset) {
       this.moveNewCardsToLearning(deck);
@@ -59,15 +59,14 @@ export class CardScheduler {
 
   private moveNewCardsToLearning(deck: any) {
     try {
+      const now = new Date();
       const allCards = this.store.query(cardsByDeck$(deck.id));
 
-      // Calculate how many cards to move based on the limitNewCardsToDaily setting
       let cardsToMove: number;
-
       if (deck.limitNewCardsToDaily ?? true) {
         // Count cards currently in learning state (state = 1)
         const learningCards = allCards.filter(
-          (card) => card.state === 1,
+          (card) => card.state === 1 && card.due <= now,
         ).length;
         // Only add enough to reach the daily limit
         cardsToMove = Math.max(0, deck.newCardsPerDay - learningCards);
@@ -89,9 +88,8 @@ export class CardScheduler {
             due: new Date(),
           };
         })
-        .slice(0, cardsToMove);
+        .slice(0, cardsToMove) as CustomCard[];
 
-      const now = new Date();
       for (const card of newCards) {
         this.store.commit(
           events.cardReviewed({
@@ -110,7 +108,6 @@ export class CardScheduler {
           }),
         );
       }
-
       this.store.commit(
         events.deckUpdated({
           id: deck.id,
@@ -118,17 +115,6 @@ export class CardScheduler {
           updatedAt: now,
         }),
       );
-
-      if (newCards.length > 0) {
-        const limitEnabled = deck.limitNewCardsToDaily ?? true;
-        const learningCards = allCards.filter(
-          (card) => card.state === 1,
-        ).length;
-        console.log(
-          `Moved ${newCards.length} new cards to learning for deck: ${deck.name} ` +
-            `(${limitEnabled ? "limited" : "unlimited"} mode, ${learningCards} already learning)`,
-        );
-      }
     } catch (error) {
       console.error(`Error moving cards for deck ${deck.id}:`, error);
     }

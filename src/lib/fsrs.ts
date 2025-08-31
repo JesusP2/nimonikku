@@ -63,7 +63,6 @@ export function fromFSRSCard(fsrsCard: Card) {
 
 export function getReviewTimePredictions(card: Card, reviewDate = new Date()) {
   const results = fsrsScheduler.repeat(card, reviewDate);
-  console.log(results);
   return {
     again: results[Rating.Again].card.due,
     hard: results[Rating.Hard].card.due,

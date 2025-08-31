@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { userSettings$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
+import { useSession } from "@/hooks/use-session";
+import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -12,7 +14,8 @@ export const Route = createFileRoute("/settings")({
 
 function SettingsPage() {
   const { store } = useStore();
-  const settings = useQuery(userSettings$)?.[0];
+  const session = authClient.useSession();
+  const settings = useQuery(userSettings$(session.data?.user?.id))?.[0];
 
   const onToggle = (checked: boolean) => {
     if (!settings) {

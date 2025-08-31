@@ -31,7 +31,7 @@ const app = new Hono<{ Bindings: typeof env }>();
 app.use((c, next) =>
   rateLimiter<{ Bindings: typeof env }>({
     windowMs: 60,
-    limit: 600,
+    limit: 6000,
     standardHeaders: "draft-6", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
     keyGenerator: (c) => c.req.header("cf-connecting-ip") ?? "",
     store: new DurableObjectStore({ namespace: c.env.CACHE }),
@@ -50,18 +50,19 @@ app.use(
 );
 app.get("/websocket", (c) => {
   return handleWebSocket(c.req.raw, c.env, c.executionCtx, {
-    validatePayload: async (data: { authToken?: string }) => {
-      if (!data.authToken) {
-        throw new Error("Missing auth token");
-      }
-      const baseUrl = c.env.VITE_SERVER_URL;
-      const url = `${baseUrl}/api/auth/jwks`;
-      const jwks = createRemoteJWKSet(new URL(url));
-      const { payload } = await jwtVerify(data.authToken, jwks, {
-        issuer: baseUrl,
-        audience: baseUrl,
-      });
-      if (!payload.sub) {
+    validatePayload: async () => {
+      const session = await auth.api.getSession(c.req.raw);
+      // if (!data.authToken) {
+      //   throw new Error("Missing auth token");
+      // }
+      // const baseUrl = c.env.VITE_SERVER_URL;
+      // const url = `${baseUrl}/api/auth/jwks`;
+      // const jwks = createRemoteJWKSet(new URL(url));
+      // const { payload } = await jwtVerify(data.authToken, jwks, {
+      //   issuer: baseUrl,
+      //   audience: baseUrl,
+      // });
+      if (!session?.session.userId) {
         throw new Error("Invalid auth token");
       }
     },

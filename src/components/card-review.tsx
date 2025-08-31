@@ -20,6 +20,7 @@ import { orpcQuery } from "@/lib/orpc";
 import { events } from "@/server/livestore/schema";
 import type { CustomCard } from "./cards-list";
 import { useIsOnline } from "./providers/is-online";
+import { authClient } from "@/lib/auth-client";
 
 interface CardReviewProps {
   card: CustomCard;
@@ -33,7 +34,8 @@ export function CardReview({ card, onNext }: CardReviewProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [rephrasedText, setRephrasedText] = useState<string | null>(null);
   const deck = useQuery(deckById$(card.deckId))?.[0];
-  const settings = useQuery(userSettings$)?.[0];
+  const session = authClient.useSession();
+  const settings = useQuery(userSettings$(session.data?.user?.id))?.[0];
   const { isOnline } = useIsOnline();
   const query = useTanstackQuery({
     enabled: card.frontMarkdown.length > 0 && shouldRephrase() && isOnline,

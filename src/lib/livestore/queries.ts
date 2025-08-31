@@ -5,9 +5,13 @@ import { tables } from "@/server/livestore/schema";
 export const uiState$ = queryDb(tables.uiState.get(), { label: "uiState" });
 
 // User settings
-export const userSettings$ = queryDb(tables.userSettings.select(), {
-  label: "userSettings",
-});
+export const userSettings$ = (userId: string) =>
+  queryDb(
+    tables.userSettings.select().where({ userId: { op: "=", value: userId } }),
+    {
+      label: "userSettings",
+    },
+  );
 
 // Deck queries
 export const allDecks$ = queryDb(
