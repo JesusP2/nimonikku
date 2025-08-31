@@ -9,6 +9,7 @@
     "ignoreUnknown": false,
     "includes": [
       "**",
+      "!src/components/ui/**",
       "!**/.next",
       "!**/dist",
       "!**/.turbo",

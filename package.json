@@ -5,7 +5,7 @@
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "check": "biome check --write .",
+    "check": "biome check --fix .",
     "dev": "vite",
     "start": "wrangler dev --remote",
     "deploy": "wrangler deploy",

@@ -40,7 +40,9 @@ function DeckInfoPage() {
 
   const now = new Date();
   const dueCards = cards.filter(
-    (card) => new Date(card.due) <= new Date(now.getTime() + 1000 * 60 * 10) && card.state !== 0,
+    (card) =>
+      new Date(card.due) <= new Date(now.getTime() + 1000 * 60 * 10) &&
+      card.state !== 0,
   );
 
   const handleAddCard = () => {
