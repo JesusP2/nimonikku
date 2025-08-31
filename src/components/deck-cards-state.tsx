@@ -1,11 +1,11 @@
 export function CardsState({
   cards,
 }: {
-  cards: readonly { id: string; state: number }[];
+  cards: readonly { id: string; state: number; reps: number; }[];
 }) {
-  const learningCards = cards.filter((card) => card.state === 1).length;
+  const learningCards = cards.filter((card) => card.state === 1 && card.reps === 1).length;
   const reviewCards = cards.filter((card) => card.state === 2).length;
-  const relearningCards = cards.filter((card) => card.state === 3).length;
+  const relearningCards = cards.filter((card) => card.state === 1 && card.reps > 1).length;
 
   return (
     <div className="mt-2 flex flex-wrap gap-1">

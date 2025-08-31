@@ -102,7 +102,7 @@ export class CardScheduler {
             scheduled_days: card.scheduled_days,
             reps: card.reps,
             lapses: card.lapses,
-            state: 1,
+            state: card.state,
             last_review: new Date(),
             updatedAt: new Date(),
           }),
