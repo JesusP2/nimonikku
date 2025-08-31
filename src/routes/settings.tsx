@@ -3,10 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { userSettings$ } from "@/lib/livestore/queries";
-import { events } from "@/server/livestore/schema";
 import { useSession } from "@/hooks/use-session";
 import { authClient } from "@/lib/auth-client";
+import { userSettings$ } from "@/lib/livestore/queries";
+import { events } from "@/server/livestore/schema";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,

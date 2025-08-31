@@ -7,12 +7,12 @@ import {
 import type React from "react";
 import { useEffect } from "react";
 import { unstable_batchedUpdates as batchUpdates } from "react-dom";
-import { startCardScheduler, stopCardScheduler } from "@/lib/card-scheduler";
-import { events, schema } from "@/server/livestore/schema";
-import LiveStoreWorker from "../../livestore.worker?worker";
-import { userSettings$ } from "@/lib/livestore/queries";
 import { useSession } from "@/hooks/use-session";
 import { authClient } from "@/lib/auth-client";
+import { startCardScheduler, stopCardScheduler } from "@/lib/card-scheduler";
+import { userSettings$ } from "@/lib/livestore/queries";
+import { events, schema } from "@/server/livestore/schema";
+import LiveStoreWorker from "../../livestore.worker?worker";
 
 const adapter = makePersistedAdapter({
   storage: { type: "opfs" },
@@ -24,7 +24,7 @@ function SchedulerInitializer({ userId }: { userId?: string }) {
   const { store } = useStore();
 
   useEffect(() => {
-    if (!userId)  return;
+    if (!userId) return;
     const [userSettings] = store.query(userSettings$(userId));
     if (!userSettings) {
       store.commit(

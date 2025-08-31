@@ -8,6 +8,7 @@ import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { authClient } from "@/lib/auth-client";
 import {
   formatReviewTime,
   fromFSRSCard,
@@ -20,7 +21,6 @@ import { orpcQuery } from "@/lib/orpc";
 import { events } from "@/server/livestore/schema";
 import type { CustomCard } from "./cards-list";
 import { useIsOnline } from "./providers/is-online";
-import { authClient } from "@/lib/auth-client";
 
 interface CardReviewProps {
   card: CustomCard;

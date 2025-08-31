@@ -1,9 +1,9 @@
 import type { useStore } from "@livestore/react";
 import { Rating } from "ts-fsrs";
+import type { CustomCard } from "@/components/cards-list";
 import { events } from "@/server/livestore/schema";
 import { fsrsScheduler } from "./fsrs";
 import { cardsByDeck$, userDecksLastReset$ } from "./livestore/queries";
-import type { CustomCard } from "@/components/cards-list";
 
 type Store = ReturnType<typeof useStore>["store"];
 export class CardScheduler {
