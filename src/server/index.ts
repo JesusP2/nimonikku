@@ -52,7 +52,6 @@ app.get("/websocket", (c) => {
   return handleWebSocket(c.req.raw, c.env, c.executionCtx, {
     validatePayload: async () => {
       const session = await auth.api.getSession(c.req.raw);
-      console.log('session:', session)
       // if (!data.authToken) {
       //   throw new Error("Missing auth token");
       // }
