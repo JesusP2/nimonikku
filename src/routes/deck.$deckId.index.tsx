@@ -152,26 +152,6 @@ function DeckInfoPage() {
               </div>
             </div>
           </div>
-          <div className="mt-4 border-t pt-4">
-            <Label htmlFor="context" className="block font-medium text-muted-foreground text-sm">
-              Context
-            </Label>
-            <Textarea
-              id="context"
-              defaultValue={deck.context || ""}
-              onChange={(e) => {
-                store.commit(
-                  events.deckUpdated({
-                    id: deck.id,
-                    context: e.target.value,
-                    updatedAt: new Date(),
-                  }),
-                );
-              }}
-              placeholder="Optional context for AI rephrasing..."
-              className="mt-1"
-            />
-          </div>
           <div className="mt-6 border-t pt-4">
             <div className="flex gap-3">
               <Button
@@ -231,6 +211,29 @@ function DeckInfoPage() {
             <p className="mt-2 text-muted-foreground text-xs">
               Override global setting for this deck.
             </p>
+          </div>
+          <div className="mt-4 pt-4">
+            <Label htmlFor="context" className="mb-2 block text-sm">
+              Context
+            </Label>
+            <p className="mt-2 text-muted-foreground text-xs">
+              Add optional context to the AI question rephrasing.
+            </p>
+            <Textarea
+              id="context"
+              defaultValue={deck.context || ""}
+              onChange={(e) => {
+                store.commit(
+                  events.deckUpdated({
+                    id: deck.id,
+                    context: e.target.value,
+                    updatedAt: new Date(),
+                  }),
+                );
+              }}
+              placeholder="Optional context for AI rephrasing..."
+              className="mt-1"
+            />
           </div>
         </CardContent>
       </Card>
