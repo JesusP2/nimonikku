@@ -10,6 +10,7 @@ import { fromFSRSCard } from "@/lib/fsrs";
 import type { AppUploadRouter } from "@/server/file-storage";
 import { events } from "@/server/livestore/schema";
 import { FileDropzone } from "./file-dropzone";
+import { authClient } from "@/lib/auth-client";
 
 interface NewDeckDialogProps {
   open: boolean;
@@ -20,6 +21,7 @@ const url = new URL("http://localhost:5173/worker.sql-wasm.js");
 const worker = new Worker(url);
 export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
   const { store } = useStore();
+  const session = authClient.useSession();
   const collectionFile = useRef<File | null>(null);
   const { uploadFiles } = useUploadRoute<AppUploadRouter>("documentUpload", {
     onSuccess: async () => onSuccess(),
@@ -27,6 +29,7 @@ export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
   });
 
   async function onSuccess() {
+    if (!session.data?.user) return;
     worker.postMessage({
       id: 1,
       action: "open",
@@ -35,6 +38,7 @@ export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
     const now = new Date();
     let deckId: string;
     function onMessage(event: MessageEvent) {
+      if (!session.data?.user) return;
       if (event.data.id === 1) {
         worker.postMessage({
           id: 2,
@@ -47,9 +51,9 @@ export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
         store.commit(
           events.deckCreated({
             id: deckId,
-            userId: "user1",
+            userId: session.data.user.id,
             name: deckName,
-            description: "",
+            context: "",
             createdAt: now,
             updatedAt: now,
           }),

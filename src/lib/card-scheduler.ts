@@ -124,7 +124,7 @@ export class CardScheduler {
 // Singleton instance
 let schedulerInstance: CardScheduler | null = null;
 
-export const startCardScheduler = (store: Store) => {
+export const startCardScheduler = (store: Store, userId: string) => {
   if (schedulerInstance) {
     schedulerInstance.stop();
   }

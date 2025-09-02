@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { authClient } from "@/lib/auth-client";
 import {
   cardsByDeck$,
@@ -151,14 +152,26 @@ function DeckInfoPage() {
               </div>
             </div>
           </div>
-          {deck.description && (
-            <div className="mt-4 border-t pt-4">
-              <dt className="font-medium text-muted-foreground text-sm">
-                Description
-              </dt>
-              <dd className="mt-1 text-sm">{deck.description}</dd>
-            </div>
-          )}
+          <div className="mt-4 border-t pt-4">
+            <Label htmlFor="context" className="block font-medium text-muted-foreground text-sm">
+              Context
+            </Label>
+            <Textarea
+              id="context"
+              defaultValue={deck.context || ""}
+              onChange={(e) => {
+                store.commit(
+                  events.deckUpdated({
+                    id: deck.id,
+                    context: e.target.value,
+                    updatedAt: new Date(),
+                  }),
+                );
+              }}
+              placeholder="Optional context for AI rephrasing..."
+              className="mt-1"
+            />
+          </div>
           <div className="mt-6 border-t pt-4">
             <div className="flex gap-3">
               <Button

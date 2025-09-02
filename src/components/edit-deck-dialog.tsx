@@ -40,7 +40,7 @@ export function EditDeckDialog({
         events.deckUpdated({
           id: deck.id,
           name: data.name.trim(),
-          description: data.description?.trim() || "",
+          context: data.description?.trim() || "",
           updatedAt: new Date(),
         }),
       );

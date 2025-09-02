@@ -36,7 +36,7 @@ function SchedulerInitializer({ userId }: { userId?: string }) {
       );
     }
     if (store) {
-      startCardScheduler(store);
+      startCardScheduler(store, userId);
       return () => {
         stopCardScheduler();
       };

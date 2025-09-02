@@ -5,24 +5,18 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 export const deckFormSchema = z.object({
   name: z
     .string()
     .min(1, "Name is required")
-    .max(100, "Name must be less than 100 characters"),
-  description: z
-    .string()
-    .max(500, "Description must be less than 500 characters")
-    .optional(),
+    .max(100, "Name must be less than 100 characters")
 });
 
 export type DeckFormData = z.infer<typeof deckFormSchema>;
@@ -45,8 +39,7 @@ export function DeckForm({
   const form = useForm<DeckFormData>({
     resolver: zodResolver(deckFormSchema),
     defaultValues: {
-      name: initialData?.name || "",
-      description: initialData?.description || "",
+      name: initialData?.name || ""
     },
   });
 
@@ -71,27 +64,6 @@ export function DeckForm({
                 <FormControl>
                   <Input placeholder="Enter deck name..." {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Enter deck description..."
-                    rows={3}
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Optional description for your deck
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

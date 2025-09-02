@@ -18,11 +18,12 @@ function SettingsPage() {
   const settings = useQuery(userSettings$(session.data?.user?.id))?.[0];
 
   const onToggle = (checked: boolean) => {
+    if (!session.data?.user) return;
     if (!settings) {
       store.commit(
         events.settingsCreated({
           id: window.crypto.randomUUID(),
-          userId: "user1",
+          userId: session.data.user.id,
           enableAI: checked,
         }),
       );
