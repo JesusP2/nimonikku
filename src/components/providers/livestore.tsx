@@ -39,12 +39,12 @@ export function LiveStoreProvider({ children }: { children: React.ReactNode }) {
   return (
     <LiveStoreProviderReact
       schema={schema}
-      storeId={user?.id}
+      storeId={user.id}
       adapter={adapter}
       renderLoading={(_) => <div>Loading LiveStore ({_.stage})...</div>}
       batchUpdates={batchUpdates}
     >
-      <SchedulerInitializer userId={user?.id} />
+      <SchedulerInitializer userId={user.id} />
       {children}
     </LiveStoreProviderReact>
   );

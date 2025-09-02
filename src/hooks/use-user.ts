@@ -16,6 +16,9 @@ export const useUserQueryOptions = () =>
       });
       if (!session.data?.session) {
         const { data: anonymousData } = await authClient.signIn.anonymous();
+        if (!anonymousData?.user) {
+          throw new Error("Failed to get user");
+        }
         return {
           ...anonymousData?.user,
           jwt: null,

@@ -13,7 +13,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!user.id) return;
-    const [userSettings] = store.query(userSettings$(user?.id));
+    const [userSettings] = store.query(userSettings$(user.id));
     if (!userSettings) {
       store.commit(
         events.settingsCreated({
