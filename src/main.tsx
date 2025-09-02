@@ -1,4 +1,3 @@
-import { scan } from "react-scan";
 import "@excalidraw/excalidraw/index.css";
 // @ts-expect-error
 import "@fontsource-variable/geist";

@@ -258,7 +258,7 @@ function DeckInfoPage() {
                 value={deck.newCardsPerDay}
                 onChange={(e) => {
                   const value = Number.parseInt(e.target.value);
-                  if (!isNaN(value) && value >= 1 && value <= 100) {
+                  if (!Number.isNaN(value) && value >= 1 && value <= 100) {
                     store.commit(
                       events.deckUpdated({
                         id: deck.id,
@@ -286,7 +286,7 @@ function DeckInfoPage() {
                 value={deck.resetTime?.hour ?? 0}
                 onChange={(e) => {
                   const hour = Number.parseInt(e.target.value);
-                  if (!isNaN(hour) && hour >= 0 && hour <= 23) {
+                  if (!Number.isNaN(hour) && hour >= 0 && hour <= 23) {
                     store.commit(
                       events.deckUpdated({
                         id: deck.id,
@@ -317,7 +317,7 @@ function DeckInfoPage() {
                 value={deck.resetTime?.minute ?? 0}
                 onChange={(e) => {
                   const minute = Number.parseInt(e.target.value);
-                  if (!isNaN(minute) && minute >= 0 && minute <= 59) {
+                  if (!Number.isNaN(minute) && minute >= 0 && minute <= 59) {
                     store.commit(
                       events.deckUpdated({
                         id: deck.id,

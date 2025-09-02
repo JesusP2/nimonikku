@@ -23,8 +23,7 @@ type ConfirmDialogProviderState = {
 };
 
 const ConfirmDialogContext = createContext<ConfirmDialogProviderState>({
-  // @ts-expect-error
-  openConfirmDialog: (config: ConfirmFnProps) => null,
+  openConfirmDialog: (_config: ConfirmFnProps) => null,
 });
 
 export const useConfirmDialog = () => useContext(ConfirmDialogContext);

@@ -18,7 +18,7 @@ const adapter = makePersistedAdapter({
   sharedWorker: LiveStoreSharedWorker,
 });
 
-function SchedulerInitializer({ userId }: { userId?: string }) {
+function SchedulerInitializer({ userId }: { userId: string }) {
   const { store } = useStore();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function SchedulerInitializer({ userId }: { userId?: string }) {
         stopCardScheduler();
       };
     }
-  }, [store]);
+  }, [store, userId]);
 
   return null;
 }

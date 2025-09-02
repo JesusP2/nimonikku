@@ -7,7 +7,6 @@ import { useRef } from "react";
 import { createEmptyCard } from "ts-fsrs";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useUser } from "@/hooks/use-user";
-import { authClient } from "@/lib/auth-client";
 import { fromFSRSCard } from "@/lib/fsrs";
 import type { AppUploadRouter } from "@/server/file-storage";
 import { events } from "@/server/livestore/schema";

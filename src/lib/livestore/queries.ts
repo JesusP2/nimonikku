@@ -59,7 +59,7 @@ export const dueCards$ = (deckId: string) =>
         deckId,
         due: {
           op: "<=",
-          value: new Date(new Date().getTime() + 1000 * 60 * 10),
+          value: new Date(Date.now() + 1000 * 60 * 10),
         },
         state: { op: "!=", value: 0 },
       })

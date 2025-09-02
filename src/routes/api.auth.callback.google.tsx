@@ -1,28 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AlertCircle } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/api/auth/callback/google")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [isLoading, setIsLoading] = useState(true);
-  async function sendState() {
-    const response = await fetch(
-      "/api/auth/callback/google" + window.location.search,
-    );
-    if (response.ok) {
-      window.location.href = "/";
-    }
-    setIsLoading(false);
-  }
-  useEffect(() => {
-    sendState();
-  }, []);
-  if (isLoading) {
+  const query = useQuery({
+    queryKey: ["/api/auth/callback/google"],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/auth/callback/google${window.location.search}`,
+      );
+      if (response.ok) {
+        window.location.href = "/";
+      }
+    },
+  });
+  if (query.isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
         <div className="w-full max-w-md">

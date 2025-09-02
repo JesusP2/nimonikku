@@ -128,7 +128,7 @@ export const startCardScheduler = (store: Store, userId: string) => {
   if (schedulerInstance) {
     schedulerInstance.stop();
   }
-  schedulerInstance = new CardScheduler(store, "user1");
+  schedulerInstance = new CardScheduler(store, userId);
   schedulerInstance.start();
   return schedulerInstance;
 };

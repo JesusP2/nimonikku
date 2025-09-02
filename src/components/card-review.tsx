@@ -1,6 +1,6 @@
 import { useQuery, useStore } from "@livestore/react";
-import { useQuery as useTanstackQuery } from "@tanstack/react-query";
-import { Eye, LoaderIcon } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Rating } from "ts-fsrs";
@@ -37,7 +37,7 @@ export function CardReview({ card, onNext }: CardReviewProps) {
   const { data: user } = useUser();
   const settings = useQuery(userSettings$(user.id))?.[0];
   const { isOnline } = useIsOnline();
-  const query = useTanstackQuery({
+  const { data: { outputText }, isSuccess } = useSuspenseQuery({
     enabled: card.frontMarkdown.length > 0 && shouldRephrase() && isOnline,
     ...orpcQuery.rephraseText.queryOptions({
       input: {
@@ -47,13 +47,13 @@ export function CardReview({ card, onNext }: CardReviewProps) {
   });
 
   useEffect(() => {
-    if (query.isSuccess) {
-      setRephrasedText(query.data.outputText);
-    } else if (query.isError) {
+    if (isSuccess) {
+      setRephrasedText(outputText);
+    } else {
       setRephrasedText(null);
       toast.error("Failed to fetch AI rephrased question.");
     }
-  }, [query.isLoading]);
+  }, [outputText, isSuccess]);
 
   function shouldRephrase() {
     if (deck?.enableAI !== "global") {
@@ -64,15 +64,15 @@ export function CardReview({ card, onNext }: CardReviewProps) {
 
   const reviewTimes = showBack
     ? (() => {
-        const fsrsCard = toFSRSCard(card);
-        const predictions = getReviewTimePredictions(fsrsCard);
-        return {
-          again: formatReviewTime(predictions.again),
-          hard: formatReviewTime(predictions.hard),
-          good: formatReviewTime(predictions.good),
-          easy: formatReviewTime(predictions.easy),
-        };
-      })()
+      const fsrsCard = toFSRSCard(card);
+      const predictions = getReviewTimePredictions(fsrsCard);
+      return {
+        again: formatReviewTime(predictions.again),
+        hard: formatReviewTime(predictions.hard),
+        good: formatReviewTime(predictions.good),
+        easy: formatReviewTime(predictions.easy),
+      };
+    })()
     : null;
 
   const handleRating = async (rating: number) => {
@@ -119,13 +119,9 @@ export function CardReview({ card, onNext }: CardReviewProps) {
         <CardContent className="min-h-[300px]">
           {!showBack ? (
             <div className="space-y-2">
-              {query.isLoading ? (
-                <LoaderIcon className="h-4 w-4 animate-spin" />
-              ) : (
-                <MarkdownRenderer
-                  content={rephrasedText || card.frontMarkdown}
-                />
-              )}
+              <MarkdownRenderer
+                content={rephrasedText || card.frontMarkdown}
+              />
               {rephrasedText && (
                 <div className="text-muted-foreground text-xs">
                   AI Rephrased
@@ -138,13 +134,9 @@ export function CardReview({ card, onNext }: CardReviewProps) {
                 <h4 className="mb-2 font-medium text-muted-foreground">
                   Question:
                 </h4>
-                {query.isLoading ? (
-                  <LoaderIcon className="h-4 w-4 animate-spin" />
-                ) : (
-                  <MarkdownRenderer
-                    content={rephrasedText || card.frontMarkdown}
-                  />
-                )}
+                <MarkdownRenderer
+                  content={rephrasedText || card.frontMarkdown}
+                />
               </div>
               <Separator />
               <div>

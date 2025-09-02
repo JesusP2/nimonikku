@@ -49,7 +49,7 @@ export function toFSRSCard(cardData: CustomCard): Card {
 export function fromFSRSCard(fsrsCard: Card) {
   return {
     due: fsrsCard.due,
-    stability: isNaN(fsrsCard.stability) ? 0 : fsrsCard.stability,
+    stability: Number.isNaN(fsrsCard.stability) ? 0 : fsrsCard.stability,
     difficulty: fsrsCard.difficulty,
     learning_steps: fsrsCard.learning_steps,
     elapsed_days: fsrsCard.elapsed_days,

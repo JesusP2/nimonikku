@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { createUploadConfig } from "pushduck/server";
 import { storage } from "../storage";
 

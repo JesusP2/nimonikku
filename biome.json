@@ -18,7 +18,9 @@
       "!**/.vscode",
       "!**/routeTree.gen.ts",
       "!**/src-tauri",
-      "!**/.nuxt"
+      "!**/.nuxt",
+      "!**/worker-configuration.d.ts",
+      "!**/worker.sql-wasm.js"
     ]
   },
   "formatter": {
