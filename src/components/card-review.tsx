@@ -4,7 +4,6 @@ import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Rating } from "ts-fsrs";
-import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -21,6 +20,7 @@ import { orpcQuery } from "@/lib/orpc";
 import { events } from "@/server/livestore/schema";
 import type { CustomCard } from "./cards-list";
 import { useIsOnline } from "./providers/is-online";
+import { StreamdownRenderer } from "./streamdown";
 
 interface CardReviewProps {
   card: CustomCard;
@@ -119,9 +119,9 @@ export function CardReview({ card, onNext }: CardReviewProps) {
         <CardContent className="min-h-[300px]">
           {!showBack ? (
             <div className="space-y-2">
-              <MarkdownRenderer
-                content={rephrasedText || card.frontMarkdown}
-              />
+              <StreamdownRenderer>
+                {rephrasedText || card.frontMarkdown}
+              </StreamdownRenderer>
               {rephrasedText && (
                 <div className="text-muted-foreground text-xs">
                   AI Rephrased
@@ -134,16 +134,18 @@ export function CardReview({ card, onNext }: CardReviewProps) {
                 <h4 className="mb-2 font-medium text-muted-foreground">
                   Question:
                 </h4>
-                <MarkdownRenderer
-                  content={rephrasedText || card.frontMarkdown}
-                />
+                <StreamdownRenderer>
+                  {rephrasedText || card.frontMarkdown}
+                </StreamdownRenderer>
               </div>
               <Separator />
               <div>
                 <h4 className="mb-2 font-medium text-muted-foreground">
                   Answer:
                 </h4>
-                <MarkdownRenderer content={card.backMarkdown} />
+                <StreamdownRenderer>
+                  {card.backMarkdown}
+                </StreamdownRenderer>
               </div>
             </div>
           )}

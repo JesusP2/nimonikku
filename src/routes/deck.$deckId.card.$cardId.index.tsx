@@ -1,12 +1,12 @@
 import { useQuery } from "@livestore/react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, Edit3 } from "lucide-react";
-import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cardById$, deckById$ } from "@/lib/livestore/queries";
+import { StreamdownRenderer } from "@/components/streamdown";
 
 export const Route = createFileRoute("/deck/$deckId/card/$cardId/")({
   component: CardViewPage,
@@ -146,7 +146,9 @@ function CardViewPage() {
             <CardTitle className="text-lg">Front Side</CardTitle>
           </CardHeader>
           <CardContent>
-            <MarkdownRenderer content={card.frontMarkdown} />
+            <StreamdownRenderer>
+              {card.frontMarkdown}
+            </StreamdownRenderer>
             {card.frontFiles && (
               <div className="mt-4 border-t pt-4">
                 <p className="text-muted-foreground text-sm">
@@ -161,7 +163,9 @@ function CardViewPage() {
             <CardTitle className="text-lg">Back Side</CardTitle>
           </CardHeader>
           <CardContent>
-            <MarkdownRenderer content={card.backMarkdown} />
+            <StreamdownRenderer>
+              {card.backMarkdown}
+            </StreamdownRenderer>
             {card.backFiles && (
               <div className="mt-4 border-t pt-4">
                 <p className="text-muted-foreground text-sm">

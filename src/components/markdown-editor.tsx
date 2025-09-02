@@ -1,9 +1,9 @@
 import { RefreshCw } from "lucide-react";
 import { useState } from "react";
-import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { StreamdownRenderer } from "./streamdown";
 
 interface MarkdownEditorProps {
   frontMarkdown: string;
@@ -60,7 +60,9 @@ export function MarkdownEditor({
           <CardContent>
             <div className="min-h-[400px] rounded-md border bg-muted/20 p-4">
               {currentMarkdown.trim() ? (
-                <MarkdownRenderer content={currentMarkdown} />
+                <StreamdownRenderer>
+                  {currentMarkdown}
+                </StreamdownRenderer>
               ) : (
                 <p className="text-muted-foreground italic">
                   Preview will appear here...
