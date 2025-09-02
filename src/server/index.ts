@@ -9,7 +9,6 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { rateLimiter } from "hono-rate-limiter";
-import { createRemoteJWKSet, jwtVerify } from "jose";
 import { auth } from "./auth";
 import { uploadRouter } from "./file-storage";
 import { handler } from "./orpc";
