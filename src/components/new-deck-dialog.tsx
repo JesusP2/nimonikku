@@ -11,8 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { events } from "@/server/livestore/schema";
 import { useUser } from "@/hooks/use-user";
+import { events } from "@/server/livestore/schema";
 
 interface NewDeckDialogProps {
   trigger?: React.ReactNode;

@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { useUser } from "@/hooks/use-user";
 import { userSettings$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
-import { useUser } from "@/hooks/use-user";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,

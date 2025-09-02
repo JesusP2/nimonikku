@@ -16,7 +16,7 @@ export const deckFormSchema = z.object({
   name: z
     .string()
     .min(1, "Name is required")
-    .max(100, "Name must be less than 100 characters")
+    .max(100, "Name must be less than 100 characters"),
 });
 
 export type DeckFormData = z.infer<typeof deckFormSchema>;
@@ -39,7 +39,7 @@ export function DeckForm({
   const form = useForm<DeckFormData>({
     resolver: zodResolver(deckFormSchema),
     defaultValues: {
-      name: initialData?.name || ""
+      name: initialData?.name || "",
     },
   });
 

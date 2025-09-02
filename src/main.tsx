@@ -3,13 +3,13 @@ import "@excalidraw/excalidraw/index.css";
 // @ts-expect-error
 import "@fontsource-variable/geist";
 import * as Sentry from "@sentry/react";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import Loader from "./components/loader";
 import { routeTree } from "./routeTree.gen";
 import { queryClient } from "./utils/query-client";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Suspense } from "react";
 
 // if (import.meta.env.DEV) {
 //   scan({
@@ -24,11 +24,9 @@ const router = createRouter({
   context: { queryClient },
   Wrap: ({ children }) => (
     <Suspense fallback={<Loader />}>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </Suspense>
-  )
+  ),
 });
 
 declare module "@tanstack/react-router" {

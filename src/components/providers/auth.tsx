@@ -1,9 +1,9 @@
 import { AuthUIProvider } from "@daveyplate/better-auth-ui";
-import { Link } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth-client";
-import { useUser } from "@/hooks/use-user";
-import { useEffect } from "react";
 import { useStore } from "@livestore/react";
+import { Link } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useUser } from "@/hooks/use-user";
+import { authClient } from "@/lib/auth-client";
 import { userSettings$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
 
@@ -23,8 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }),
       );
     }
-  }, [user])
-
+  }, [user]);
 
   return (
     <AuthUIProvider

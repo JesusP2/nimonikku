@@ -16,13 +16,13 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { useUser } from "@/hooks/use-user";
 import {
   cardsByDeck$,
   deckById$,
   userSettings$,
 } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
-import { useUser } from "@/hooks/use-user";
 
 export const Route = createFileRoute("/deck/$deckId/")({
   component: DeckInfoPage,
