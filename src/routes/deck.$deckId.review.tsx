@@ -31,7 +31,7 @@ function ReviewPage() {
 
   if (!deck) {
     return (
-      <div className="mx-auto max-w-6xl py-8">
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
         <div className="text-center">
           <h1 className="font-bold text-2xl text-muted-foreground">
             Deck not found
@@ -51,7 +51,7 @@ function ReviewPage() {
 
   if (dueCards.length <= 0) {
     return (
-      <div className="mx-auto max-w-6xl space-y-6 py-8">
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
         <div className="flex items-center gap-4">
           <Button
             onClick={() => navigate({ to: "/" })}
@@ -98,7 +98,7 @@ function ReviewPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 py-8">
+    <div className="mx-auto max-w-6xl space-y-6 p-6">
       <div className="flex items-center gap-4">
         <Button
           onClick={() => navigate({ to: "/" })}

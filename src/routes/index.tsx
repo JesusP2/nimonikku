@@ -18,7 +18,7 @@ function RouteComponent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-7xl p-6">
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
         <div className="mb-8">
           <div className="mb-6 flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
             <div>

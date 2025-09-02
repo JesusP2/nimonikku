@@ -117,7 +117,7 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 py-8">
+    <div className="mx-auto max-w-6xl space-y-6 p-6">
       <div className="flex items-center gap-4">
         <Button onClick={handleCancel} variant="outline" size="sm">
           <ArrowLeft className="mr-2 h-4 w-4" />

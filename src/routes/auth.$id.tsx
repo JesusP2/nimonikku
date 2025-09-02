@@ -11,7 +11,7 @@ function RouteComponent() {
   const { id } = useParams({ from: "/auth/$id" });
 
   return (
-    <main className="m-auto grid h-screen max-w-6xl place-items-center">
+    <main className="mx-auto max-w-6xl space-y-6 p-6 grid h-screen place-items-center">
       <Link
         to="/"
         className={buttonVariants({

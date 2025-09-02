@@ -36,7 +36,7 @@ function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 py-8">
+    <div className="mx-auto max-w-6xl space-y-6 p-6">
       <h1 className="font-bold text-3xl">App Settings</h1>
       <Card>
         <CardHeader>

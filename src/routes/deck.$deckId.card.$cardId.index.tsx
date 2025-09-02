@@ -21,7 +21,7 @@ function CardViewPage() {
 
   if (!card || !deck) {
     return (
-      <div className="mx-auto max-w-6xl py-8">
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
         <div className="text-center">
           <h1 className="font-bold text-2xl text-muted-foreground">
             {!card ? "Card not found" : "Deck not found"}
@@ -53,7 +53,7 @@ function CardViewPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 py-8">
+    <div className="mx-auto max-w-6xl space-y-6 p-6">
       <div className="flex items-center gap-4">
         <Button
           onClick={() => navigate({ to: `/deck/${deckId}` })}
