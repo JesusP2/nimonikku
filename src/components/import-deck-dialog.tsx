@@ -11,6 +11,7 @@ import type { AppUploadRouter } from "@/server/file-storage";
 import { events } from "@/server/livestore/schema";
 import { FileDropzone } from "./file-dropzone";
 import { authClient } from "@/lib/auth-client";
+import { useUser } from "@/hooks/use-user";
 
 interface NewDeckDialogProps {
   open: boolean;
@@ -21,7 +22,7 @@ const url = new URL("http://localhost:5173/worker.sql-wasm.js");
 const worker = new Worker(url);
 export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
   const { store } = useStore();
-  const session = authClient.useSession();
+  const { data: user } = useUser();
   const collectionFile = useRef<File | null>(null);
   const { uploadFiles } = useUploadRoute<AppUploadRouter>("documentUpload", {
     onSuccess: async () => onSuccess(),
@@ -29,7 +30,6 @@ export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
   });
 
   async function onSuccess() {
-    if (!session.data?.user) return;
     worker.postMessage({
       id: 1,
       action: "open",
@@ -38,7 +38,6 @@ export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
     const now = new Date();
     let deckId: string;
     function onMessage(event: MessageEvent) {
-      if (!session.data?.user) return;
       if (event.data.id === 1) {
         worker.postMessage({
           id: 2,
@@ -51,7 +50,7 @@ export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
         store.commit(
           events.deckCreated({
             id: deckId,
-            userId: session.data.user.id,
+            userId: user.id,
             name: deckName,
             context: "",
             createdAt: now,

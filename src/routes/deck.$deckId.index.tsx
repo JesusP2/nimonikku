@@ -16,13 +16,13 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { authClient } from "@/lib/auth-client";
 import {
   cardsByDeck$,
   deckById$,
   userSettings$,
 } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
+import { useUser } from "@/hooks/use-user";
 
 export const Route = createFileRoute("/deck/$deckId/")({
   component: DeckInfoPage,
@@ -34,9 +34,9 @@ function DeckInfoPage() {
   const navigate = useNavigate();
   const { store } = useStore();
 
-  const session = authClient.useSession();
+  const { data: user } = useUser();
   const deck = useQuery(deckById$(deckId))?.[0];
-  const settings = useQuery(userSettings$(session.data?.user?.id))?.[0];
+  const settings = useQuery(userSettings$(user.id))?.[0];
   const cards = useQuery(cardsByDeck$(deckId)) || [];
 
   const now = new Date();

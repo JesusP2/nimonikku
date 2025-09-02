@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { authClient } from "@/lib/auth-client";
 import { userSettings$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
+import { useUser } from "@/hooks/use-user";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -13,16 +13,15 @@ export const Route = createFileRoute("/settings")({
 
 function SettingsPage() {
   const { store } = useStore();
-  const session = authClient.useSession();
-  const settings = useQuery(userSettings$(session.data?.user?.id))?.[0];
+  const { data: user } = useUser();
+  const settings = useQuery(userSettings$(user.id))?.[0];
 
   const onToggle = (checked: boolean) => {
-    if (!session.data?.user) return;
     if (!settings) {
       store.commit(
         events.settingsCreated({
           id: window.crypto.randomUUID(),
-          userId: session.data.user.id,
+          userId: user.id,
           enableAI: checked,
         }),
       );

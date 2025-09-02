@@ -1,6 +1,7 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 
+export const useUser = () => useSuspenseQuery(useUserQueryOptions());
 export const useUserQueryOptions = () =>
   queryOptions({
     queryKey: ["session"],

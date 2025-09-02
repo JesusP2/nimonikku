@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { events } from "@/server/livestore/schema";
-import { authClient } from "@/lib/auth-client";
+import { useUser } from "@/hooks/use-user";
 
 interface NewDeckDialogProps {
   trigger?: React.ReactNode;
@@ -21,21 +21,20 @@ interface NewDeckDialogProps {
 }
 
 export function NewDeckDialog({ trigger, open, setOpen }: NewDeckDialogProps) {
-  const session = authClient.useSession();
+  const { data: user } = useUser();
   const { store } = useStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (data: DeckFormData) => {
     setIsSubmitting(true);
     try {
-      if (!session.data?.user) return;
       const now = new Date();
       const id = crypto.randomUUID();
 
       store.commit(
         events.deckCreated({
           id,
-          userId: session.data.user.id,
+          userId: user.id,
           name: data.name.trim(),
           createdAt: now,
           updatedAt: now,

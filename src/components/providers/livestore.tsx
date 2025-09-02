@@ -7,11 +7,10 @@ import {
 import type React from "react";
 import { useEffect } from "react";
 import { unstable_batchedUpdates as batchUpdates } from "react-dom";
-import { useUserQueryOptions } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import { startCardScheduler, stopCardScheduler } from "@/lib/card-scheduler";
 import { schema } from "@/server/livestore/schema";
 import LiveStoreWorker from "../../livestore.worker?worker";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 const adapter = makePersistedAdapter({
   storage: { type: "opfs" },
@@ -36,7 +35,7 @@ function SchedulerInitializer({ userId }: { userId?: string }) {
 }
 
 export function LiveStoreProvider({ children }: { children: React.ReactNode }) {
-  const { data: user } = useSuspenseQuery(useUserQueryOptions());
+  const { data: user } = useUser();
   return (
     <LiveStoreProviderReact
       schema={schema}

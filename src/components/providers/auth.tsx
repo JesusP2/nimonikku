@@ -1,15 +1,14 @@
 import { AuthUIProvider } from "@daveyplate/better-auth-ui";
 import { Link } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
-import { useUserQueryOptions } from "@/hooks/use-user";
+import { useUser } from "@/hooks/use-user";
 import { useEffect } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { useStore } from "@livestore/react";
 import { userSettings$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { data: user } = useSuspenseQuery(useUserQueryOptions());
+  const { data: user } = useUser();
   const { store } = useStore();
 
   useEffect(() => {
