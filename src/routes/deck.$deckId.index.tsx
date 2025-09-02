@@ -216,9 +216,6 @@ function DeckInfoPage() {
             <Label htmlFor="context" className="mb-2 block text-sm">
               Context
             </Label>
-            <p className="mt-2 text-muted-foreground text-xs">
-              Add optional context to the AI question rephrasing.
-            </p>
             <Textarea
               id="context"
               defaultValue={deck.context || ""}
@@ -234,6 +231,9 @@ function DeckInfoPage() {
               placeholder="Optional context for AI rephrasing..."
               className="mt-1"
             />
+            <p className="mt-2 text-muted-foreground text-xs">
+              Add optional context to the AI question rephrasing.
+            </p>
           </div>
         </CardContent>
       </Card>
