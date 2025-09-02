@@ -3,18 +3,13 @@ import "@excalidraw/excalidraw/index.css";
 // @ts-expect-error
 import "@fontsource-variable/geist";
 import * as Sentry from "@sentry/react";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 import Loader from "./components/loader";
-import { AuthProvider } from "./components/providers/auth";
-import { ConfirmDialogProvider } from "./components/providers/confirm-dialog";
-import { IsOnlineProvider } from "./components/providers/is-online";
-import { LiveStoreProvider } from "./components/providers/livestore";
-import { ThemeProvider } from "./components/providers/theme";
-import { Toaster } from "./components/ui/sonner";
 import { routeTree } from "./routeTree.gen";
 import { queryClient } from "./utils/query-client";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { Suspense } from "react";
 
 // if (import.meta.env.DEV) {
 //   scan({
@@ -27,24 +22,13 @@ const router = createRouter({
   defaultPreload: "intent",
   defaultPendingComponent: () => <Loader />,
   context: { queryClient },
-  Wrap: function WrapComponent({ children }: { children: React.ReactNode }) {
-    return (
-      <ThemeProvider>
-        <QueryClientProvider client={queryClient}>
-          <LiveStoreProvider>
-            <IsOnlineProvider>
-              <AuthProvider>
-                <ConfirmDialogProvider>
-                  {children}
-                  <Toaster richColors />
-                </ConfirmDialogProvider>
-              </AuthProvider>
-            </IsOnlineProvider>
-          </LiveStoreProvider>
-        </QueryClientProvider>
-      </ThemeProvider>
-    );
-  },
+  Wrap: ({ children }) => (
+    <Suspense fallback={<Loader />}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </Suspense>
+  )
 });
 
 declare module "@tanstack/react-router" {

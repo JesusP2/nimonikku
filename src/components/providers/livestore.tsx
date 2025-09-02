@@ -7,12 +7,11 @@ import {
 import type React from "react";
 import { useEffect } from "react";
 import { unstable_batchedUpdates as batchUpdates } from "react-dom";
-import { useSession } from "@/hooks/use-session";
-import { authClient } from "@/lib/auth-client";
+import { useUserQueryOptions } from "@/hooks/use-user";
 import { startCardScheduler, stopCardScheduler } from "@/lib/card-scheduler";
-import { userSettings$ } from "@/lib/livestore/queries";
-import { events, schema } from "@/server/livestore/schema";
+import { schema } from "@/server/livestore/schema";
 import LiveStoreWorker from "../../livestore.worker?worker";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const adapter = makePersistedAdapter({
   storage: { type: "opfs" },
@@ -25,16 +24,6 @@ function SchedulerInitializer({ userId }: { userId?: string }) {
 
   useEffect(() => {
     if (!userId) return;
-    const [userSettings] = store.query(userSettings$(userId));
-    if (!userSettings) {
-      store.commit(
-        events.settingsCreated({
-          id: crypto.randomUUID(),
-          userId,
-          enableAI: false,
-        }),
-      );
-    }
     if (store) {
       startCardScheduler(store, userId);
       return () => {
@@ -47,17 +36,16 @@ function SchedulerInitializer({ userId }: { userId?: string }) {
 }
 
 export function LiveStoreProvider({ children }: { children: React.ReactNode }) {
-  const session = authClient.useSession();
-  if (session.isPending) return;
+  const { data: user } = useSuspenseQuery(useUserQueryOptions());
   return (
     <LiveStoreProviderReact
       schema={schema}
-      storeId={session.data?.user?.id}
+      storeId={user?.id}
       adapter={adapter}
       renderLoading={(_) => <div>Loading LiveStore ({_.stage})...</div>}
       batchUpdates={batchUpdates}
     >
-      <SchedulerInitializer userId={session.data?.user?.id} />
+      <SchedulerInitializer userId={user?.id} />
       {children}
     </LiveStoreProviderReact>
   );

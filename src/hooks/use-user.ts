@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 
-export const useSession = () =>
-  useQuery({
+export const useUserQueryOptions = () =>
+  queryOptions({
     queryKey: ["session"],
     queryFn: async () => {
       let jwt = null;
@@ -13,8 +13,15 @@ export const useSession = () =>
           },
         },
       });
+      if (!session.data?.session) {
+        const { data: anonymousData } = await authClient.signIn.anonymous();
+        return {
+          ...anonymousData?.user,
+          jwt: null,
+        };
+      }
       return {
-        ...session.data,
+        ...session.data.user,
         jwt,
       };
     },
