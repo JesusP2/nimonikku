@@ -17,7 +17,7 @@ export function CreateDeckDropdown() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">
+          <Button variant="outline" size="sm">
             <PlusIcon />
           </Button>
         </DropdownMenuTrigger>
