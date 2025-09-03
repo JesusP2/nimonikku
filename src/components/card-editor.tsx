@@ -1,9 +1,9 @@
 import { useQuery, useStore } from "@livestore/react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, RotateCcw, Save } from "lucide-react";
 import { useState } from "react";
 import { MarkdownEditor } from "@/components/markdown-editor";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { createNewCard, fromFSRSCard } from "@/lib/fsrs";
 import { deckById$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
@@ -108,9 +108,6 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
     }
   };
 
-  const handleCancel = () => {
-    navigate({ to: `/deck/${deckId}` });
-  };
 
   if (!deck) {
     return <div>Loading...</div>;
@@ -119,10 +116,14 @@ export function CardEditor({ deckId, cardId, card, mode }: CardEditorProps) {
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
       <div className="flex items-center gap-4">
-        <Button onClick={handleCancel} variant="outline" size="sm">
+        <Link
+          to="/deck/$deckId"
+          params={{ deckId }}
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Deck
-        </Button>
+        </Link>
         <div className="flex-1">
           <h1 className="font-bold text-2xl">
             {mode === "create" ? "Create New Card" : "Edit Card"}

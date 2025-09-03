@@ -1,8 +1,8 @@
 import { useQuery } from "@livestore/react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, Edit3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cardById$, deckById$ } from "@/lib/livestore/queries";
@@ -26,14 +26,14 @@ function CardViewPage() {
           <h1 className="font-bold text-2xl text-muted-foreground">
             {!card ? "Card not found" : "Deck not found"}
           </h1>
-          <Button
-            onClick={() => navigate({ to: `/deck/${deckId}` })}
-            className="mt-4"
-            variant="outline"
+          <Link
+            to="/deck/$deckId"
+            params={{ deckId }}
+            className={buttonVariants({ variant: "outline", className: "mt-4" })}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Deck
-          </Button>
+          </Link>
         </div>
       </div>
     );
@@ -48,29 +48,28 @@ function CardViewPage() {
 
   const status = getCardStatus();
 
-  const handleEdit = () => {
-    navigate({ to: `/deck/${deckId}/card/${cardId}/edit` });
-  };
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
       <div className="flex items-center gap-4">
-        <Button
-          onClick={() => navigate({ to: `/deck/${deckId}` })}
-          variant="outline"
-          size="sm"
+        <Link
+          to={`/deck/${deckId}`}
+          className={buttonVariants({ variant: "outline", size: "sm" })}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Deck
-        </Button>
+        </Link>
         <div className="flex-1">
           <h1 className="font-bold text-2xl">{deck.name}</h1>
           <p className="text-muted-foreground">Card Details</p>
         </div>
-        <Button onClick={handleEdit}>
+        <Link
+          to={`/deck/${deckId}/card/${cardId}/edit`}
+          className={buttonVariants()}
+        >
           <Edit3 className="mr-2 h-4 w-4" />
           Edit Card
-        </Button>
+        </Link>
       </div>
 
       <Card>

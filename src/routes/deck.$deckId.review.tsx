@@ -1,9 +1,9 @@
 import { useQuery } from "@livestore/react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen, Calendar } from "lucide-react";
 import { CardReview } from "@/components/card-review";
 import { CardsState } from "@/components/deck-cards-state";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { deckById$, dueCards$ } from "@/lib/livestore/queries";
 
@@ -36,14 +36,13 @@ function ReviewPage() {
           <h1 className="font-bold text-2xl text-muted-foreground">
             Deck not found
           </h1>
-          <Button
-            onClick={() => navigate({ to: "/" })}
-            className="mt-4"
-            variant="outline"
+          <Link
+            to="/"
+            className={buttonVariants({ variant: "outline", className: "mt-4" })}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Dashboard
-          </Button>
+          </Link>
         </div>
       </div>
     );
@@ -53,14 +52,13 @@ function ReviewPage() {
     return (
       <div className="mx-auto max-w-6xl space-y-6 p-6">
         <div className="flex items-center gap-4">
-          <Button
-            onClick={() => navigate({ to: "/" })}
-            variant="outline"
-            size="sm"
+          <Link
+            to="/"
+            className={buttonVariants({ variant: "outline", size: "sm" })}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Dashboard
-          </Button>
+          </Link>
           <div className="flex-1">
             <h1 className="font-bold text-2xl">{deck.name}</h1>
             <p className="text-muted-foreground">Review Session</p>
@@ -79,16 +77,19 @@ function ReviewPage() {
                 </p>
               </div>
               <div className="mt-6 flex justify-center gap-4">
-                <Button onClick={() => navigate({ to: `/deck/${deckId}` })}>
+                <Link
+                  to={`/deck/${deckId}`}
+                  className={buttonVariants()}
+                >
                   <BookOpen className="mr-2 h-4 w-4" />
                   View Deck
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate({ to: `/deck/${deckId}/card/new` })}
+                </Link>
+                <Link
+                  to={`/deck/${deckId}/card/new`}
+                  className={buttonVariants({ variant: "outline" })}
                 >
                   Add New Card
-                </Button>
+                </Link>
               </div>
             </div>
           </CardContent>
@@ -100,14 +101,13 @@ function ReviewPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
       <div className="flex items-center gap-4">
-        <Button
-          onClick={() => navigate({ to: "/" })}
-          variant="outline"
-          size="sm"
+        <Link
+          to="/"
+          className={buttonVariants({ variant: "outline", size: "sm" })}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Dashboard
-        </Button>
+        </Link>
       </div>
 
       <div>

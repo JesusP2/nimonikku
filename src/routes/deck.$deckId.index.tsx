@@ -1,9 +1,10 @@
 import { useQuery, useStore } from "@livestore/react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Play, Plus, TrashIcon } from "lucide-react";
 import { CardsList } from "@/components/cards-list";
 import { useConfirmDialog } from "@/components/providers/confirm-dialog";
-import { Button } from "@/components/ui/button";
+import { UserMenu } from "@/components/user-menu";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -46,28 +47,21 @@ function DeckInfoPage() {
       card.state !== 0,
   );
 
-  const handleAddCard = () => {
-    navigate({ to: `/deck/${deckId}/card/new` });
-  };
-
-  const handleStartReview = () => {
-    navigate({ to: `/deck/${deckId}/review` });
-  };
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
       <div className="flex items-center gap-4">
-        <Button
-          onClick={() => navigate({ to: "/" })}
-          variant="outline"
-          size="sm"
+        <Link
+          to="/"
+          className={buttonVariants({ variant: "outline", size: "sm" })}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
-        </Button>
+        </Link>
         <div className="flex-1">
           <h1 className="font-bold text-3xl">{deck.name}</h1>
         </div>
+        <UserMenu />
       </div>
       <Card>
         <CardHeader>
@@ -154,20 +148,27 @@ function DeckInfoPage() {
           </div>
           <div className="mt-6 border-t pt-4">
             <div className="flex gap-3">
-              <Button
-                onClick={handleStartReview}
-                disabled={dueCards.length === 0}
-                className="flex-1"
+              {dueCards.length > 0 ? (
+                <Link
+                  to={`/deck/${deckId}/review`}
+                  className={buttonVariants({ className: "flex-1" })}
+                >
+                  <Play className="mr-2 h-4 w-4" />
+                  Review {dueCards.length} Cards
+                </Link>
+              ) : (
+                <Button disabled className="flex-1">
+                  <Play className="mr-2 h-4 w-4" />
+                  No Cards Due
+                </Button>
+              )}
+              <Link
+                to={`/deck/${deckId}/card/new`}
+                className={buttonVariants({ variant: "outline" })}
               >
-                <Play className="mr-2 h-4 w-4" />
-                {dueCards.length > 0
-                  ? `Review ${dueCards.length} Cards`
-                  : "No Cards Due"}
-              </Button>
-              <Button variant="outline" onClick={handleAddCard}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add Card
-              </Button>
+              </Link>
             </div>
           </div>
         </CardContent>

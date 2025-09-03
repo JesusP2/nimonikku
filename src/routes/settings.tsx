@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { UserMenu } from "@/components/user-menu";
 import { useUser } from "@/hooks/use-user";
 import { userSettings$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
@@ -37,7 +38,10 @@ function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
-      <h1 className="font-bold text-3xl">App Settings</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-bold text-3xl">App Settings</h1>
+        <UserMenu />
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>AI Features</CardTitle>

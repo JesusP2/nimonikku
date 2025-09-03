@@ -1,5 +1,5 @@
 import { useStore } from "@livestore/react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Edit3, Info, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { EditDeckDialog } from "@/components/edit-deck-dialog";
@@ -32,9 +32,6 @@ export function DeckActionsMenu({ deck }: DeckActionsMenuProps) {
   const { openConfirmDialog } = useConfirmDialog();
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  const handleInfo = () => {
-    navigate({ to: `/deck/${deck.id}` });
-  };
   return (
     <>
       <DropdownMenu>
@@ -50,9 +47,11 @@ export function DeckActionsMenu({ deck }: DeckActionsMenuProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="bottom" sideOffset={4}>
-          <DropdownMenuItem onClick={handleInfo}>
-            <Info className="mr-2 h-4 w-4" />
-            Info
+          <DropdownMenuItem asChild>
+            <Link to="/deck/$deckId" params={{ deckId: deck.id }}>
+              <Info className="mr-2 h-4 w-4" />
+              Info
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
             <Edit3 className="mr-2 h-4 w-4" />

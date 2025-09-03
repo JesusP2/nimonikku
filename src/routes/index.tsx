@@ -5,6 +5,7 @@ import { useState } from "react";
 import { CreateDeckDropdown } from "@/components/create-deck-dropdown";
 import { DeckCard } from "@/components/deck-card";
 import { NewDeckDialog } from "@/components/new-deck-dialog";
+import { UserMenu } from "@/components/user-menu";
 import { Button } from "@/components/ui/button";
 import { allDecks$ } from "@/lib/livestore/queries";
 
@@ -29,7 +30,10 @@ function RouteComponent() {
                   : `Manage your ${decks.length} flashcard ${decks.length === 1 ? "deck" : "decks"}`}
               </p>
             </div>
-            <CreateDeckDropdown />
+            <div className="flex items-center gap-3">
+              <CreateDeckDropdown />
+              <UserMenu />
+            </div>
           </div>
         </div>
         {decks.length === 0 ? (
