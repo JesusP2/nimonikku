@@ -12,16 +12,16 @@ export function CardsState({
   ).length;
 
   return (
-    <div className="mt-2 flex flex-wrap gap-1">
-      <div className="rounded bg-green-100 px-1.5 py-0.5 text-green-700 text-xs dark:bg-blue-900/20 dark:text-blue-400">
+    <div className="flex items-center gap-3 mb-4">
+      <span className="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
         {learningCards}
-      </div>
-      <div className="rounded bg-red-100 px-1.5 py-0.5 text-red-700 text-xs dark:bg-red-900/20 dark:text-red-400">
+      </span>
+      <span className="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">
         {relearningCards}
-      </div>
-      <div className="rounded bg-orange-100 px-1.5 py-0.5 text-orange-700 text-xs dark:bg-green-900/20 dark:text-green-400">
+      </span>
+      <span className="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
         {reviewCards}
-      </div>
+      </span>
     </div>
   );
 }

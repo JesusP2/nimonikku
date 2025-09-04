@@ -3,11 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BookOpen } from "lucide-react";
 import { useState } from "react";
 import { CreateDeckDropdown } from "@/components/create-deck-dropdown";
-import { DeckCard } from "@/components/deck-card";
 import { NewDeckDialog } from "@/components/new-deck-dialog";
 import { UserMenu } from "@/components/user-menu";
 import { Button } from "@/components/ui/button";
 import { allDecks$ } from "@/lib/livestore/queries";
+import { MnemonicCardsApp } from "@/components/accordion";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -15,6 +15,23 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
   const decks = useQuery(allDecks$) || [];
+  const yo = decks.reduce((acc, deck) => {
+    if (deck.parent) {
+      const parent = acc.find((d) => d.id === deck.parent);
+      if (parent) {
+        parent.subDecks.push(deck);
+      } else {
+        console.log('THIS SHOULD NEVER HAPPEN')
+      }
+    } else {
+      acc.push({
+        id: deck.id,
+        name: deck.name,
+        subDecks: [deck]
+      });
+    }
+    return acc;
+  }, [] as { id: string; name: string; subDecks: typeof decks }[])
   const [isCreateDeckDialogOpen, setIsCreateDeckDialogOpen] = useState(false);
 
   return (
@@ -62,13 +79,7 @@ function RouteComponent() {
               }
             />
           </div>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-            {decks.map((deck) => (
-              <DeckCard key={deck.id} deck={deck} />
-            ))}
-          </div>
-        )}
+        ) : <MnemonicCardsApp decks={yo} />}
       </div>
     </div>
   );
