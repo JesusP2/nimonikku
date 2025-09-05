@@ -68,22 +68,6 @@ function DeckInfoPage() {
           <CardTitle className="flex items-center justify-between">
             <h1>Deck Information</h1>
             <Button
-              onClick={() => {
-                store.commit(
-                  events.resetDeck({
-                    id: deck.id,
-                  }),
-                );
-                // store.commit(
-                //   events.resetCards({
-                //     id: deck.id,
-                //   }),
-                // );
-              }}
-            >
-              reset
-            </Button>
-            <Button
               variant="destructive"
               onClick={() =>
                 openConfirmDialog({

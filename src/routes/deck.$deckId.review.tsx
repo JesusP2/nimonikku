@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen, Calendar } from "lucide-react";
 import { CardReview } from "@/components/card-review";
 import { CardsState } from "@/components/deck-cards-state";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { deckById$, dueCards$ } from "@/lib/livestore/queries";
 

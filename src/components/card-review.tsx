@@ -42,6 +42,8 @@ export function CardReview({ card, onNext }: CardReviewProps) {
     ...orpcQuery.rephraseText.queryOptions({
       input: {
         text: card.frontMarkdown,
+        context: deck.context,
+        answer: card.backMarkdown,
       },
     }),
   });

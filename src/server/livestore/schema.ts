@@ -25,6 +25,14 @@ export const tables = {
       updatedAt: State.SQLite.datetime(),
     },
   }),
+  cardToDeck: State.SQLite.table({
+    name: "cardToDeck",
+    columns: {
+      id: State.SQLite.text({ primaryKey: true }),
+      cardId: State.SQLite.text(),
+      deckId: State.SQLite.text(),
+    },
+  }),
   card: State.SQLite.table({
     name: "card",
     columns: {

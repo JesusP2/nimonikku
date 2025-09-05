@@ -19,15 +19,6 @@ function DeckCard({
   deckId: string;
 }) {
   const cards = useQuery(dueCards$(deckId)) || [];
-
-  const learningCards = cards.filter(
-    (card) => card.state === 1 && card.reps === 1,
-  ).length;
-  const reviewCards = cards.filter((card) => card.state === 2).length;
-  const relearningCards = cards.filter(
-    (card) => card.state === 1 && card.reps > 1,
-  ).length;
-
   return (
     <div className={`bg-card border border-border rounded-lg p-4`}>
       <div className="flex items-center gap-2 mb-3">

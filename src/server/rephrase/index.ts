@@ -6,6 +6,8 @@ import * as z from "zod";
 
 export const rephraseTextSchema = z.object({
   text: z.string().min(1),
+  context: z.string().nullish(),
+  answer: z.string().nullish(),
 });
 
 export const rephraseText = os
@@ -15,13 +17,20 @@ export const rephraseText = os
       apiKey: env.OPENROUTER_KEY,
     });
 
+    let prompt = `Rewrite this question in a different way. The environment should be like a design interview question, you can try to add it to real case scenarios. Return only the question, no extra symbols no extra words, only the rephrased question:\n\n${input.text}`;
+    if (input.context) {
+      prompt += `\n\n Here is some context about the question:\n\n${input.context}`;
+    }
+    if (input.answer) {
+      prompt += `\n\n Here is the answer:\n\n${input.answer}`;
+    }
     const { text } = await generateText({
       model: openrouter("meta-llama/llama-3.2-3b-instruct", {
         provider: {
           order: ["lambda/bf16"],
         },
       }),
-      prompt: `Rewrite this question in a different way. Return only the question, no extra symbols no extra words, only the rephrased question:\n\n${input.text}`,
+      prompt,
     });
 
     const outputText = (text || "").trim();
