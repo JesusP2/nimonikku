@@ -14,8 +14,8 @@ export const userSettings$ = (userId: string) =>
   );
 
 // Deck queries
-export const allDecks$ = queryDb(
-  tables.deck.select().orderBy("createdAt", "desc"),
+export const allDecks$ = (userId: string) => queryDb(
+  tables.deck.select().orderBy("createdAt", "desc").where({ userId }),
   { label: "allDecks" },
 );
 
@@ -32,7 +32,7 @@ export const userDecks$ = (userId: string) =>
 export const userDecksLastReset$ = (userId: string) =>
   queryDb(
     tables.deck
-      .select("lastReset", "id", "newCardsPerDay")
+      .select("id", "lastReset", "resetTime", "newCardsPerDay", "limitNewCardsToDaily")
       .where({ userId })
       .orderBy("createdAt", "desc"),
     {

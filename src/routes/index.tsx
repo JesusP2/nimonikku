@@ -8,13 +8,15 @@ import { UserMenu } from "@/components/user-menu";
 import { Button } from "@/components/ui/button";
 import { allDecks$ } from "@/lib/livestore/queries";
 import { MnemonicCardsApp } from "@/components/accordion";
+import { useUser } from "@/hooks/use-user";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const decks = useQuery(allDecks$) || [];
+  const { data: user } = useUser();
+  const decks = useQuery(allDecks$(user.id)) || [];
   const yo = decks.reduce((acc, deck) => {
     if (deck.parent) {
       const parent = acc.find((d) => d.id === deck.parent);

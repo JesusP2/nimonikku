@@ -1,3 +1,4 @@
+import { DEFAULT_ENABLE_AI, DEFAULT_LIMIT_NEW_CARDS_TO_DAILY, DEFAULT_NEW_CARDS_PER_DAY, DEFAULT_RESET_HOUR, DEFAULT_RESET_MINUTE } from "@/lib/constants";
 import {
   Events,
   makeSchema,
@@ -6,6 +7,10 @@ import {
   State,
 } from "@livestore/livestore";
 
+export type Deck = typeof tables.deck.Type & {
+  resetTime?: { hour: number; minute: number };
+};
+export type Card = typeof tables.card.Type;
 // SQLite tables for deck and card management
 export const tables = {
   deck: State.SQLite.table({
@@ -236,11 +241,11 @@ const materializers = State.SQLite.materializers(events, {
       name,
       parent,
       context,
-      enableAI: enableAI ?? "global",
-      newCardsPerDay: newCardsPerDay ?? 20,
-      limitNewCardsToDaily: limitNewCardsToDaily ?? true,
+      enableAI: enableAI ?? DEFAULT_ENABLE_AI,
+      newCardsPerDay: newCardsPerDay ?? DEFAULT_NEW_CARDS_PER_DAY,
+      limitNewCardsToDaily: limitNewCardsToDaily ?? DEFAULT_LIMIT_NEW_CARDS_TO_DAILY,
       lastReset: lastReset ?? new Date(),
-      resetTime: resetTime ?? { hour: 0, minute: 0 },
+      resetTime: resetTime ?? { hour: DEFAULT_RESET_HOUR, minute: DEFAULT_RESET_MINUTE },
       createdAt,
       updatedAt,
     }),
@@ -254,7 +259,7 @@ const materializers = State.SQLite.materializers(events, {
     newCardsPerDay,
     limitNewCardsToDaily,
     updatedAt,
-  }) =>
+  }) => 
     tables.deck
       .update({
         ...(name !== undefined && { name }),

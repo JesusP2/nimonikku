@@ -69,6 +69,19 @@ function DeckInfoPage() {
             <h1>Deck Information</h1>
             <Button
               variant="destructive"
+              onClick={() => {
+                store.commit(
+                events.resetDeck({
+                  id: deck.id,
+                })
+                )
+              }}
+            >
+              <TrashIcon className="mr-2 h-4 w-4" />
+              Reset deck
+            </Button>
+            <Button
+              variant="destructive"
               onClick={() =>
                 openConfirmDialog({
                   title: "Delete Deck",

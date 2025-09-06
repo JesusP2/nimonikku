@@ -11,6 +11,8 @@ import { fromFSRSCard } from "@/lib/fsrs";
 import type { AppUploadRouter } from "@/server/file-storage";
 import { events } from "@/server/livestore/schema";
 import { FileDropzone } from "./file-dropzone";
+import { schedulerInstance } from "@/lib/card-scheduler";
+import { DEFAULT_LIMIT_NEW_CARDS_TO_DAILY, DEFAULT_NEW_CARDS_PER_DAY, DEFAULT_RESET_HOUR, DEFAULT_RESET_MINUTE } from "@/lib/constants";
 
 interface NewDeckDialogProps {
   open: boolean;
@@ -93,6 +95,16 @@ export function ImportDeckDialog({ open, setOpen }: NewDeckDialogProps) {
               updatedAt: now,
             }),
           );
+        });
+        schedulerInstance?.processDeckIfResetNeeded({
+          id: deckId,
+          lastReset: new Date('2023-07-01T00:00:00.000Z'),
+          resetTime: {
+            hour: DEFAULT_RESET_HOUR,
+            minute: DEFAULT_RESET_MINUTE
+          },
+          newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY,
+          limitNewCardsToDaily: DEFAULT_LIMIT_NEW_CARDS_TO_DAILY,
         });
         worker.removeEventListener("message", onMessage);
       }

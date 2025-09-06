@@ -1,7 +1,7 @@
 import type { useStore } from "@livestore/react";
 import { Rating } from "ts-fsrs";
 import type { CustomCard } from "@/components/cards-list";
-import { events } from "@/server/livestore/schema";
+import { events, type Deck } from "@/server/livestore/schema";
 import { fsrsScheduler } from "./fsrs";
 import { cardsByDeck$, userDecksLastReset$ } from "./livestore/queries";
 
@@ -34,16 +34,16 @@ export class CardScheduler {
     }
   }
 
-  private checkAndProcessDecks() {
+  checkAndProcessDecks() {
     try {
       const decks = this.store.query(userDecksLastReset$(this.userId));
-      decks.forEach((deck) => this.processDeckIfResetNeeded(deck));
+      decks.forEach((deck) => this.processDeckIfResetNeeded(deck as Deck));
     } catch (error) {
       console.error("Error in card scheduler:", error);
     }
   }
 
-  private processDeckIfResetNeeded(deck: any) {
+  processDeckIfResetNeeded(deck: Pick<Deck, "id" | "lastReset" | "resetTime" | "newCardsPerDay" | "limitNewCardsToDaily">) {
     const now = new Date();
     const lastReset = new Date(deck.lastReset);
     const resetTime = deck.resetTime || { hour: 0, minute: 0 };
@@ -51,13 +51,12 @@ export class CardScheduler {
     const todayReset = new Date();
     todayReset.setHours(resetTime.hour, resetTime.minute, 0, 0);
     const shouldReset = now >= todayReset && lastReset < todayReset;
-
     if (shouldReset) {
       this.moveNewCardsToLearning(deck);
     }
   }
 
-  private moveNewCardsToLearning(deck: any) {
+  private moveNewCardsToLearning(deck: Pick<Deck, "id" | "newCardsPerDay" | "limitNewCardsToDaily">) {
     try {
       const now = new Date();
       const allCards = this.store.query(cardsByDeck$(deck.id));
@@ -122,7 +121,7 @@ export class CardScheduler {
 }
 
 // Singleton instance
-let schedulerInstance: CardScheduler | null = null;
+export let schedulerInstance: CardScheduler | null = null;
 
 export const startCardScheduler = (store: Store, userId: string) => {
   if (schedulerInstance) {
