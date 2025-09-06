@@ -92,3 +92,11 @@ code {
   background-color: var(--secondary);
   border-radius: 10px;
 }
+
+pre::-webkit-scrollbar {
+  height: 7px !important;
+}
+pre::-webkit-scrollbar-thumb {
+  background-color: var(--primary) !important;
+  border-radius: 10px !important;
+}
