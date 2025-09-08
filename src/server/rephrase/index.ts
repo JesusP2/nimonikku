@@ -22,7 +22,7 @@ You are an expert flashcard rewriter for a mnemonic app. Your goal is to rewrite
 
 Original front face: ${input.text}
 Original back face (answer—do not include this in your output): ${input.answer}
-Extra context (incorporate this style or theme if provided): {extra_context}
+Extra context (incorporate this style or theme if provided): ${input.context}
 
 Rewrite the front face in a completely new way. Be creative: vary the phrasing, structure, perspective, or add subtle contextual twists, but keep it concise and clear. Make it different from the original and any previous versions. If extra context is provided, adapt the rewrite to fit that style (e.g., make it sound like an interview question). Output ONLY the rewritten front face, nothing else—no explanations, no back face, no additional text.
 `;

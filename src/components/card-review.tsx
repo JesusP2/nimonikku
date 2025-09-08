@@ -1,8 +1,7 @@
 import { useQuery, useStore } from "@livestore/react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery as useTanstackQuery } from "@tanstack/react-query";
 import { Eye } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { Suspense, useState } from "react";
 import { Rating } from "ts-fsrs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +18,6 @@ import { deckById$, userSettings$ } from "@/lib/livestore/queries";
 import { orpcQuery } from "@/lib/orpc";
 import { events } from "@/server/livestore/schema";
 import type { CustomCard } from "./cards-list";
-import { useIsOnline } from "./providers/is-online";
 import { StreamdownRenderer } from "./streamdown";
 
 interface CardReviewProps {
@@ -32,37 +30,6 @@ export function CardReview({ card, onNext }: CardReviewProps) {
   const { store } = useStore();
   const [showBack, setShowBack] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [rephrasedText, setRephrasedText] = useState<string | null>(null);
-  const deck = useQuery(deckById$(card.deckId))?.[0];
-  const { data: user } = useUser();
-  const settings = useQuery(userSettings$(user.id))?.[0];
-  const { isOnline } = useIsOnline();
-  const { data: { outputText }, isSuccess } = useSuspenseQuery({
-    enabled: card.frontMarkdown.length > 0 && shouldRephrase() && isOnline,
-    ...orpcQuery.rephraseText.queryOptions({
-      input: {
-        text: card.frontMarkdown,
-        context: deck.context || '',
-        answer: card.backMarkdown,
-      },
-    }),
-  });
-
-  useEffect(() => {
-    if (isSuccess) {
-      setRephrasedText(outputText);
-    } else {
-      setRephrasedText(null);
-      toast.error("Failed to fetch AI rephrased question.");
-    }
-  }, [outputText, isSuccess]);
-
-  function shouldRephrase() {
-    if (deck?.enableAI !== "global") {
-      return deck?.enableAI === "true";
-    }
-    return settings.enableAI;
-  }
 
   const reviewTimes = showBack
     ? (() => {
@@ -110,7 +77,6 @@ export function CardReview({ card, onNext }: CardReviewProps) {
               <Button
                 onClick={() => setShowBack(true)}
                 variant="outline"
-                className="ml-4"
               >
                 <Eye className="mr-2 h-4 w-4" />
                 Show Answer
@@ -119,38 +85,29 @@ export function CardReview({ card, onNext }: CardReviewProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="min-h-[300px]">
-          {!showBack ? (
-            <div className="space-y-2">
-              <StreamdownRenderer>
-                {rephrasedText || card.frontMarkdown}
-              </StreamdownRenderer>
-              {rephrasedText && (
-                <div className="text-muted-foreground text-xs">
-                  AI Rephrased
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <div>
+          <div className="space-y-6">
+            <div>
+              {showBack && (
                 <h4 className="mb-2 font-medium text-muted-foreground">
                   Question:
                 </h4>
-                <StreamdownRenderer>
-                  {rephrasedText || card.frontMarkdown}
-                </StreamdownRenderer>
-              </div>
-              <Separator />
-              <div>
-                <h4 className="mb-2 font-medium text-muted-foreground">
-                  Answer:
-                </h4>
-                <StreamdownRenderer>
-                  {card.backMarkdown}
-                </StreamdownRenderer>
-              </div>
+              )}
+              <RephrasedText text={card.frontMarkdown} deckId={card.deckId} />
             </div>
-          )}
+            {showBack && (
+              <>
+                <Separator />
+                <div>
+                  <h4 className="mb-2 font-medium text-muted-foreground">
+                    Answer:
+                  </h4>
+                  <StreamdownRenderer>
+                    {card.backMarkdown}
+                  </StreamdownRenderer>
+                </div>
+              </>
+            )}
+          </div>
         </CardContent>
       </Card>
       {showBack && reviewTimes && (
@@ -204,4 +161,44 @@ export function CardReview({ card, onNext }: CardReviewProps) {
       )}
     </div>
   );
+}
+
+function RephrasedText({ text, deckId }: { text: string; deckId: string }) {
+  const deck = useQuery(deckById$(deckId))?.[0];
+  const { data: user } = useUser();
+  const settings = useQuery(userSettings$(user.id))?.[0];
+
+  const { data, isLoading, isPaused } = useTanstackQuery({
+    enabled: shouldRephrase(),
+    ...orpcQuery.rephraseText.queryOptions({
+      input: {
+        text,
+        context: '',
+        answer: '',
+      },
+    }),
+  });
+
+  function shouldRephrase() {
+    if (deck.enableAI !== "global") {
+      return deck.enableAI === "true";
+    }
+    return settings.enableAI;
+  }
+  if (isPaused) {
+    return <StreamdownRenderer>{text}</StreamdownRenderer>;
+  }
+
+  if (isLoading || !data) {
+    return <div>Loading...</div>;
+  }
+  return (
+    <>
+      <StreamdownRenderer>
+        {data.outputText}
+      </StreamdownRenderer>
+      <div className="text-muted-foreground text-xs">
+        AI Rephrased
+      </div>
+    </>);
 }

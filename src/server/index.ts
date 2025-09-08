@@ -20,8 +20,11 @@ export class NimonikkuDO extends makeDurableObject({
   onPush: async (message) => {
     console.dir(message, { depth: null });
   },
-  onPull: async (_) => {
-    // console.log("onPull", message);
+  onPull: async (...args) => {
+    console.log("onPull", ...args);
+  },
+  onPushRes: async (...args) => {
+    console.log("onPushRes", ...args);
   },
 }) {}
 
