@@ -6,6 +6,7 @@ import { Rating } from "ts-fsrs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
 import {
   formatReviewTime,
@@ -167,6 +168,7 @@ function RephrasedText({ text, deckId }: { text: string; deckId: string }) {
   const deck = useQuery(deckById$(deckId))?.[0];
   const { data: user } = useUser();
   const settings = useQuery(userSettings$(user.id))?.[0];
+  const [showOriginal, setShowOriginal] = useState(false);
 
   const { data, isLoading, isPaused } = useTanstackQuery({
     enabled: shouldRephrase(),
@@ -197,8 +199,30 @@ function RephrasedText({ text, deckId }: { text: string; deckId: string }) {
       <StreamdownRenderer>
         {data.outputText}
       </StreamdownRenderer>
-      <div className="text-muted-foreground text-xs">
-        AI Rephrased
+      <div className="flex items-center gap-2 mt-2">
+        <div className="text-muted-foreground text-xs">
+          AI Rephrased
+        </div>
+        <button
+          onClick={() => setShowOriginal(!showOriginal)}
+          className="text-xs text-muted-foreground hover:text-foreground underline hover:no-underline transition-colors"
+        >
+          ({showOriginal ? 'hide original' : 'show original'})
+        </button>
+      </div>
+      <div className="relative overflow-hidden">
+        <div
+          className={cn(
+            "transition-all duration-500 ease-in-out text-muted-foreground",
+            showOriginal ? "opacity-70 max-h-96" : "opacity-0 max-h-0"
+          )}
+        >
+          <div className="mt-2">
+            <StreamdownRenderer>
+              {text}
+            </StreamdownRenderer>
+          </div>
+        </div>
       </div>
     </>);
 }
