@@ -54,3 +54,7 @@ export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.VITE_SERVER_URL,
 });
+
+export type Auth = typeof auth;
+export type Session = Auth['$Infer']['Session']['session'];
+export type User = Auth['$Infer']['Session']['user'];

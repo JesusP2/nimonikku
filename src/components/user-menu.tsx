@@ -8,23 +8,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUser } from "@/hooks/use-user";
+import { isUserAuthenticated, useUser } from "@/hooks/use-user";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
 export function UserMenu() {
   const { data: user } = useUser();
-  
-  // Check if user is authenticated (has a session) vs anonymous
-  const isAuthenticated = !!user.email || !!user.name || user.jwt !== null;
 
   const handleLogout = async () => {
     await authClient.signOut();
     window.location.reload();
   };
 
-  if (!isAuthenticated) {
-    // Anonymous user - show login link
+  if (!isUserAuthenticated(user)) {
     return (
       <Link
         to="/auth/$id"
@@ -40,7 +36,6 @@ export function UserMenu() {
     );
   }
 
-  // Authenticated user - show dropdown menu
   return (
     <DropdownMenu>
       <DropdownMenuTrigger

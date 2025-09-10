@@ -1,5 +1,5 @@
 import { useQuery, useStore } from "@livestore/react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -9,9 +9,18 @@ import { ArrowLeft } from "lucide-react";
 import { useUser } from "@/hooks/use-user";
 import { userSettings$ } from "@/lib/livestore/queries";
 import { events } from "@/server/livestore/schema";
+import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
+  beforeLoad: async () => {
+    const session = await authClient.getSession();
+    if (!session.data?.session || session.data.user.isAnonymous) {
+      throw redirect({
+        to: "/"
+      });
+    }
+  },
 });
 
 function SettingsPage() {

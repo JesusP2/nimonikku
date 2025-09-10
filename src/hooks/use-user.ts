@@ -1,5 +1,6 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
+import type { User } from "@/server/auth";
 
 export const useUser = () => useSuspenseQuery(useUserQueryOptions());
 export const useUserQueryOptions = () =>
@@ -21,6 +22,7 @@ export const useUserQueryOptions = () =>
         }
         return {
           ...anonymousData?.user,
+          isAnonymous: true,
           jwt: null,
         };
       }
@@ -30,3 +32,10 @@ export const useUserQueryOptions = () =>
       };
     },
   });
+
+export function isUserAuthenticated(user: Partial<User>) {
+  if (user.isAnonymous) {
+    return false;
+  }
+  return !!user.email || !!user.name;
+}
