@@ -1,7 +1,7 @@
 import { useQuery, useStore } from "@livestore/react";
 import { useQuery as useTanstackQuery } from "@tanstack/react-query";
 import { Eye } from "lucide-react";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { Rating } from "ts-fsrs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -170,7 +170,7 @@ function RephrasedText({ text, deckId }: { text: string; deckId: string }) {
   const settings = useQuery(userSettings$(user.id))?.[0];
   const [showOriginal, setShowOriginal] = useState(false);
 
-  const { data, isLoading, isPaused } = useTanstackQuery({
+  const { data, isLoading } = useTanstackQuery({
     enabled: shouldRephrase(),
     ...orpcQuery.rephraseText.queryOptions({
       input: {
@@ -187,7 +187,7 @@ function RephrasedText({ text, deckId }: { text: string; deckId: string }) {
     }
     return settings.enableAI;
   }
-  if (isPaused) {
+  if (!shouldRephrase()) {
     return <StreamdownRenderer>{text}</StreamdownRenderer>;
   }
 
