@@ -33,7 +33,7 @@ const app = new Hono<{ Bindings: typeof env }>();
 app.use((c, next) =>
   rateLimiter<{ Bindings: typeof env }>({
     windowMs: 60,
-    limit: 6000,
+    limit: 200,
     standardHeaders: "draft-6", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
     keyGenerator: (c) => c.req.header("cf-connecting-ip") ?? "",
     store: new DurableObjectStore({ namespace: c.env.CACHE }),
