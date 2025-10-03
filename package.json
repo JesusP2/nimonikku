@@ -7,7 +7,7 @@
     "typecheck": "tsc --noEmit",
     "check": "biome check --write --unsafe",
     "dev": "vite",
-    "start": "wrangler dev --remote",
+    "preview": "vite preview",
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings",
     "db:push": "drizzle-kit push",

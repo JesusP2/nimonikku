@@ -4,7 +4,7 @@ export const magicLinkTemplate = (url: string, BASE_URL: string) =>
   EmailTemplate({
     action: "Sign in",
     heading: "Sign in to your account",
-    siteName: "Omokage",
+    siteName: "Nimonikku",
     imageUrl: `${BASE_URL}/favicon.ico`,
     baseUrl: BASE_URL,
     url: url,

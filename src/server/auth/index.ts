@@ -22,7 +22,7 @@ export const auth = betterAuth({
     magicLink({
       sendMagicLink: async ({ email, url }) => {
         await resend.emails.send({
-          from: "no-reply@omokage.app",
+          from: "no-reply@nimonikku.app",
           to: email,
           subject: "Magic link",
           react: magicLinkTemplate(url, env.VITE_SERVER_URL),
@@ -37,7 +37,7 @@ export const auth = betterAuth({
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
       await resend.emails.send({
-        from: "no-reply@omokage.app",
+        from: "no-reply@ninomikku.app",
         to: user.email,
         subject: "Reset password",
         react: forgotPasswordTemplate(url, env.VITE_SERVER_URL),

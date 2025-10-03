@@ -13,19 +13,15 @@ export default defineConfig({
     port: 5173,
   },
   plugins: [
-    cloudflare({
-      persistState: {
-        path: ".wrangler/state",
-      },
-    }),
-    tailwindcss(),
-    tanStackRouterVite({
-      autoCodeSplitting: true,
-    }),
-    livestoreDevtoolsPlugin({ schemaPath: "./src/server/livestore/schema.ts" }),
-    react(),
     VitePWA({
       registerType: "autoUpdate",
+      devOptions: {
+        enabled: true,
+      },
+      workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
+      },
       manifest: {
         name: "nimonikku",
         short_name: "nimonikku",
@@ -36,10 +32,14 @@ export default defineConfig({
         disabled: false,
         config: true,
       },
-      devOptions: {
-        enabled: true,
-      },
     }),
+    cloudflare(),
+    tailwindcss(),
+    tanStackRouterVite({
+      autoCodeSplitting: true,
+    }),
+    livestoreDevtoolsPlugin({ schemaPath: "./src/server/livestore/schema.ts" }),
+    react(),
     tsconfigPaths({
       root: "./",
     }),

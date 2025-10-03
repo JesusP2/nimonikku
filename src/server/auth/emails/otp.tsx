@@ -4,7 +4,7 @@ export const forgotPasswordTemplate = (url: string, BASE_URL: string) =>
   EmailTemplate({
     action: "Reset password",
     heading: "Reset password",
-    siteName: "Omokage",
+    siteName: "Nimonikku",
     imageUrl: `${BASE_URL}/favicon.ico`,
     baseUrl: BASE_URL,
     url: url,
